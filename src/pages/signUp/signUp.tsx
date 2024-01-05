@@ -1,20 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import GoogleIcon from '@mui/icons-material/Google';
-import { useState } from 'react';
 import { app, database } from '../../firebase/firebaseConfig';
 import {
   getAuth,
   GoogleAuthProvider,
   signInWithPopup,
   createUserWithEmailAndPassword,
+  updateProfile
 } from 'firebase/auth';
 import { collection, addDoc } from 'firebase/firestore';
 
 export default function SignUp() {
   const auth = getAuth(app);
   const googleProvider = new GoogleAuthProvider();
+  const navigate = useNavigate();
+  const collectionRef = collection(database, 'Users Data');
+  const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUserName(event.target.value);
+  };
   
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
@@ -29,16 +37,20 @@ export default function SignUp() {
       const response = await createUserWithEmailAndPassword(auth, email, password);
       const currentUser = auth.currentUser;
   
-      const collectionRef = collection(database, 'Users Data');
       if (currentUser) {
+        await updateProfile(currentUser, {
+          displayName: userName,
+        });
+
         console.log(response.user);
         console.log("User registered successfully!");
 
         await addDoc(collectionRef, {
+          userName: userName,
           email: currentUser.email,
         });
+        navigate('/dashboard');
       }
-
     } catch (err) {
       console.error('Registration error:', err.message);
     }
@@ -49,6 +61,13 @@ export default function SignUp() {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
       console.log(user);
+      const usernameFromGoogle = user.displayName || 'FallbackUsername';
+      await updateProfile(user, { displayName: usernameFromGoogle });
+      await addDoc(collectionRef, {
+        email: user.email,
+        userName: usernameFromGoogle,
+      });
+      navigate('/dashboard');
     } catch (err) {
       console.error('Google Sign In error:', err.message);
     }
@@ -66,7 +85,8 @@ export default function SignUp() {
             <input 
               type="text" 
               className="classic-input" 
-              placeholder="Username" 
+              placeholder="Username"
+              onChange={handleUsernameChange}
             />
           </div>
           <div className="inputBx">
