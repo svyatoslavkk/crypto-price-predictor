@@ -9,10 +9,6 @@ $secondary-color: #442200;
   letter-spacing: 0.5px;
 }
 
-body {
-  background: linear-gradient(to top, $primary-color, $secondary-color);
-}
-
 button {
   border: none;
   outline: none;
@@ -28,6 +24,7 @@ button {
   gap: 1rem;
   align-items: center;
   justify-content: space-between;
+  background: linear-gradient(to top, $primary-color, $secondary-color);
 }
 
 .header-text {
@@ -51,6 +48,12 @@ button {
   &:focus {
     background-color: #c27a0f;
   }
+}
+
+.classic-input {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 1rem;
 }
 
 .illustration-img {
