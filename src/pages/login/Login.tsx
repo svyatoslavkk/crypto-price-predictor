@@ -1,3 +1,4 @@
+import React from 'react';
 import GoogleIcon from '@mui/icons-material/Google';
 
 export default function Login() {

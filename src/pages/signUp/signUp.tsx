@@ -1,13 +1,18 @@
+import React from 'react';
 import GoogleIcon from '@mui/icons-material/Google';
 import { useState } from 'react';
-import { app } from '../../firebase/firebaseConfig';
+import { app, database } from '../../firebase/firebaseConfig';
 import {
   getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
   createUserWithEmailAndPassword,
 } from 'firebase/auth';
+import { collection, addDoc } from 'firebase/firestore';
 
 export default function SignUp() {
   const auth = getAuth(app);
+  const googleProvider = new GoogleAuthProvider();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   
@@ -19,14 +24,34 @@ export default function SignUp() {
     setPassword(event.target.value);
   };
   
-  const handleSubmit = () => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((response) => {
+  const handleSubmit = async () => {
+    try {
+      const response = await createUserWithEmailAndPassword(auth, email, password);
+      const currentUser = auth.currentUser;
+  
+      const collectionRef = collection(database, 'Users Data');
+      if (currentUser) {
         console.log(response.user);
-      })
-      .catch((err) => {
-        alert(err.message);
-      });
+        console.log("User registered successfully!");
+
+        await addDoc(collectionRef, {
+          email: currentUser.email,
+        });
+      }
+
+    } catch (err) {
+      console.error('Registration error:', err.message);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      console.log(user);
+    } catch (err) {
+      console.error('Google Sign In error:', err.message);
+    }
   };
 
   return (
@@ -68,7 +93,7 @@ export default function SignUp() {
             />
           </div>
           <div className="links">
-            <div className="social-icon">
+            <div className="social-icon" onClick={handleGoogleSignIn}>
               <GoogleIcon fontSize='large' />
             </div>
           </div>
