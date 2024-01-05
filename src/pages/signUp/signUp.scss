@@ -1,0 +1,8 @@
+@import '../../scss/config';
+
+.signup {
+  @include container-styles;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+}
