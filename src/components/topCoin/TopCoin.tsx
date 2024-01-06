@@ -15,6 +15,13 @@ export default function TopCoin() {
   const [priceChangeColor, setPriceChangeColor] = useState("");
   const [percentageDiff, setPercentageDiff] = useState(0);
   const prevPriceRef = useRef<number | null>(null);
+  const [betTime, setBetTime] = useState(10);
+  const [betDirection, setBetDirection] = useState("");
+  const [betStatus, setBetStatus] = useState("");
+  const [countdown, setCountdown] = useState(0);
+  const [predictionTime, setPredictionTime] = useState<number | null>(null);
+  const [predictionPrice, setPredictionPrice] = useState<number | null>(null);
+  const [betPrice, setBetPrice] = useState<number | null>(null);
 
   const ws = useRef(new WebSocket("wss://ws-feed.pro.coinbase.com"));
   let first = useRef(false);
@@ -43,8 +50,6 @@ export default function TopCoin() {
         }
         return 0;
       });
-
-      console.log("filtered", filtered);
       setcurrencies(filtered);
 
       first.current = true;
@@ -76,10 +81,9 @@ export default function TopCoin() {
         .then((data) => (dataArr = data));
 
       let formattedData = formatData(dataArr);
-      console.log("Formatted Data:", formattedData);
       
       setpastData(formattedData);
-      console.log("Past Data:", pastData);
+      console.log(pastData);
     };
 
     fetchHistoricalData();
@@ -92,22 +96,25 @@ export default function TopCoin() {
         }
 
         if (data.product_id === pair) {
-          if (data.price < price) {
-            setPriceChangeColor("#ff5e5e");
+          const newPrice = parseFloat(data.price);
+          const currentPrice = parseFloat(price);
+        
+          if (newPrice < currentPrice) {
+            setPriceChangeColor("#ff5e5e".toString());
             setTimeout(() => setPriceChangeColor(""), 1000);
-          } else if (data.price > price) {
-            setPriceChangeColor("#0cff41");
+          } else if (newPrice > currentPrice) {
+            setPriceChangeColor("#0cff41".toString());
             setTimeout(() => setPriceChangeColor(""), 1000);
           }
-
+        
           if (prevPriceRef.current !== null) {
-            const previousPrice = prevPriceRef.current;
-            const resultDiff = ((data.price - previousPrice) / previousPrice) * 100;
+            const previousPrice = parseFloat(prevPriceRef.current.toString());
+            const resultDiff = ((newPrice - previousPrice) / previousPrice) * 100;
             setPercentageDiff(resultDiff);
           }
-
-          prevPriceRef.current = data.price;
-
+        
+          prevPriceRef.current = newPrice;
+        
           setprice(data.price);
         }
 
@@ -169,9 +176,58 @@ export default function TopCoin() {
 
   const { data: bitcoinInfo } = useGetBitcoinInfoQuery('bitcoin');
 
-  if (bitcoinInfo) {
-    console.log("BTC INFO", bitcoinInfo);
-  }
+  const placeBet = (direction: string) => {
+    setBetDirection(direction);
+    setPredictionTime(new Date().getTime());
+    setBetPrice(parseFloat(price));
+    setCountdown(betTime);
+  
+    const countdownInterval = setInterval(() => {
+      setCountdown((prev) => prev - 1);
+    }, 1000);
+  
+    setTimeout(() => {
+      clearInterval(countdownInterval);
+      setBetStatus((prevBetStatus) => {
+        const finalPrice = parseFloat(price);
+        handleBetResult(() => finalPrice, betPrice, finalPrice);
+        return prevBetStatus;
+      });
+    }, betTime * 1000);
+  };
+  
+  const handleBetResult = (
+    getCurrentPrice: () => number,
+    currentBetPrice: number | null,
+    finalPrice: number
+  ) => {
+    if (predictionTime === null || currentBetPrice === null) {
+      console.error("Prediction data is missing");
+      return;
+    }
+  
+    const currentTime = new Date().getTime();
+    const elapsedTime = (currentTime - predictionTime) / 1000;
+  
+    const targetTime = 10;
+  
+    const currentPrice = getCurrentPrice();
+  
+    const isBetCorrect =
+      elapsedTime >= targetTime &&
+      ((betDirection === "up" && currentPrice > currentBetPrice) ||
+        (betDirection === "down" && currentPrice < currentBetPrice));
+  
+    setPredictionPrice(finalPrice);
+    console.log(predictionPrice);
+    setBetStatus(isBetCorrect ? "win" : "lose");
+  
+    const predictionResult = isBetCorrect ? "Угадали!" : "Не угадали.";
+    const predictionStatus = `Прогноз: ${betDirection.toUpperCase()} - Цена при прогнозе: ${currentBetPrice}`;
+    const finalPriceStatus = `Цена в конце прогноза: ${finalPrice}`;
+  
+    console.log(`${predictionResult} ${predictionStatus} ${finalPriceStatus}`);
+  };
 
   return (
     <div className="top-coin">
@@ -211,16 +267,31 @@ export default function TopCoin() {
             </>
           )}
         </div>
+        <select value={betTime} onChange={(e) => setBetTime(Number(e.target.value))}>
+          <option value={10}>10 сек</option>
+          <option value={20}>20 сек</option>
+          <option value={30}>30 сек</option>
+        </select>
         <div className="buttons">
-          <button className="up-btn">
+          <button className="up-btn" onClick={() => placeBet("up")}>
             <TrendingUpIcon />
             <span>Up</span>
           </button>
-          <button className="down-btn">
+          <button className="down-btn" onClick={() => placeBet("down")}>
             <TrendingDownIcon />
             <span>Down</span>
           </button>
         </div>
+        {countdown > 0 && (
+          <div className="countdown" style={{ color: 'white' }}>
+            {`${countdown} сек - Прогноз: ${betDirection.toUpperCase()}, Цена: ${betPrice}`}
+          </div>
+        )}
+        {betStatus && (
+          <div className={`bet-status ${betStatus === 'win' ? 'win' : 'lose'}`} style={{ color: 'white' }}>
+            {`Прогноз: ${betStatus === 'win' ? 'Угадали!' : 'Не угадали.'} Цена при прогнозе: ${betPrice}`}
+          </div>
+        )}
       </div>
     </div>
   )
