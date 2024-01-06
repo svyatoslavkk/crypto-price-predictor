@@ -1,5 +1,7 @@
 // import { useState, useRef, useEffect } from "react";
 import { useGetBitcoinInfoQuery } from "../../redux/features/api/api";
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 // import { formatData } from "../../utils/formatData";
 
 export default function TopCoin() {
@@ -107,8 +109,8 @@ export default function TopCoin() {
   }
 
   return (
-    <div>
-      <h2>Top Coin</h2>
+    <div className="top-coin">
+      <h2 className="medium-header">Top Coin</h2>
       {/* <div>
         <select name="currency" value={pair} onChange={handleSelect}>
           {currencies.map((cur, idx) => {
@@ -121,6 +123,27 @@ export default function TopCoin() {
         </select>
         <h2>PRICE{`$${price}`}</h2>
       </div> */}
+      {bitcoinInfo && (
+      <div className="window">
+        <div className="coin-main-info">
+          <img src={bitcoinInfo.image.small} className="small-circle-img" alt="Coin" />
+          <h3 className="small-header">{bitcoinInfo.name}</h3>
+        </div>
+        <div className="price-info">
+          <span>${bitcoinInfo.market_data.current_price.usd}</span>
+        </div>
+        <div className="buttons">
+          <button className="up-btn">
+            <TrendingUpIcon />
+            <span>Up</span>
+          </button>
+          <button className="down-btn">
+            <TrendingDownIcon />
+            <span>Down</span>
+          </button>
+        </div>
+      </div>
+      )}
     </div>
   )
 }

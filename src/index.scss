@@ -3,6 +3,7 @@
 @import './pages/login/login.scss';
 @import './pages/dashboard/dashboard.scss';
 @import './components/sideBar/sideBar.scss';
+@import './components/topCoin/topCoin.scss';
 
 $primary-color: #572b06;
 $secondary-color: #442200;
@@ -32,6 +33,24 @@ button {
 .header-text {
   color: #fff;
   letter-spacing: 1px;
+}
+
+.medium-header {
+  color: #fff;
+  font-weight: 600;
+  font-size: 20px;
+}
+
+.small-header {
+  color: #fff;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.small-circle-img {
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
 }
 
 .classic-button {
