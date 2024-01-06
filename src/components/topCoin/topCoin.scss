@@ -8,7 +8,7 @@
 .window {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
   background-color: #111;
   padding: 1.0rem;
   border-radius: 0.5rem;
@@ -21,11 +21,20 @@
 }
 
 .price-info {
+  display: flex;
+  justify-content: center;
   font-weight: 600;
   color: #fff;
   font-size: 28px;
+}
+
+.change-diff {
   display: flex;
+  align-items: center;
   justify-content: center;
+  color: #ddd;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .buttons {
@@ -50,17 +59,17 @@
 }
 
 .up-btn {
-  background-color: rgb(12, 255, 65);
+  background-color: #0cff41;
 }
 .up-btn:hover,
 .up-btn:focus {
-  background-color: rgb(72, 255, 127);
+  background-color: #48ff7f;
 }
 
 .down-btn {
-  background-color: rgb(255, 94, 94);
+  background-color: #ff5e5e;
 }
 .down-btn:hover,
 .down-btn:focus {
-  background-color: rgb(255, 120, 120);
+  background-color: #ff7878;
 }

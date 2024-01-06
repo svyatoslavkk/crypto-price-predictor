@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from "react";
 import { useGetBitcoinInfoQuery } from "../../redux/features/api/api";
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { formatData } from "../../utils/formatData";
 
 export default function TopCoin() {
@@ -10,8 +12,11 @@ export default function TopCoin() {
   const [price, setprice] = useState("0.00");
   const [pastData, setpastData] = useState({});
   const [currentBitcoinPrice, setCurrentBitcoinPrice] = useState("");
-  const ws = useRef(new WebSocket("wss://ws-feed.pro.coinbase.com"));
+  const [priceChangeColor, setPriceChangeColor] = useState("");
+  const [percentageDiff, setPercentageDiff] = useState(0);
+  const prevPriceRef = useRef<number | null>(null);
 
+  const ws = useRef(new WebSocket("wss://ws-feed.pro.coinbase.com"));
   let first = useRef(false);
   const url = "https://api.pro.coinbase.com";
 
@@ -71,8 +76,10 @@ export default function TopCoin() {
         .then((data) => (dataArr = data));
 
       let formattedData = formatData(dataArr);
+      console.log("Formatted Data:", formattedData);
+      
       setpastData(formattedData);
-      console.log(pastData)
+      console.log("Past Data:", pastData);
     };
 
     fetchHistoricalData();
@@ -85,6 +92,26 @@ export default function TopCoin() {
         }
 
         if (data.product_id === pair) {
+          if (data.price < price) {
+            setPriceChangeColor("#ff5e5e");
+            setTimeout(() => setPriceChangeColor(""), 1000);
+          } else if (data.price > price) {
+            setPriceChangeColor("#0cff41");
+            setTimeout(() => setPriceChangeColor(""), 1000);
+          }
+
+          if (prevPriceRef.current !== null) {
+            const previousPrice = prevPriceRef.current;
+            const resultDiff = ((data.price - previousPrice) / previousPrice) * 100;
+            setPercentageDiff(resultDiff);
+          }
+
+          prevPriceRef.current = data.price;
+
+          setprice(data.price);
+        }
+
+        if (data.product_id === pair) {
           setprice(data.price);
         }
 
@@ -93,7 +120,7 @@ export default function TopCoin() {
         }
       };
     }
-  }, [pair]);
+  }, [pair, price]);
 
   useEffect(() => {
     const fetchBitcoinPrice = async () => {
@@ -169,7 +196,20 @@ export default function TopCoin() {
           </div>
         )}
         <div className="price-info">
-          <span>{`$${pair === "BTC-USD" ? currentBitcoinPrice : price}`}</span>
+          <span style={{ color: priceChangeColor }}>{`$${pair === "BTC-USD" ? currentBitcoinPrice : price}`}</span>
+        </div>
+        <div className="change-diff">
+          {percentageDiff > 0 ? (
+            <>
+              <ArrowDropUpIcon style={{ color: "#0cff41" }} />
+              <span style={{ color: "#0cff41" }}>{`${percentageDiff.toFixed(3)}%`}</span>
+            </>
+          ) : (
+            <>
+              <ArrowDropDownIcon style={{ color: "#ff5e5e" }} />
+              <span style={{ color: "#ff5e5e" }}>{`${percentageDiff.toFixed(3)}%`}</span>
+            </>
+          )}
         </div>
         <div className="buttons">
           <button className="up-btn">
