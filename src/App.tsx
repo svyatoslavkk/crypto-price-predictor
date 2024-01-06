@@ -4,18 +4,22 @@ import SignUp from './pages/signUp/signUp';
 import Login from './pages/login/Login';
 import Dashboard from './pages/dashboard/Dashboard';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { store } from './redux/store';
 
 function App() {
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/welcome" element={<WelcomePage />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-      </Routes>
-    </BrowserRouter>
+    <Provider store={store}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/welcome" element={<WelcomePage />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Routes>
+      </BrowserRouter>
+    </Provider>
   )
 }
 
