@@ -6,6 +6,36 @@ import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { formatData } from "../../utils/formatData";
 
+// const CountdownBar = ({ countdown, betDirection }: any) => {
+//   const initialProgress = 100;
+//   const progress = initialProgress - (countdown / 10) * 100;
+
+//   let color;
+//   if (progress === 0) {
+//     color = "#0cff41";
+//   } else if (progress <= 33) {
+//     color = "red";
+//   } else if (progress <= 66) {
+//     color = "orange";
+//   } else {
+//     color = "yellow";
+//   }
+
+//   const barStyle = {
+//     width: `${progress}%`,
+//     height: "20px",
+//     backgroundColor: color,
+//     transition: "width 1s linear",
+//     borderRadius: "5px",
+//   };
+
+//   return (
+//     <div className="countdown-bar" style={{ backgroundColor: "gray", height: "20px", borderRadius: "5px", marginTop: "10px" }}>
+//       <div className="countdown-progress" style={barStyle}></div>
+//     </div>
+//   );
+// };
+
 export default function TopCoin() {
   const [currencies, setcurrencies] = useState<any[]>([]);
   const [pair, setpair] = useState("BTC-USD");
@@ -251,9 +281,11 @@ export default function TopCoin() {
             <h3 className="small-header">{bitcoinInfo.name}</h3>
           </div>
         )}
+        {currentBitcoinPrice && (
         <div className="price-info">
           <span style={{ color: priceChangeColor }}>{`$${pair === "BTC-USD" ? currentBitcoinPrice : price}`}</span>
         </div>
+        )}
         <div className="change-diff">
           {percentageDiff > 0 ? (
             <>
