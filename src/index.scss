@@ -35,6 +35,12 @@ button {
   letter-spacing: 1px;
 }
 
+.large-header {
+  color: #fff;
+  font-weight: 600;
+  font-size: 26px;
+}
+
 .medium-header {
   color: #fff;
   font-weight: 600;
@@ -69,6 +75,23 @@ button {
   &:focus {
     background-color: #c27a0f;
   }
+}
+
+.small-circle-button {
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background-color: rgba(10, 10, 10, 0.5);
+  color: #fff;
+  transition: 0.1s ease;
+}
+
+.small-circle-button:hover,
+.small-circle-button:focus {
+  background-color: rgba(10, 10, 10, 1);
 }
 
 .classic-input {
