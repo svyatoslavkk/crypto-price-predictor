@@ -2,6 +2,7 @@
 @import './pages/signUp/signUp.scss';
 @import './pages/login/login.scss';
 @import './pages/dashboard/dashboard.scss';
+@import './components/sideBar/sideBar.scss';
 
 $primary-color: #572b06;
 $secondary-color: #442200;
@@ -65,4 +66,8 @@ button {
   max-width: 550px;
   max-height: 550px;
   width: 100%;
+}
+
+.active-icon {
+  color: orange;
 }
