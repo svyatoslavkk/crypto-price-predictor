@@ -68,6 +68,16 @@ button {
   font-size: 13px;
 }
 
+.link-text {
+  color: orange;
+  font-size: 16px;
+  text-decoration: none;
+}
+.link-text:hover,
+.link-text:focus {
+  text-decoration: underline;
+}
+
 .medium-sq-img {
   border-radius: 0.5rem;
   width: 48px;

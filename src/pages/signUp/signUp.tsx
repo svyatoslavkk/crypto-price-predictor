@@ -10,6 +10,8 @@ import {
   updateProfile
 } from 'firebase/auth';
 import { collection, addDoc } from 'firebase/firestore';
+import { Link } from 'react-router-dom';
+import LoaderScreen from '../../components/loaders/loaderScreen/LoaderScreen';
 
 export default function SignUp() {
   const auth = getAuth(app);
@@ -18,6 +20,7 @@ export default function SignUp() {
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
   const collectionRef = collection(database, 'Users Data');
 
   const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,6 +37,7 @@ export default function SignUp() {
   
   const handleSubmit = async () => {
     try {
+      setLoading(true);
       const response = await createUserWithEmailAndPassword(auth, email, password);
       const currentUser = auth.currentUser;
   
@@ -56,6 +60,8 @@ export default function SignUp() {
       }
     } catch (err) {
       console.error('Registration error:', err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -115,6 +121,7 @@ export default function SignUp() {
               value="Sign Up"
             />
           </div>
+          <p className="medium-text">Already have an account? <Link to="/login" className="link-text">Log In</Link></p>
           <div className="links">
             <div className="social-icon" onClick={handleGoogleSignIn}>
               <GoogleIcon fontSize='large' />
@@ -122,6 +129,7 @@ export default function SignUp() {
           </div>
         </div>
       </div>
+      {loading && <LoaderScreen />}
     </div>
   )
 }
