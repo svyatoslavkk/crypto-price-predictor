@@ -2,7 +2,6 @@
 
 .profile {
   @include container-styles;
-  gap: 2rem;
   align-items: center;
-  background: linear-gradient(to top, #572b06, #442200);
+  background: linear-gradient(to bottom, #edbd0d, #292205);
 }

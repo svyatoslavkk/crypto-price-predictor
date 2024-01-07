@@ -4,3 +4,16 @@
   display: flex;
   flex-direction: column;
 }
+
+@mixin stat-styles {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  background-color: #222;
+  color: #fff;
+}

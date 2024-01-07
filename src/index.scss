@@ -7,6 +7,7 @@
 @import './components/topCoin/topCoin.scss';
 @import './components/profileTop/profileTop.scss';
 @import './components/topButtons/topButtons.scss';
+@import './components/profileInfo/profileInfo.scss';
 
 $primary-color: #572b06;
 $secondary-color: #442200;
@@ -58,13 +59,25 @@ button {
 }
 
 .medium-text {
-  color: #fff;
+  color: #ddd;
   font-size: 16px;
 }
 
 .small-text {
-  color: #fff;
+  color: #ddd;
   font-size: 13px;
+}
+
+.medium-sq-img {
+  border-radius: 0.5rem;
+  width: 48px;
+  height: 48px;
+}
+
+.small-sq-img {
+  border-radius: 0.5rem;
+  width: 24px;
+  height: 24px;
 }
 
 .small-circle-img {
@@ -155,4 +168,20 @@ button {
 
 .active-icon {
   color: orange;
+}
+
+.list-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.list-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.5rem;
+  background-color: #222;
+  padding: 0.5rem;
 }

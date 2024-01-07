@@ -1,3 +1,5 @@
+@import '../../scss/config';
+
 .profile-top {
   display: flex;
   flex-direction: column;
@@ -5,7 +7,6 @@
   gap: 1rem;
   width: 100%;
   padding: 1.5rem;
-  background: linear-gradient(to bottom, #fbcb17, #8e7411);
 }
 
 .percentage-progress {
@@ -45,16 +46,7 @@
 }
 
 .stat {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-  width: 100%;
-  align-items: center;
-  justify-content: center;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  background-color: #222;
-  color: #fff;
+  @include stat-styles;
 }
 
 .stat-value {
