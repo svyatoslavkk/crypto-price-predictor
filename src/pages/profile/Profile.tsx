@@ -1,9 +1,10 @@
 import SideBar from "../../components/sideBar/SideBar"
+import ProfileTop from "../../components/profileTop/ProfileTop"
 
 export default function Profile() {
   return (
-    <div>
-      <h2>Profile</h2>
+    <div className="profile">
+      <ProfileTop />
       <SideBar />
     </div>
   )

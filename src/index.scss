@@ -2,8 +2,11 @@
 @import './pages/signUp/signUp.scss';
 @import './pages/login/login.scss';
 @import './pages/dashboard/dashboard.scss';
+@import './pages/profile/profile.scss';
 @import './components/sideBar/sideBar.scss';
 @import './components/topCoin/topCoin.scss';
+@import './components/profileTop/profileTop.scss';
+@import './components/topButtons/topButtons.scss';
 
 $primary-color: #572b06;
 $secondary-color: #442200;
@@ -24,6 +27,7 @@ button {
 
 .container {
   @include container-styles;
+  padding: 1.5rem;
   gap: 1rem;
   align-items: center;
   justify-content: space-between;
@@ -53,10 +57,32 @@ button {
   font-size: 16px;
 }
 
+.medium-text {
+  color: #fff;
+  font-size: 16px;
+}
+
+.small-text {
+  color: #fff;
+  font-size: 13px;
+}
+
 .small-circle-img {
   border-radius: 50%;
   width: 24px;
   height: 24px;
+}
+
+.medium-circle-img {
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+}
+
+.large-circle-img {
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
 }
 
 .classic-button {
@@ -87,6 +113,23 @@ button {
   background-color: rgba(10, 10, 10, 0.5);
   color: #fff;
   transition: 0.1s ease;
+}
+
+.sq-btn {
+  border-radius: 0.5rem;
+  padding: 0.3rem;
+  display: flex;
+  gap: 0.3rem;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(10, 10, 10, 0.5);
+  color: #ddd;
+  transition: 0.1s ease;
+}
+
+.sq-btn:hover,
+.sq-btn:focus {
+  background-color: rgba(10, 10, 10, 0.8);
 }
 
 .small-circle-button:hover,
