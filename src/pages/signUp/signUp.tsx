@@ -15,10 +15,10 @@ export default function SignUp() {
   const auth = getAuth(app);
   const googleProvider = new GoogleAuthProvider();
   const navigate = useNavigate();
-  const collectionRef = collection(database, 'Users Data');
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const collectionRef = collection(database, 'Users Data');
 
   const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserName(event.target.value);
@@ -43,13 +43,16 @@ export default function SignUp() {
         });
 
         console.log(response.user);
-        console.log("User registered successfully!");
+        sessionStorage.setItem('Token', response.user?.accessToken);
+        sessionStorage.setItem('FullName', userName);
 
         await addDoc(collectionRef, {
+          uid: currentUser.uid,
           userName: userName,
           email: currentUser.email,
+          balance: 100,
         });
-        navigate('/dashboard');
+        navigate('/profile');
       }
     } catch (err) {
       console.error('Registration error:', err.message);
