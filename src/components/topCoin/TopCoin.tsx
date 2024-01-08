@@ -16,6 +16,9 @@ import {
 import { 
   collection, 
   getDocs,
+  doc,
+  updateDoc,
+  getDoc
 } from 'firebase/firestore';
 import { app, database } from "../../firebase/firebaseConfig";
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -237,22 +240,29 @@ export default function TopCoin() {
   // console.log("cryptoNews", sortedNews)
   // console.log("COINSLIST", coinsList)
 
-  const placeBet = (direction: string) => {
+
+  const placeBet = async (direction: string) => {
     setBetDirection(direction);
     setPredictionTime(new Date().getTime());
     setBetPrice(parseFloat(currentPrice));
     setCountdown(betTime);
     setBetStatus("");
-  
-    setFireData((prevFireData) =>
-      prevFireData.map((data) => {
-        if (data.uid === user?.uid) {
-          const newBalance = (data.balance || 0) - 10;
-          return { ...data, balance: newBalance };
-        }
-        return data;
-      })
-    );
+    const userDocRef = doc(database, 'Users Data', 'hlnUqOFKxo1FzI9zeiIL');
+    const userDocSnapshot = await getDoc(userDocRef);
+
+    if (userDocSnapshot.exists()) {
+      const newBalance = (userDocSnapshot.data().balance || 0) - 10;
+
+      await updateDoc(userDocRef, { balance: newBalance });
+
+      setFireData(prevData =>
+        prevData.map(data =>
+          data.uid === user.uid ? { ...data, balance: newBalance } : data
+        )
+      );
+    } else {
+      console.error('Документ пользователя не найден.');
+    }
   
     const countdownInterval = setInterval(() => {
       setCountdown((prev) => prev - 1);
@@ -265,7 +275,10 @@ export default function TopCoin() {
     }, betTime * 1000);
   };
   
-  const handleBetResult = (finalPrice: number) => {
+  const handleBetResult = async (finalPrice: number) => {
+    const userDocRef = doc(database, 'Users Data', 'hlnUqOFKxo1FzI9zeiIL');
+    const userDocSnapshot = await getDoc(userDocRef);
+    
     if (predictionTime === null || betPrice === null) {
       console.error("Prediction data is missing");
       return;
@@ -284,17 +297,21 @@ export default function TopCoin() {
     setPredictionPrice(finalPrice);
     // console.log(predictionPrice);
 
-    setFireData((prevFireData) =>
-      prevFireData.map((data) => {
-        if (data.uid === user?.uid && isBetCorrect) {
-          const newBalance = (data.balance || 0) + 15;
-          return { ...data, balance: newBalance };
-        }
-        return data;
-      })
-    );
-
     setBetStatus(isBetCorrect ? "win" : "lose");
+    
+    if (userDocSnapshot.exists()) {
+      if (userDocSnapshot.data().uid === user?.uid && isBetCorrect) {
+        const newBalance = (userDocSnapshot.data().balance || 0) + 15;
+        await updateDoc(userDocRef, { balance: newBalance });
+        setFireData(prevData =>
+          prevData.map(userData =>
+            userData.uid === user.uid ? { ...userData, balance: newBalance } : userData
+          )
+        );
+      }
+    } else {
+      console.error('Документ пользователя не найден.');
+    }
   
     const predictionResult = isBetCorrect ? "Угадали!" : "Не угадали.";
     const predictionStatus = `Прогноз: ${betDirection.toUpperCase()} - Цена при прогнозе: ${betPrice}`;

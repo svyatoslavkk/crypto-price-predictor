@@ -40,7 +40,7 @@ export default function ProfileTop() {
 
   const increaseBalance = async () => {
     try {
-      const userDocRef = doc(database, 'Users Data', '2Xm3uwRnmbBUoxMnkzEl');
+      const userDocRef = doc(database, 'Users Data', 'hlnUqOFKxo1FzI9zeiIL');
       const userDocSnapshot = await getDoc(userDocRef);
   
       if (userDocSnapshot.exists()) {
@@ -63,7 +63,7 @@ export default function ProfileTop() {
 
   const decreaseBalance = async () => {
     try {
-      const userDocRef = doc(database, 'Users Data', '2Xm3uwRnmbBUoxMnkzEl');
+      const userDocRef = doc(database, 'Users Data', 'hlnUqOFKxo1FzI9zeiIL');
       const userDocSnapshot = await getDoc(userDocRef);
   
       if (userDocSnapshot.exists()) {
