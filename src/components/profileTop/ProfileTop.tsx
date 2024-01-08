@@ -8,7 +8,10 @@ import {
 } from 'firebase/auth';
 import { 
   collection, 
-  getDocs, 
+  getDocs,
+  doc,
+  updateDoc,
+  getDoc
 } from 'firebase/firestore';
 import { app, database } from '../../firebase/firebaseConfig';
 
@@ -32,6 +35,52 @@ export default function ProfileTop() {
       console.log("FIREDATA", fireData);
     } catch (error) {
       console.error('Error getting data:', error);
+    }
+  };
+
+  const increaseBalance = async () => {
+    try {
+      const userDocRef = doc(database, 'Users Data', '2Xm3uwRnmbBUoxMnkzEl');
+      const userDocSnapshot = await getDoc(userDocRef);
+  
+      if (userDocSnapshot.exists()) {
+        const updatedBalance = userDocSnapshot.data().balance + 50;
+  
+        await updateDoc(userDocRef, { balance: updatedBalance });
+  
+        setFireData(prevData =>
+          prevData.map(data =>
+            data.uid === user.uid ? { ...data, balance: updatedBalance } : data
+          )
+        );
+      } else {
+        console.error('Документ пользователя не найден.');
+      }
+    } catch (error) {
+      console.error('Ошибка обновления баланса:', error);
+    }
+  };
+
+  const decreaseBalance = async () => {
+    try {
+      const userDocRef = doc(database, 'Users Data', '2Xm3uwRnmbBUoxMnkzEl');
+      const userDocSnapshot = await getDoc(userDocRef);
+  
+      if (userDocSnapshot.exists()) {
+        const updatedBalance = userDocSnapshot.data().balance - 50;
+  
+        await updateDoc(userDocRef, { balance: updatedBalance });
+  
+        setFireData(prevData =>
+          prevData.map(data =>
+            data.uid === user.uid ? { ...data, balance: updatedBalance } : data
+          )
+        );
+      } else {
+        console.error('Документ пользователя не найден.');
+      }
+    } catch (error) {
+      console.error('Ошибка обновления баланса:', error);
     }
   };
 
@@ -74,6 +123,12 @@ export default function ProfileTop() {
       <div className="balance-section">
         <span className="medium-text">Your Balance</span>
         <div className="balance-amount">
+          <button onClick={increaseBalance}>
+            +50
+          </button>
+          <button onClick={decreaseBalance}>
+            -50
+          </button>
           {fireData && fireData
           .filter(data => data.uid === user?.uid)
           .map((data) => (

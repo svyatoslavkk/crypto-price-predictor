@@ -26,6 +26,10 @@ button {
   cursor: pointer;
 }
 
+img {
+  object-fit: cover;
+}
+
 .container {
   @include container-styles;
   padding: 1.5rem;
@@ -61,11 +65,13 @@ button {
 .medium-text {
   color: #ddd;
   font-size: 16px;
+  font-weight: 500;
 }
 
 .small-text {
   color: #ddd;
   font-size: 13px;
+  font-weight: 500;
 }
 
 .link-text {
@@ -76,6 +82,12 @@ button {
 .link-text:hover,
 .link-text:focus {
   text-decoration: underline;
+}
+
+.large-sq-img {
+  border-radius: 0.5rem;
+  width: 80px;
+  height: 80px;
 }
 
 .medium-sq-img {
@@ -194,4 +206,23 @@ button {
   border-radius: 0.5rem;
   background-color: #222;
   padding: 0.5rem;
+}
+
+.text-items-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.green {
+  color: #0cff41;
+}
+
+.red {
+  color: #ff5e5e;
 }

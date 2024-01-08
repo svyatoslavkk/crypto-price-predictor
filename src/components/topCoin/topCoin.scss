@@ -14,12 +14,6 @@
   border-radius: 0.5rem;
 }
 
-.coin-main-info {
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-}
-
 .price-info {
   display: flex;
   justify-content: center;
@@ -72,4 +66,30 @@
 .down-btn:hover,
 .down-btn:focus {
   background-color: #ff7878;
+}
+
+.double-window {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.mini-window {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  justify-content: space-between;
+  width: 100%;
+  background-color: #111;
+  padding: 1.0rem;
+  border-radius: 0.5rem;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  color: #ddd;
 }
