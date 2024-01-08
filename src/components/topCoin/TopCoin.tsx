@@ -18,6 +18,7 @@ import {
   getDocs,
 } from 'firebase/firestore';
 import { app, database } from "../../firebase/firebaseConfig";
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
 export default function TopCoin() {
   const [currencies, setcurrencies] = useState<any[]>([]);
@@ -241,6 +242,17 @@ export default function TopCoin() {
     setPredictionTime(new Date().getTime());
     setBetPrice(parseFloat(currentPrice));
     setCountdown(betTime);
+    setBetStatus("");
+  
+    setFireData((prevFireData) =>
+      prevFireData.map((data) => {
+        if (data.uid === user?.uid) {
+          const newBalance = (data.balance || 0) - 10;
+          return { ...data, balance: newBalance };
+        }
+        return data;
+      })
+    );
   
     const countdownInterval = setInterval(() => {
       setCountdown((prev) => prev - 1);
@@ -249,7 +261,7 @@ export default function TopCoin() {
     setTimeout(() => {
       clearInterval(countdownInterval);
       const finalPrice = parseFloat(currentPrice);
-      handleBetResult(finalPrice); 
+      handleBetResult(finalPrice);
     }, betTime * 1000);
   };
   
@@ -271,6 +283,17 @@ export default function TopCoin() {
   
     setPredictionPrice(finalPrice);
     // console.log(predictionPrice);
+
+    setFireData((prevFireData) =>
+      prevFireData.map((data) => {
+        if (data.uid === user?.uid && isBetCorrect) {
+          const newBalance = (data.balance || 0) + 15;
+          return { ...data, balance: newBalance };
+        }
+        return data;
+      })
+    );
+
     setBetStatus(isBetCorrect ? "win" : "lose");
   
     const predictionResult = isBetCorrect ? "Угадали!" : "Не угадали.";
@@ -369,8 +392,17 @@ export default function TopCoin() {
           </button>
         </div>
         {countdown > 0 && (
-          <div className="countdown" style={{ color: 'white' }}>
-            {`${countdown} сек - Прогноз: ${betDirection.toUpperCase()}, Цена: ${betPrice}`}
+          <div className="now-bet">
+            <div className="flex-info" style={{color: 'white'}}>
+              <AccessTimeIcon fontSize="small" />
+              <h3 className="small-text">{countdown}</h3>
+            </div>
+            <div className="flex-info">
+              <span className="small-text">Choice:</span>
+              <span className="small-text" style={{ color: betDirection === 'up' ? '#0cff41' : '#ff5e5e' }}>
+                {betDirection.toUpperCase()}
+              </span>
+            </div>
           </div>
         )}
         {betStatus && (
