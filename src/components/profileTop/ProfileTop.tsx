@@ -145,7 +145,14 @@ export default function ProfileTop() {
             <span className="small-text">Rank</span>
           </div>
           <div className="stat">
-            <h3 className="stat-value">80%</h3>
+            {fireData && fireData
+              .filter(data => data.uid === user?.uid)
+              .map((data) => {
+                const winRate = data.totalBets !== 0 ? (data.winBets / data.totalBets) * 100 : 0;
+                return (
+                  <h3 key={data.id} className="stat-value">{winRate}%</h3>
+                );
+            })}
             <span className="small-text">Win Rate</span>
           </div>
           <div className="stat">
