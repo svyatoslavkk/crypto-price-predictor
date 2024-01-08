@@ -1,0 +1,16 @@
+@import '../../scss/config';
+
+.rankings {
+  @include container-styles;
+  padding: 1.5rem;
+  gap: 2rem;
+  align-items: center;
+  background: linear-gradient(to bottom, #272727, #171717);
+}
+
+.rank-item {
+  @include list-item-styles;
+  justify-content: space-between;
+  background-color: #111;
+  padding: 0.75rem;
+}

@@ -8,6 +8,7 @@
 @import './components/profileTop/profileTop.scss';
 @import './components/topButtons/topButtons.scss';
 @import './components/profileInfo/profileInfo.scss';
+@import './pages/rankings/rankings.scss';
 
 $primary-color: #572b06;
 $secondary-color: #442200;
@@ -28,6 +29,10 @@ button {
 
 img {
   object-fit: cover;
+}
+
+ul, li {
+  list-style-type: none;
 }
 
 .container {
@@ -62,20 +67,32 @@ img {
   font-size: 16px;
 }
 
-.medium-text {
-  color: #ddd;
-  font-size: 16px;
-  font-weight: 500;
-}
-
 .small-text {
   color: #ddd;
   font-size: 13px;
   font-weight: 500;
 }
 
-.link-text {
+.medium-text {
+  color: #ddd;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.tiny-color-text {
   color: orange;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.small-color-text {
+  color: orange;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.link-text {
+  color: rgb(255, 190, 70);
   font-size: 16px;
   text-decoration: none;
 }
@@ -151,20 +168,25 @@ img {
 }
 
 .sq-btn {
-  border-radius: 0.5rem;
-  padding: 0.3rem;
-  display: flex;
-  gap: 0.3rem;
-  align-items: center;
-  justify-content: center;
+  @include sq-btn;
   background-color: rgba(10, 10, 10, 0.5);
   color: #ddd;
-  transition: 0.1s ease;
 }
 
 .sq-btn:hover,
 .sq-btn:focus {
   background-color: rgba(10, 10, 10, 0.8);
+}
+
+.sq-btn-mod {
+  @include sq-btn;
+  background-color: #333;
+  color: orange;
+}
+
+.sq-btn-mod:hover,
+.sq-btn-mod:focus {
+  background-color: #444444;
 }
 
 .small-circle-button:hover,
@@ -200,17 +222,15 @@ img {
 }
 
 .list-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  border-radius: 0.5rem;
-  background-color: #222;
+  @include list-item-styles;
   padding: 0.5rem;
+  background-color: #222;
 }
 
 .text-items-column {
   display: flex;
   flex-direction: column;
+  gap: 0.25rem;
 }
 
 .flex-info {

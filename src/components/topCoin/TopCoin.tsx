@@ -99,7 +99,7 @@ export default function TopCoin() {
         return 0;
       });
       setcurrencies(filtered);
-      console.log(currencies)
+      // console.log(currencies)
 
       first.current = true;
     };
@@ -132,7 +132,7 @@ export default function TopCoin() {
       let formattedData = formatData(dataArr);
       
       setpastData(formattedData);
-      console.log(pastData);
+      // console.log(pastData);
     };
 
     fetchHistoricalData();
@@ -148,7 +148,7 @@ export default function TopCoin() {
           const newPrice = parseFloat(data.price);
           const currentPrice = parseFloat(price);
           setCurrentPrice(data.price);
-          console.log(currentPrice);
+          // console.log(currentPrice);
         
           setPriceChangeColor((prevColor) => {
             if (newPrice < parseFloat(price)) {
@@ -270,7 +270,7 @@ export default function TopCoin() {
         (betDirection === "down" && finalPrice < betPrice));
   
     setPredictionPrice(finalPrice);
-    console.log(predictionPrice);
+    // console.log(predictionPrice);
     setBetStatus(isBetCorrect ? "win" : "lose");
   
     const predictionResult = isBetCorrect ? "Угадали!" : "Не угадали.";

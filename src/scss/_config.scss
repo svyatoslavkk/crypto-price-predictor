@@ -17,3 +17,20 @@
   background-color: #222;
   color: #fff;
 }
+
+@mixin list-item-styles {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+@mixin sq-btn {
+  border-radius: 0.5rem;
+  padding: 0.3rem;
+  display: flex;
+  gap: 0.3rem;
+  align-items: center;
+  justify-content: center;
+  transition: 0.1s ease;
+}
