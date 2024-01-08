@@ -55,6 +55,7 @@ export default function SignUp() {
           userName: userName,
           email: currentUser.email,
           balance: 100,
+          totalBets: 0,
         });
         navigate('/profile');
       }

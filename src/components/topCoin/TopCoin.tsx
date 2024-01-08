@@ -252,12 +252,13 @@ export default function TopCoin() {
 
     if (userDocSnapshot.exists()) {
       const newBalance = (userDocSnapshot.data().balance || 0) - 10;
+      const newTotalBets = (userDocSnapshot.data().totalBets || 0) + 1;
 
-      await updateDoc(userDocRef, { balance: newBalance });
+      await updateDoc(userDocRef, { balance: newBalance, totalBets: newTotalBets });
 
       setFireData(prevData =>
         prevData.map(data =>
-          data.uid === user.uid ? { ...data, balance: newBalance } : data
+          data.uid === user.uid ? { ...data, balance: newBalance, totalBets: newTotalBets } : data
         )
       );
     } else {
@@ -301,7 +302,7 @@ export default function TopCoin() {
     
     if (userDocSnapshot.exists()) {
       if (userDocSnapshot.data().uid === user?.uid && isBetCorrect) {
-        const newBalance = (userDocSnapshot.data().balance || 0) + 15;
+        const newBalance = (userDocSnapshot.data().balance || 0) + 100;
         await updateDoc(userDocRef, { balance: newBalance });
         setFireData(prevData =>
           prevData.map(userData =>

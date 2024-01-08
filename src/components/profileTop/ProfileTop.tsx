@@ -148,6 +148,14 @@ export default function ProfileTop() {
             <h3 className="stat-value">80%</h3>
             <span className="small-text">Win Rate</span>
           </div>
+          <div className="stat">
+            {fireData && fireData
+            .filter(data => data.uid === user?.uid)
+            .map((data) => (
+              <h3 key={data.id} className="stat-value">{data.totalBets !== undefined ? data.totalBets : '-'}</h3>
+            ))}
+            <span className="small-text">Total bets</span>
+          </div>
         </div>
       </div>
     </div>
