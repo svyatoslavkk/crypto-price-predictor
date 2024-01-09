@@ -148,9 +148,9 @@ export default function ProfileTop() {
             {fireData && fireData
               .filter(data => data.uid === user?.uid)
               .map((data) => {
-                const winRate = data.totalBets !== 0 ? (data.winBets / data.totalBets) * 100 : 0;
+                const winRate = (data.winBets / data.totalBets) * 100;
                 return (
-                  <h3 key={data.id} className="stat-value">{winRate}%</h3>
+                  <h3 key={data.id} className="stat-value">{winRate.toFixed(0)}%</h3>
                 );
             })}
             <span className="small-text">Win Rate</span>

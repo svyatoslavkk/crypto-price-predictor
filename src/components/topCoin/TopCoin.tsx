@@ -22,6 +22,8 @@ import {
 } from 'firebase/firestore';
 import { app, database } from "../../firebase/firebaseConfig";
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import CoinsRow from "../coinsRow/CoinsRow";
+import ProfileDashboard from "../profileDashboard/ProfileDashboard";
 
 export default function TopCoin() {
   const [currencies, setcurrencies] = useState<any[]>([]);
@@ -44,35 +46,6 @@ export default function TopCoin() {
   /////////////////////////
   const [user, setUser] = useState<any>(null);
   const [fireData, setFireData] = useState<any[]>([]);
-  const auth = getAuth(app);
-  const collectionRef = collection(database, 'Users Data');
-
-  const getData = async () => {
-    try {
-      const response = await getDocs(collectionRef);
-      setFireData(response.docs.map((data) => ({ ...data.data(), id: data.id })));
-      console.log("FIREDATA", fireData);
-    } catch (error) {
-      console.error('Error getting data:', error);
-    }
-  };
-
-  useEffect(() => {
-    let token = sessionStorage.getItem('Token');
-    if (token) {
-      getData();
-
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
-        if (user) {
-          setUser(user);
-        } else {
-          setUser(null);
-        }
-      });
-
-      return () => unsubscribe();
-    }
-  }, []);
   /////////////////////////
 
   const ws = useRef(new WebSocket("wss://ws-feed.pro.coinbase.com"));
@@ -240,7 +213,6 @@ export default function TopCoin() {
   // console.log("cryptoNews", sortedNews)
   // console.log("COINSLIST", coinsList)
 
-
   const placeBet = async (direction: string) => {
     setBetDirection(direction);
     setPredictionTime(new Date().getTime());
@@ -338,37 +310,7 @@ export default function TopCoin() {
         </select>
         <h2>PRICE{`$${price}`}</h2>
       </div> */}
-      <div className="double-window">
-        <div className="mini-window">
-          <div className="top">
-            <h3 className="small-text">Balance</h3>
-            <div></div>
-          </div>
-          {fireData && fireData
-          .filter((data) => data.uid === user?.uid)
-          .map((data) => (
-            <h3 key={data.id} className="small-header">${data.balance ? data.balance.toFixed(2) : '0.00'}</h3>
-          ))
-          }
-          <div className="percentage-progress">
-            <ArrowCircleUpIcon fontSize='small' />
-            <span>23.30%</span>
-          </div>
-        </div>
-        <div className="mini-window">
-          <div className="top">
-            <h3 className="small-text">Profile</h3>
-            <div></div>
-          </div>
-          <img src={exImg} className="medium-circle-img" alt="Avatar" />
-          {fireData && fireData
-          .filter((data) => data.uid === user?.uid)
-          .map((data) => (
-            <span key={data.id} className="small-header">{data.userName ? data.userName : 'NO_AUTH'}</span>
-          ))
-          }
-        </div>
-      </div>
+      <ProfileDashboard />
       <div className="window">
         {bitcoinInfo && (
           <div className="flex-info">
@@ -431,29 +373,7 @@ export default function TopCoin() {
         )}
       </div>
       
-      <div className="double-window">
-        {coinsList && coinsList.slice(0,2).map((item: { image: string, name: string, symbol: string, current_price: string, price_change_percentage_24h: number }) => (
-          <div className="mini-window">
-            <div className="flex-info">
-              <img src={item.image} className="small-circle-img" alt="Coin" />
-              <div className="text-items-column">
-                <h3 className="small-header">{item.name}</h3>
-                <span className="small-text">{item.symbol.toUpperCase()}</span>
-              </div>
-            </div>
-            <div className="flex-info">
-              <span className="medium-text">${item.current_price}</span>
-              <div className={`percentage-progress ${item.price_change_percentage_24h > 0 ? 'green' : 'red'}`}>
-                {item.price_change_percentage_24h > 0 ?
-                <KeyboardArrowUpIcon fontSize='small' /> : 
-                <KeyboardArrowDownIcon fontSize='small' />
-                }
-                <span>{item.price_change_percentage_24h.toFixed(2)}%</span>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+      <CoinsRow />
 
       {/* <div className="list-column">
         {sortedNews && sortedNews.slice(0, 3).map((item) => (
