@@ -152,9 +152,7 @@ export default function TopCoin() {
 
         if (data.product_id === pair) {
           const newPrice = parseFloat(data.price);
-          const currentPrice = parseFloat(price);
           setCurrentPrice(data.price);
-          // console.log(currentPrice);
         
           setPriceChangeColor((prevColor) => {
             if (newPrice < parseFloat(price)) {
@@ -245,7 +243,7 @@ export default function TopCoin() {
   const placeBet = async (direction: string) => {
     setBetDirection(direction);
     setPredictionTime(new Date().getTime());
-    setBetPrice(parseFloat(currentPrice));
+    setBetPrice(parseFloat(currentBitcoinPrice));
     setCountdown(betTime);
     setBetStatus("");
     const userDocRef = doc(database, 'Users Data', 'hlnUqOFKxo1FzI9zeiIL');
@@ -273,7 +271,7 @@ export default function TopCoin() {
   
     setTimeout(() => {
       clearInterval(countdownInterval);
-      const finalPrice = parseFloat(currentPrice);
+      const finalPrice = parseFloat(currentBitcoinPrice);
       handleBetResult(finalPrice);
     }, betTime * 1000);
   };
