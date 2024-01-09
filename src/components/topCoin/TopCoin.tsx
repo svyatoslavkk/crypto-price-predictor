@@ -5,10 +5,8 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import { formatData } from "../../utils/formatData";
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { formatData } from "../../utils/formatData";
 import {
   getAuth,
   onAuthStateChanged,
@@ -34,18 +32,49 @@ export default function TopCoin() {
   const [priceChangeColor, setPriceChangeColor] = useState("");
   const [percentageDiff, setPercentageDiff] = useState(0);
   const prevPriceRef = useRef<number | null>(null);
-  const [betTime, setBetTime] = useState(5);
+  const [betTime, setBetTime] = useState(3);
   const [betDirection, setBetDirection] = useState("");
   const [betStatus, setBetStatus] = useState("");
   const [countdown, setCountdown] = useState(0);
   const [predictionTime, setPredictionTime] = useState<number | null>(null);
   const [predictionPrice, setPredictionPrice] = useState<number | null>(null);
-  const [betPrice, setBetPrice] = useState<number | null>(null);
+  const [betPrice, setBetPrice] = useState<number | null>(0);
   const [currentPrice, setCurrentPrice] = useState("0.00");
+  const [pointAmount, setPointAmount] = useState(10);
+  const [lastPointBet, setLastPointBet] = useState(0);
 
   /////////////////////////
   const [user, setUser] = useState<any>(null);
   const [fireData, setFireData] = useState<any[]>([]);
+  const auth = getAuth(app);
+  const collectionRef = collection(database, 'Users Data');
+
+  const getData = async () => {
+    try {
+      const response = await getDocs(collectionRef);
+      setFireData(response.docs.map((data) => ({ ...data.data(), id: data.id })));
+      console.log("FIREDATA", fireData);
+    } catch (error) {
+      console.error('Error getting data:', error);
+    }
+  };
+
+  useEffect(() => {
+    let token = sessionStorage.getItem('Token');
+    if (token) {
+      getData();
+
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        if (user) {
+          setUser(user);
+        } else {
+          setUser(null);
+        }
+      });
+
+      return () => unsubscribe();
+    }
+  }, []);
   /////////////////////////
 
   const ws = useRef(new WebSocket("wss://ws-feed.pro.coinbase.com"));
@@ -223,7 +252,8 @@ export default function TopCoin() {
     const userDocSnapshot = await getDoc(userDocRef);
 
     if (userDocSnapshot.exists()) {
-      const newBalance = (userDocSnapshot.data().balance || 0) - 10;
+      const newBalance = (userDocSnapshot.data().balance || 0) - pointAmount;
+      setLastPointBet(pointAmount);
       const newTotalBets = (userDocSnapshot.data().totalBets || 0) + 1;
 
       await updateDoc(userDocRef, { balance: newBalance, totalBets: newTotalBets });
@@ -274,7 +304,7 @@ export default function TopCoin() {
     
     if (userDocSnapshot.exists()) {
       if (userDocSnapshot.data().uid === user?.uid && isBetCorrect) {
-        const newBalance = (userDocSnapshot.data().balance || 0) + 100;
+        const newBalance = (userDocSnapshot.data().balance || 0) + (lastPointBet * 2);
         const newWinBets = (userDocSnapshot.data().winBets || 0) + 1;
         await updateDoc(userDocRef, { balance: newBalance, winBets: newWinBets });
         setFireData(prevData =>
@@ -310,7 +340,37 @@ export default function TopCoin() {
         </select>
         <h2>PRICE{`$${price}`}</h2>
       </div> */}
-      <ProfileDashboard />
+      <div className="double-window">
+        <div className="mini-window">
+          <div className="top">
+            <h3 className="small-text">Balance</h3>
+            <div></div>
+          </div>
+          {fireData && fireData
+          .filter((data) => data.uid === user?.uid)
+          .map((data) => (
+            <h3 key={data.id} className="small-header">${data.balance ? data.balance.toFixed(2) : '0.00'}</h3>
+          ))
+          }
+          <div className="percentage-progress">
+            <ArrowCircleUpIcon fontSize='small' />
+            <span>23.30%</span>
+          </div>
+        </div>
+        <div className="mini-window">
+          <div className="top">
+            <h3 className="small-text">Profile</h3>
+            <div></div>
+          </div>
+          <img src={exImg} className="medium-circle-img" alt="Avatar" />
+          {fireData && fireData
+          .filter((data) => data.uid === user?.uid)
+          .map((data) => (
+            <span key={data.id} className="small-header">{data.userName ? data.userName : 'NO_AUTH'}</span>
+          ))
+          }
+        </div>
+      </div>
       <div className="window">
         {bitcoinInfo && (
           <div className="flex-info">
@@ -337,10 +397,18 @@ export default function TopCoin() {
           )}
         </div>
         <select value={betTime} onChange={(e) => setBetTime(Number(e.target.value))}>
+          <option value={3}>3 сек</option>
           <option value={5}>5 сек</option>
           <option value={10}>10 сек</option>
           <option value={20}>20 сек</option>
           <option value={30}>30 сек</option>
+        </select>
+        <select value={pointAmount} onChange={(e) => setPointAmount(Number(e.target.value))}>
+          <option value={10}>$10</option>
+          <option value={20}>$20</option>
+          <option value={50}>$50</option>
+          <option value={100}>$100</option>
+          <option value={200}>$200</option>
         </select>
         <div className="buttons">
           <button className="up-btn" onClick={() => placeBet("up")}>

@@ -51,7 +51,7 @@ export default function Rankings() {
   return (
     <div className="rankings">
       <TopButtons />
-      <h2 className="large-header">Rankings: Predictors' Hall of Fame</h2>
+      <h2 className="large-header">Rankings</h2>
       <ul className="list-column">
         {users.sort((a, b) => parseInt(b.balance, 10) - parseInt(a.balance, 10)).map((user: User) => (
           <li key={user.id} className="rank-item">
