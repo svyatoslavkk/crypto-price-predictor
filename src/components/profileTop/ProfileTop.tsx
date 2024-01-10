@@ -68,12 +68,10 @@ export default function ProfileTop() {
           <span key={data.id} className="large-header">{data.userName ? data.userName : 'NO_AUTH'}</span>
         ))}
       </div>
-      <div className="buttons">
-        <button className="sq-btn">
-          <ContentCopyIcon fontSize='small' />
-          <span>Copy Username</span>
-        </button>
-      </div>
+      <button className="sq-btn">
+        <ContentCopyIcon fontSize='small' />
+        <span>Copy Username</span>
+      </button>
       <div className="balance-section">
         <span className="medium-text">Your Balance</span>
         <div className="balance-amount">

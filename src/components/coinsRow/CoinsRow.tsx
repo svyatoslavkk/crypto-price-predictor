@@ -86,7 +86,7 @@ export default function CoinsRow() {
               </div>
             </div>
             <div className="flex-info">
-              <span className="medium-text">${item.current_price}</span>
+              <span className="small-text">${item.current_price}</span>
               <div className={`percentage-progress ${item.price_change_percentage_24h > 0 ? 'green' : 'red'}`}>
                 {item.price_change_percentage_24h > 0 ?
                   <KeyboardArrowUpIcon fontSize='small' /> : 

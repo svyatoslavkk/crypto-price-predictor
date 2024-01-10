@@ -11,6 +11,7 @@
 @import './pages/rankings/rankings.scss';
 @import './components/timers/classicTimer.scss';
 @import './components/coinsRow/coinsRow.scss';
+@import './components/newsSection/newsSection.scss';
 
 $primary-color: #572b06;
 $secondary-color: #442200;
@@ -21,6 +22,10 @@ $secondary-color: #442200;
   box-sizing: border-box;
   font-family: 'Montserrat', sans-serif;
   letter-spacing: 0.5px;
+}
+
+body {
+  background: linear-gradient(to bottom, #272727, #171717);
 }
 
 button {
@@ -246,7 +251,7 @@ ul, li {
 .list-item {
   @include list-item-styles;
   padding: 0.5rem;
-  background-color: #222;
+  background-color: #111;
 }
 
 .text-items-column {
@@ -267,4 +272,11 @@ ul, li {
 
 .red {
   color: #ff5e5e;
+}
+
+.line {
+  height: 2px;
+  border-radius: 3px;
+  width: 100%;
+  background-color: #555;
 }

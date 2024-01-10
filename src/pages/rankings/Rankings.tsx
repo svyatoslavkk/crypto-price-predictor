@@ -46,8 +46,6 @@ export default function Rankings() {
     return () => unsubscribe();
   }, [collectionRef]);
 
-  console.log("RANKINGS", users);
-
   return (
     <div className="rankings">
       <TopButtons />
