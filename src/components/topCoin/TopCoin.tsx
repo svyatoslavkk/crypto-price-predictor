@@ -21,7 +21,8 @@ import {
 import { app, database } from "../../firebase/firebaseConfig";
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CoinsRow from "../coinsRow/CoinsRow";
-import ProfileDashboard from "../profileDashboard/ProfileDashboard";
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 
 export default function TopCoin() {
   const [currencies, setcurrencies] = useState<any[]>([]);
@@ -80,6 +81,110 @@ export default function TopCoin() {
   const ws = useRef(new WebSocket("wss://ws-feed.pro.coinbase.com"));
   let first = useRef(false);
   const url = "https://api.pro.coinbase.com";
+
+  // const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  //   let unsubMsg = {
+  //     type: "unsubscribe",
+  //     product_ids: [pair],
+  //     channels: ["ticker"]
+  //   };
+  //   let unsub = JSON.stringify(unsubMsg);
+
+  //   ws.current.send(unsub);
+
+  //   setpair(e.target.value);
+  // };
+
+  const { data: bitcoinInfo } = useGetBitcoinInfoQuery('bitcoin');
+  // const { data: cryptoNews } = useGetCryptoNewsQuery();
+  // const sortedNews = cryptoNews?.articles.slice().sort((a, b) => {
+  //   return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
+  // });
+  // console.log("cryptoNews", sortedNews)
+  // console.log("COINSLIST", coinsList)
+
+  const placeBet = async (direction: string) => {
+    setBetDirection(direction);
+    setPredictionTime(new Date().getTime());
+    setBetPrice(parseFloat(currentBitcoinPrice));
+    setCountdown(betTime);
+    setBetStatus("");
+    const userDocRef = doc(database, 'Users Data', 'uVMuEWH4IjGdAcqDANR7');
+    const userDocSnapshot = await getDoc(userDocRef);
+
+    if (userDocSnapshot.exists()) {
+      const newBalance = (userDocSnapshot.data().balance || 0) - pointAmount;
+      setLastPointBet(pointAmount);
+      const newTotalBets = (userDocSnapshot.data().totalBets || 0) + 1;
+
+      await updateDoc(userDocRef, { balance: newBalance, totalBets: newTotalBets });
+
+      setFireData(prevData =>
+        prevData.map(data =>
+          data.uid === user.uid ? { ...data, balance: newBalance, totalBets: newTotalBets } : data
+        )
+      );
+    } else {
+      console.error('Документ пользователя не найден.');
+    }
+  
+    const countdownInterval = setInterval(() => {
+      setCountdown((prev) => prev - 1);
+    }, 1000);
+  
+    setTimeout(() => {
+      clearInterval(countdownInterval);
+      const finalPrice = parseFloat(currentBitcoinPrice);
+      handleBetResult(finalPrice);
+    }, betTime * 1000);
+  };
+  
+  const handleBetResult = async (finalPrice: number) => {
+    const userDocRef = doc(database, 'Users Data', 'uVMuEWH4IjGdAcqDANR7');
+    const userDocSnapshot = await getDoc(userDocRef);
+    
+    if (predictionTime === null || betPrice === null) {
+      console.error("Prediction data is missing");
+      return;
+    }
+  
+    const currentTime = new Date().getTime();
+    const elapsedTime = (currentTime - predictionTime) / 1000;
+  
+    const targetTime = betTime;
+  
+    const isBetCorrect =
+      elapsedTime >= targetTime &&
+      ((betDirection === "up" && finalPrice > betPrice) ||
+        (betDirection === "down" && finalPrice < betPrice));
+  
+    setPredictionPrice(finalPrice);
+    // console.log(predictionPrice);
+
+    setBetStatus(isBetCorrect ? "win" : "lose");
+    
+    if (userDocSnapshot.exists()) {
+      if (userDocSnapshot.data().uid === user?.uid && isBetCorrect) {
+        const newBalance = (userDocSnapshot.data().balance || 0) + (lastPointBet * 2);
+        const newWinBets = (userDocSnapshot.data().winBets || 0) + 1;
+        await updateDoc(userDocRef, { balance: newBalance, winBets: newWinBets });
+        setFireData(prevData =>
+          prevData.map(userData =>
+            userData.uid === user.uid ? { ...userData, balance: newBalance, winBets: newWinBets } : userData
+          )
+        );
+      }
+    } else {
+      console.error('Документ пользователя не найден.');
+    }
+  
+    const predictionResult = isBetCorrect ? "Угадали!" : "Не угадали.";
+    const predictionStatus = `Прогноз: ${betDirection.toUpperCase()} - Цена при прогнозе: ${betPrice}`;
+    const finalPriceStatus = `Цена в конце прогноза: ${finalPrice}`;
+  
+    console.log(`${predictionResult} ${predictionStatus} ${finalPriceStatus}`);
+  };
+  const exImg = 'https://www.aipromptsgalaxy.com/wp-content/uploads/2023/06/subrat_female_avatar_proud_face_Aurora_a_25-year-old_girl_with__fd0e4c59-bb7e-4636-9258-6690ec6a71e7.png';
 
   useEffect(() => {
     let pairs: any[] = [];
@@ -218,111 +323,6 @@ export default function TopCoin() {
     };
   }, []);
 
-  // const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-  //   let unsubMsg = {
-  //     type: "unsubscribe",
-  //     product_ids: [pair],
-  //     channels: ["ticker"]
-  //   };
-  //   let unsub = JSON.stringify(unsubMsg);
-
-  //   ws.current.send(unsub);
-
-  //   setpair(e.target.value);
-  // };
-
-  const { data: bitcoinInfo } = useGetBitcoinInfoQuery('bitcoin');
-  const { data: coinsList } = useGetCoinListQuery();
-  // const { data: cryptoNews } = useGetCryptoNewsQuery();
-  // const sortedNews = cryptoNews?.articles.slice().sort((a, b) => {
-  //   return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
-  // });
-  // console.log("cryptoNews", sortedNews)
-  // console.log("COINSLIST", coinsList)
-
-  const placeBet = async (direction: string) => {
-    setBetDirection(direction);
-    setPredictionTime(new Date().getTime());
-    setBetPrice(parseFloat(currentBitcoinPrice));
-    setCountdown(betTime);
-    setBetStatus("");
-    const userDocRef = doc(database, 'Users Data', 'hlnUqOFKxo1FzI9zeiIL');
-    const userDocSnapshot = await getDoc(userDocRef);
-
-    if (userDocSnapshot.exists()) {
-      const newBalance = (userDocSnapshot.data().balance || 0) - pointAmount;
-      setLastPointBet(pointAmount);
-      const newTotalBets = (userDocSnapshot.data().totalBets || 0) + 1;
-
-      await updateDoc(userDocRef, { balance: newBalance, totalBets: newTotalBets });
-
-      setFireData(prevData =>
-        prevData.map(data =>
-          data.uid === user.uid ? { ...data, balance: newBalance, totalBets: newTotalBets } : data
-        )
-      );
-    } else {
-      console.error('Документ пользователя не найден.');
-    }
-  
-    const countdownInterval = setInterval(() => {
-      setCountdown((prev) => prev - 1);
-    }, 1000);
-  
-    setTimeout(() => {
-      clearInterval(countdownInterval);
-      const finalPrice = parseFloat(currentBitcoinPrice);
-      handleBetResult(finalPrice);
-    }, betTime * 1000);
-  };
-  
-  const handleBetResult = async (finalPrice: number) => {
-    const userDocRef = doc(database, 'Users Data', 'hlnUqOFKxo1FzI9zeiIL');
-    const userDocSnapshot = await getDoc(userDocRef);
-    
-    if (predictionTime === null || betPrice === null) {
-      console.error("Prediction data is missing");
-      return;
-    }
-  
-    const currentTime = new Date().getTime();
-    const elapsedTime = (currentTime - predictionTime) / 1000;
-  
-    const targetTime = betTime;
-  
-    const isBetCorrect =
-      elapsedTime >= targetTime &&
-      ((betDirection === "up" && finalPrice > betPrice) ||
-        (betDirection === "down" && finalPrice < betPrice));
-  
-    setPredictionPrice(finalPrice);
-    // console.log(predictionPrice);
-
-    setBetStatus(isBetCorrect ? "win" : "lose");
-    
-    if (userDocSnapshot.exists()) {
-      if (userDocSnapshot.data().uid === user?.uid && isBetCorrect) {
-        const newBalance = (userDocSnapshot.data().balance || 0) + (lastPointBet * 2);
-        const newWinBets = (userDocSnapshot.data().winBets || 0) + 1;
-        await updateDoc(userDocRef, { balance: newBalance, winBets: newWinBets });
-        setFireData(prevData =>
-          prevData.map(userData =>
-            userData.uid === user.uid ? { ...userData, balance: newBalance, winBets: newWinBets } : userData
-          )
-        );
-      }
-    } else {
-      console.error('Документ пользователя не найден.');
-    }
-  
-    const predictionResult = isBetCorrect ? "Угадали!" : "Не угадали.";
-    const predictionStatus = `Прогноз: ${betDirection.toUpperCase()} - Цена при прогнозе: ${betPrice}`;
-    const finalPriceStatus = `Цена в конце прогноза: ${finalPrice}`;
-  
-    console.log(`${predictionResult} ${predictionStatus} ${finalPriceStatus}`);
-  };
-  const exImg = 'https://www.aipromptsgalaxy.com/wp-content/uploads/2023/06/subrat_female_avatar_proud_face_Aurora_a_25-year-old_girl_with__fd0e4c59-bb7e-4636-9258-6690ec6a71e7.png';
-
   return (
     <div className="top-coin">
       {/* <h2 className="medium-header">Top Coin</h2>
@@ -394,20 +394,26 @@ export default function TopCoin() {
             </>
           )}
         </div>
-        <select value={betTime} onChange={(e) => setBetTime(Number(e.target.value))}>
-          <option value={3}>3 сек</option>
-          <option value={5}>5 сек</option>
-          <option value={10}>10 сек</option>
-          <option value={20}>20 сек</option>
-          <option value={30}>30 сек</option>
-        </select>
-        <select value={pointAmount} onChange={(e) => setPointAmount(Number(e.target.value))}>
-          <option value={10}>$10</option>
-          <option value={20}>$20</option>
-          <option value={50}>$50</option>
-          <option value={100}>$100</option>
-          <option value={200}>$200</option>
-        </select>
+        <div className="buttons">
+          <div className="select-section">
+            <button className="sq-btn" onClick={() => setBetTime((prev) => Math.max(prev - 1, 1))}>
+              <RemoveIcon fontSize="small" />
+            </button>
+            <input className="short-input" value={betTime} onChange={(e) => setBetTime(Number(e.target.value))} />
+            <button className="sq-btn" onClick={() => setBetTime((prev) => prev + 1)}>
+              <AddIcon fontSize="small" />
+            </button>
+          </div>
+          <div className="select-section">
+            <button className="sq-btn" onClick={() => setPointAmount((prev) => Math.max(prev - 10, 10))}>
+              <RemoveIcon fontSize="small" />
+            </button>
+            <input className="short-input" value={pointAmount} onChange={(e) => setPointAmount(Number(e.target.value))} />
+            <button className="sq-btn" onClick={() => setPointAmount((prev) => prev + 10)}>
+              <AddIcon fontSize="small" />
+            </button>
+          </div>
+        </div>
         <div className="buttons">
           <button className="up-btn" onClick={() => placeBet("up")}>
             <TrendingUpIcon />

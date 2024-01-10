@@ -38,52 +38,6 @@ export default function ProfileTop() {
     }
   };
 
-  const increaseBalance = async () => {
-    try {
-      const userDocRef = doc(database, 'Users Data', 'hlnUqOFKxo1FzI9zeiIL');
-      const userDocSnapshot = await getDoc(userDocRef);
-  
-      if (userDocSnapshot.exists()) {
-        const updatedBalance = userDocSnapshot.data().balance + 50;
-  
-        await updateDoc(userDocRef, { balance: updatedBalance });
-  
-        setFireData(prevData =>
-          prevData.map(data =>
-            data.uid === user.uid ? { ...data, balance: updatedBalance } : data
-          )
-        );
-      } else {
-        console.error('Документ пользователя не найден.');
-      }
-    } catch (error) {
-      console.error('Ошибка обновления баланса:', error);
-    }
-  };
-
-  const decreaseBalance = async () => {
-    try {
-      const userDocRef = doc(database, 'Users Data', 'hlnUqOFKxo1FzI9zeiIL');
-      const userDocSnapshot = await getDoc(userDocRef);
-  
-      if (userDocSnapshot.exists()) {
-        const updatedBalance = userDocSnapshot.data().balance - 50;
-  
-        await updateDoc(userDocRef, { balance: updatedBalance });
-  
-        setFireData(prevData =>
-          prevData.map(data =>
-            data.uid === user.uid ? { ...data, balance: updatedBalance } : data
-          )
-        );
-      } else {
-        console.error('Документ пользователя не найден.');
-      }
-    } catch (error) {
-      console.error('Ошибка обновления баланса:', error);
-    }
-  };
-
   useEffect(() => {
     let token = sessionStorage.getItem('Token');
     if (token) {
@@ -123,12 +77,6 @@ export default function ProfileTop() {
       <div className="balance-section">
         <span className="medium-text">Your Balance</span>
         <div className="balance-amount">
-          <button onClick={increaseBalance}>
-            +50
-          </button>
-          <button onClick={decreaseBalance}>
-            -50
-          </button>
           {fireData && fireData
           .filter(data => data.uid === user?.uid)
           .map((data) => (
@@ -150,7 +98,7 @@ export default function ProfileTop() {
               .map((data) => {
                 const winRate = (data.winBets / data.totalBets) * 100;
                 return (
-                  <h3 key={data.id} className="stat-value">{winRate.toFixed(0)}%</h3>
+                  <h3 key={data.id} className="stat-value">{data.totalBets !== 0 ? winRate.toFixed(0) : 0}%</h3>
                 );
             })}
             <span className="small-text">Win Rate</span>

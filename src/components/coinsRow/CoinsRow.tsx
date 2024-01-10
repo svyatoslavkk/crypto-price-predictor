@@ -1,13 +1,82 @@
+import { useState, useEffect } from "react";
 import { useGetCoinListQuery } from "../../redux/features/api/api";
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import SimpleLoader from "../loaders/simpleLoader/SimpleLoader";
+
+interface Coin {
+  image: string;
+  name: string;
+  symbol: string;
+  current_price: string;
+  price_change_percentage_24h: number;
+}
 
 export default function CoinsRow() {
-  const { data: coinsList } = useGetCoinListQuery();
+  const [showLoading, setShowLoading] = useState(true);
+  const { data: coinsList, error: coinsListError, isLoading: coinsListLoading } = useGetCoinListQuery();
+  const loadingImg = 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1200px-Bitcoin.svg.png';
+  const errorImg = 'https://cdn.gobankingrates.com/wp-content/uploads/2018/03/bitcoin-ethereum-cryptocurrency-taxes-blockchain-iStock-886921308.jpg';
+
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      setShowLoading(false);
+    }, 3000);
+
+    return () => clearTimeout(delay);
+  }, []);
+
+  const loadingUI = Array.from({ length: 5 }, (_, index) => (
+    <div key={index} className="mini-window">
+      <SimpleLoader />
+      <div className="flex-info" style={{ opacity: 0 }}>
+        <img src={loadingImg} className="small-circle-img" alt="Coin" />
+        <div className="text-items-column">
+          <h3 className="small-header">Bitcoin</h3>
+          <span className="small-text">BTC</span>
+        </div>
+      </div>
+      <div className="flex-info" style={{ opacity: 0 }}>
+        <span className="medium-text">$45090</span>
+        <div className={`percentage-progress`}>
+          <KeyboardArrowDownIcon fontSize='small' />
+          <span>1%</span>
+        </div>
+      </div>
+    </div>
+  ));
+
+  const errorUI = (
+    <div className="mini-window">
+      <div className="error-content">
+        <h3 className="medium-header">404</h3>
+        <p className="small-text">Sorry. The data is broken. Please try again later.</p>
+      </div>
+      <div className="error-bg-block">
+        <img className="error-bg-img" src={errorImg} alt="Error Image" />
+      </div>
+      <div className="flex-info" style={{ opacity: 0 }}>
+        <img src={loadingImg} className="small-circle-img" alt="Coin" />
+        <div className="text-items-column">
+          <h3 className="small-header">Bitcoin</h3>
+          <span className="small-text">BTC</span>
+        </div>
+      </div>
+      <div className="flex-info" style={{ opacity: 0 }}>
+        <span className="medium-text">$45090</span>
+        <div className={`percentage-progress`}>
+          <KeyboardArrowDownIcon fontSize='small' />
+          <span>1%</span>
+        </div>
+      </div>
+    </div>
+  );
   
   return (
     <div className="double-window">
-        {coinsList && coinsList.slice(0, 2).map((item: { image: string, name: string, symbol: string, current_price: string, price_change_percentage_24h: number }) => (
+        {showLoading && coinsListLoading && loadingUI}
+        {coinsListError && errorUI}
+        {coinsList && coinsList.slice(0, 10).map((item: Coin) => (
           <div className="mini-window" key={item.name}>
             <div className="flex-info">
               <img src={item.image} className="small-circle-img" alt="Coin" />

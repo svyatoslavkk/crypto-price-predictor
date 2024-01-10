@@ -191,6 +191,16 @@ ul, li {
   background-color: #444444;
 }
 
+.sq-red-btn {
+  @include sq-btn;
+  background-color: rgba(255, 94, 94, 0.50);
+}
+
+.sq-green-btn {
+  @include sq-btn;
+  background-color: rgb(12, 255, 65, 0.5);
+}
+
 .small-circle-button:hover,
 .small-circle-button:focus {
   background-color: rgba(10, 10, 10, 1);
@@ -204,6 +214,16 @@ ul, li {
   border: 2px solid #555;
   color: #fff;
   font-size: 14px;
+}
+
+.short-input {
+  border-radius: 0.5rem;
+  border: 2px solid #444;
+  padding: 0.5rem;
+  background-color: rgb(30, 30, 30, 0.5);
+  color: #fff;
+  font-weight: 500;
+  width: 100%;
 }
 
 .illustration-img {
