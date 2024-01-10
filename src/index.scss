@@ -12,6 +12,7 @@
 @import './components/timers/classicTimer.scss';
 @import './components/coinsRow/coinsRow.scss';
 @import './components/newsSection/newsSection.scss';
+@import './pages/news/news.scss';
 
 $primary-color: #572b06;
 $secondary-color: #442200;
@@ -211,6 +212,17 @@ ul, li {
   background-color: rgba(10, 10, 10, 1);
 }
 
+.transparent-btn {
+  background-color: transparent;
+  color: orange;
+  font-weight: 600;
+  transition: 0.1s ease;
+}
+
+.transparent-btn:hover {
+  color: rgb(255, 196, 85);
+}
+
 .classic-input {
   width: 100%;
   padding: 1rem;
@@ -237,6 +249,11 @@ ul, li {
   width: 100%;
 }
 
+.medium-album-image {
+  height: 200px;
+  border-radius: 0.5rem;
+}
+
 .active-icon {
   color: orange;
 }
@@ -244,7 +261,7 @@ ul, li {
 .list-column {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 1rem;
   width: 100%;
 }
 
@@ -255,9 +272,7 @@ ul, li {
 }
 
 .text-items-column {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+  @include items-column;
 }
 
 .flex-info {

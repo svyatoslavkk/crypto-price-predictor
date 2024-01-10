@@ -1,0 +1,19 @@
+.news {
+  @include container-styles;
+  padding: 1.5rem;
+  gap: 2rem;
+  align-items: center;
+  background: linear-gradient(to bottom, #272727, #171717);
+}
+
+.blog-item {
+  @include items-column;
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: 0.1s ease;
+}
+
+.blog-item:hover {
+  background-color: #333;
+}

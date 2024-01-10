@@ -36,3 +36,9 @@
   justify-content: center;
   transition: 0.1s ease;
 }
+
+@mixin items-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}

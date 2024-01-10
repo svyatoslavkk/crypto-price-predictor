@@ -1,4 +1,5 @@
 import { useGetCryptoNewsQuery } from "../../redux/features/api/newsApi";
+import { Link } from "react-router-dom";
 
 export default function NewsSection() {
   const adaptiveImg = 'https://play-lh.googleusercontent.com/jGpj_gR6iUi1FqHZ8w__2G0zonoONbRYkYIgARnKpOtKL7we9d213Bvn6AOUMF5WVgOV=w240-h480-rw';
@@ -10,9 +11,11 @@ export default function NewsSection() {
     <div className="news-section">
       <div className="top-section">
         <h3 className="medium-header">News</h3>
-        <button>
-          More
-        </button>
+        <Link to="/news">
+          <button className="transparent-btn">
+            More
+          </button>
+        </Link>
       </div>
       <div className="list-column" style={{marginBottom: 80}}>
         {sortedNews && sortedNews.slice(0, 3).map((item) => (

@@ -5,7 +5,11 @@ import { useNavigate } from 'react-router-dom';
 import { getAuth, signOut } from 'firebase/auth';
 import LoaderScreen from '../loaders/loaderScreen/LoaderScreen';
 
-export default function TopButtons() {
+interface TopButtonsProps {
+  pageTitle: string;
+}
+
+export default function TopButtons({ pageTitle }: TopButtonsProps) {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const auth = getAuth();
@@ -27,6 +31,7 @@ export default function TopButtons() {
       <button className="small-circle-button">
         <KeyboardArrowLeftIcon fontSize="medium" />
       </button>
+      <h2 className="large-header">{pageTitle}</h2>
       <button className="small-circle-button" onClick={handleLogout}>
         <LogoutIcon fontSize="small" />
       </button>
