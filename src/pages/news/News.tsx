@@ -2,9 +2,11 @@ import { useState, useEffect } from 'react';
 import TopButtons from "../../components/topButtons/TopButtons";
 import { useGetCryptoNewsQuery } from "../../redux/features/api/newsApi";
 import { useNavigate, useLocation } from 'react-router-dom';
+import SideBar from '../../components/sideBar/SideBar';
 
 interface BlogItem {
   urlToImage: string;
+  url: string;
   title: string;
   publishedAt: string;
 }
@@ -40,24 +42,28 @@ export default function News() {
       <TopButtons pageTitle={pageTitle} />
       <ul className="list-column">
         {sortedNews && sortedNews.slice((currentPage - 1) * 10, currentPage * 10).map((item: BlogItem) => (
-          <li className="blog-item" key={item.publishedAt}>
-            <img src={item.urlToImage || adaptiveImg} className="medium-album-image" alt="Article Image" />
-            <h3 className="small-header">{item.title}</h3>
-            <p className="small-text">{item.publishedAt}</p>
-          </li>
+          <a href={item.url} target="_blank" rel="noopener noreferrer">
+            <li className="blog-item" key={item.publishedAt}>
+              <img src={item.urlToImage || adaptiveImg} className="medium-album-image" alt="Article Image" />
+              <h3 className="small-header">{item.title}</h3>
+              <p className="small-text">{item.publishedAt}</p>
+            </li>
+          </a>
         ))}
       </ul>
       <div className="pagination">
         {Array.from({ length: Math.ceil(sortedNews?.length / 10) }, (_, index) => index + 1).map((page) => (
           <button
             key={page}
-            className={`pagination-button ${page === currentPage ? 'active' : ''}`}
+            className={`pagination-btn`}
             onClick={() => handlePageChange(page)}
+            style={{ backgroundColor: page === currentPage ? 'orange' : '' }}
           >
-            {page}
+            <span className={`small-header ${page === currentPage ? 'active-text' : ''}`}>{page}</span>
           </button>
         ))}
       </div>
+      <SideBar />
     </div>
   )
 }

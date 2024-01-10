@@ -26,9 +26,13 @@ export default function TopButtons({ pageTitle }: TopButtonsProps) {
     }
   };
 
+  const handleGoBack = () => {
+    navigate(-1);
+  };
+
   return (
     <div className="top-buttons">
-      <button className="small-circle-button">
+      <button className="small-circle-button" onClick={handleGoBack}>
         <KeyboardArrowLeftIcon fontSize="medium" />
       </button>
       <h2 className="large-header">{pageTitle}</h2>

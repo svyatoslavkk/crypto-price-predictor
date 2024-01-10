@@ -3,7 +3,6 @@
   padding: 1.5rem;
   gap: 2rem;
   align-items: center;
-  background: linear-gradient(to bottom, #272727, #171717);
 }
 
 .blog-item {
@@ -16,4 +15,19 @@
 
 .blog-item:hover {
   background-color: #333;
+}
+
+.pagination {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.9rem;
+  padding-bottom: 5rem;
+}
+
+.pagination-btn {
+  @include sq-btn;
+  width: 32px;
+  height: 32px;
+  background-color: rgba(10, 10, 10, 0.5);
+  color: #ddd;
 }

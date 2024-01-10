@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from "react";
 import { useGetBitcoinInfoQuery } from "../../redux/features/api/api";
-import { useGetCryptoNewsQuery } from "../../redux/features/api/newsApi";
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
@@ -31,7 +30,6 @@ export default function TopCoin() {
   const [pair, setpair] = useState("BTC-USD");
   const [price, setprice] = useState("0.00");
   const [pastData, setpastData] = useState({});
-  const [currentBitcoinPrice, setCurrentBitcoinPrice] = useState("");
   const [priceChangeColor, setPriceChangeColor] = useState("");
   const [percentageDiff, setPercentageDiff] = useState(0);
   const prevPriceRef = useRef<number | null>(null);
@@ -40,12 +38,15 @@ export default function TopCoin() {
   const [betStatus, setBetStatus] = useState("");
   const [countdown, setCountdown] = useState(0);
   const [predictionTime, setPredictionTime] = useState<number | null>(null);
-  const [predictionPrice, setPredictionPrice] = useState<number | null>(null);
   const [betPrice, setBetPrice] = useState<number | null>(0);
   const [currentPrice, setCurrentPrice] = useState("0.00");
   const [pointAmount, setPointAmount] = useState(10);
   const [lastPointBet, setLastPointBet] = useState(0);
   const [showBetMessage, setShowBetMessage] = useState(false);
+  
+  const [currentBitcoinPrice, setCurrentBitcoinPrice] = useState("");
+  const [initialPrice, setInitialPrice] = useState(0);
+  const [finalPrice, setFinalPrice] = useState(0);
 
   /////////////////////////
   const [loading, setLoading] = useState(true);
@@ -101,28 +102,25 @@ export default function TopCoin() {
   // };
 
   const { data: bitcoinInfo } = useGetBitcoinInfoQuery('bitcoin');
-  const { data: cryptoNews } = useGetCryptoNewsQuery();
-  const sortedNews = cryptoNews?.articles.slice().sort((a, b) => {
-    return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
-  });
-  console.log("cryptoNews", sortedNews)
 
   const placeBet = async (direction: string) => {
     setBetDirection(direction);
     setPredictionTime(new Date().getTime());
-    setBetPrice(parseFloat(currentBitcoinPrice));
+    const initialBitcoinPrice = parseFloat(currentBitcoinPrice);
+    setBetPrice(initialBitcoinPrice);
     setCountdown(betTime);
     setBetStatus("");
+  
     const userDocRef = doc(database, 'Users Data', 'uVMuEWH4IjGdAcqDANR7');
     const userDocSnapshot = await getDoc(userDocRef);
-
+  
     if (userDocSnapshot.exists()) {
       const newBalance = (userDocSnapshot.data().balance || 0) - pointAmount;
       setLastPointBet(pointAmount);
       const newTotalBets = (userDocSnapshot.data().totalBets || 0) + 1;
-
+  
       await updateDoc(userDocRef, { balance: newBalance, totalBets: newTotalBets });
-
+  
       setFireData(prevData =>
         prevData.map(data =>
           data.uid === user.uid ? { ...data, balance: newBalance, totalBets: newTotalBets } : data
@@ -132,25 +130,27 @@ export default function TopCoin() {
       console.error('Документ пользователя не найден.');
     }
   
-    const countdownInterval = setInterval(() => {
-      setCountdown((prev) => prev - 1);
-    }, 1000);
+    let startTime = performance.now();
+    const animate = () => {
+      const currentTime = performance.now();
+      const elapsedTime = (currentTime - startTime) / 1000;
   
-    setTimeout(() => {
-      clearInterval(countdownInterval);
-      const finalPrice = parseFloat(currentBitcoinPrice);
-      handleBetResult(finalPrice);
-    }, betTime * 1000);
+      setCountdown((prev) => betTime - elapsedTime);
+  
+      if (elapsedTime < betTime) {
+        requestAnimationFrame(animate);
+      } else {
+        handleBetResult(initialBitcoinPrice);
+      }
+    };
+  
+    requestAnimationFrame(animate);
   };
   
-  const handleBetResult = async (finalPrice: number) => {
+  const handleBetResult = async (initialPrice: number) => {
+    const finalBitcoinPrice = parseFloat(currentBitcoinPrice);
     const userDocRef = doc(database, 'Users Data', 'uVMuEWH4IjGdAcqDANR7');
     const userDocSnapshot = await getDoc(userDocRef);
-    
-    if (predictionTime === null || betPrice === null) {
-      console.error("Prediction data is missing");
-      return;
-    }
   
     const currentTime = new Date().getTime();
     const elapsedTime = (currentTime - predictionTime) / 1000;
@@ -159,13 +159,11 @@ export default function TopCoin() {
   
     const isBetCorrect =
       elapsedTime >= targetTime &&
-      ((betDirection === "up" && finalPrice > betPrice) ||
-        (betDirection === "down" && finalPrice < betPrice));
+      ((betDirection === "up" && finalBitcoinPrice > initialPrice) ||
+        (betDirection === "down" && finalBitcoinPrice < initialPrice));
   
-    setPredictionPrice(finalPrice);
-
     setBetStatus(isBetCorrect ? "win" : "lose");
-    
+  
     if (userDocSnapshot.exists()) {
       if (userDocSnapshot.data().uid === user?.uid && isBetCorrect) {
         const newBalance = (userDocSnapshot.data().balance || 0) + (lastPointBet * 2);
@@ -182,11 +180,11 @@ export default function TopCoin() {
     }
   
     const predictionResult = isBetCorrect ? "Угадали!" : "Не угадали.";
-    const predictionStatus = `Прогноз: ${betDirection.toUpperCase()} - Цена при прогнозе: ${betPrice}`;
-    const finalPriceStatus = `Цена в конце прогноза: ${finalPrice}`;
-  
+    const predictionStatus = `Прогноз: ${betDirection.toUpperCase()} - Цена при прогнозе: ${initialPrice}`;
+    const finalPriceStatus = `Цена в конце прогноза: ${finalBitcoinPrice}`;
     console.log(`${predictionResult} ${predictionStatus} ${finalPriceStatus}`);
   };
+
   const exImg = 'https://www.aipromptsgalaxy.com/wp-content/uploads/2023/06/subrat_female_avatar_proud_face_Aurora_a_25-year-old_girl_with__fd0e4c59-bb7e-4636-9258-6690ec6a71e7.png';
 
   useEffect(() => {
@@ -478,7 +476,7 @@ export default function TopCoin() {
           <div className="now-bet">
             <div className="flex-info" style={{color: 'white'}}>
               <AccessTimeIcon fontSize="small" />
-              <h3 className="small-text">{countdown}</h3>
+              <h3 className="small-text">{countdown.toFixed(1)}</h3>
             </div>
             <div className="flex-info">
               <span className="small-text">Choice:</span>
