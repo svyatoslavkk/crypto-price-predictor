@@ -44,8 +44,8 @@ export default function TopCoin() {
   const [lastPointBet, setLastPointBet] = useState(0);
   const [showBetMessage, setShowBetMessage] = useState(false);
   
-  const [currentBitcoinPrice, setCurrentBitcoinPrice] = useState("");
-  const [initialPrice, setInitialPrice] = useState(0);
+  const [currentBitcoinPrice, setCurrentBitcoinPrice] = useState(0);
+  const [currentBitcoinPriceDouble, setCurrentBitcoinPriceDouble] = useState(0);
   const [finalPrice, setFinalPrice] = useState(0);
 
   /////////////////////////
@@ -285,17 +285,34 @@ export default function TopCoin() {
 
         if (data.product_id === "BTC-USD") {
           setCurrentBitcoinPrice(data.price);
+          setCurrentBitcoinPriceDouble(data.price);
         }
       };
     }
   }, [pair, price]);
 
+  const keepCurrPrice = async () => {
+    const initialResponse = await fetch(`${url}/products/BTC-USD/ticker`);
+    const initialData = await initialResponse.json();
+    const initialPrice = initialData.price;
+  
+    console.log("KEEPPRICE", initialPrice);
+  
+    await new Promise(resolve => setTimeout(resolve, 2000));
+  
+    const finalResponse = await fetch(`${url}/products/BTC-USD/ticker`);
+    const finalData = await finalResponse.json();
+    const finalPrice = finalData.price;
+  
+    console.log("2 SEC AFTER", finalPrice);
+  };
+
   useEffect(() => {
     const fetchBitcoinPrice = async () => {
       const response = await fetch(`${url}/products/BTC-USD/ticker`);
       const bitcoinData = await response.json();
-      
       setCurrentBitcoinPrice(bitcoinData.price);
+      setCurrentBitcoinPriceDouble(bitcoinData.price);
     };
 
     fetchBitcoinPrice();
@@ -314,6 +331,7 @@ export default function TopCoin() {
       const data = JSON.parse(e.data);
       if (data.type === "ticker") {
         setCurrentBitcoinPrice(data.price);
+        setCurrentBitcoinPriceDouble(data.price);
       }
     };
 
@@ -464,14 +482,7 @@ export default function TopCoin() {
             <span>Down</span>
           </button>
         </div>
-
-        {/* <div className="line"></div>
-
-        <div className="current-bet">
-          <div className="medium-header">
-            {welcomeText}
-          </div>
-        </div> */}
+        <button onClick={keepCurrPrice}>KEEP PRICE</button>
         {countdown > 0 && (
           <div className="now-bet">
             <div className="flex-info" style={{color: 'white'}}>

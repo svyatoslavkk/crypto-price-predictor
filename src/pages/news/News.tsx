@@ -20,6 +20,13 @@ export default function News() {
   const location = useLocation();
   const [currentPage, setCurrentPage] = useState<number>(1);
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    navigate(`/news?page=${page}`);
+  };
+
+  const pageTitle = "News";
+
   useEffect(() => {
     const pageParam = new URLSearchParams(location.search).get('page');
     const parsedPage = pageParam ? Number(pageParam) : 1;
@@ -27,15 +34,12 @@ export default function News() {
   }, [location.search]);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentPage]);
+
+  useEffect(() => {
     handlePageChange(1);
   }, []);
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    navigate(`/news?page=${page}`);
-  };
-
-  const pageTitle = "News";
 
   return (
     <div className="news">
@@ -44,7 +48,7 @@ export default function News() {
         {sortedNews && sortedNews.slice((currentPage - 1) * 10, currentPage * 10).map((item: BlogItem) => (
           <a href={item.url} target="_blank" rel="noopener noreferrer">
             <li className="blog-item" key={item.publishedAt}>
-              <img src={item.urlToImage || adaptiveImg} className="medium-album-image" alt="Article Image" />
+              <img src={item.urlToImage ? item.urlToImage : adaptiveImg} className="medium-album-image" alt="Article Image" />
               <h3 className="small-header">{item.title}</h3>
               <p className="small-text">{item.publishedAt}</p>
             </li>

@@ -29,17 +29,19 @@ export default function NewsSection() {
           </button>
         </Link>
       </div>
-      <div className="list-column" style={{marginBottom: 80}}>
+      <ul className="list-column" style={{marginBottom: 80}}>
         {cryptoNewsLoading && loadingUI}
         {sortedNews && sortedNews.slice(0, 3).map((item) => (
-          <div className="list-item">
-            <img src={item.urlToImage || adaptiveImg} className="large-sq-img" alt="Article Image" />
-            <div className="text-items-column">
-              <h3 className="small-header">{item.title}</h3>
-            </div>
-          </div>
+          <a href={item.url} target="_blank" rel="noopener noreferrer">
+            <li key={item.publishedAt} className="list-item">
+              <img src={item.urlToImage || adaptiveImg} className="large-sq-img" alt="Article Image" />
+              <div className="text-items-column">
+                <h3 className="small-header">{item.title}</h3>
+              </div>
+            </li>
+          </a>
         ))}
-      </div>
+      </ul>
     </div>
   )
 }
