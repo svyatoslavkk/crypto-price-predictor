@@ -6,7 +6,7 @@ import { Link, useLocation } from 'react-router-dom';
 export default function SideBar() {
   const location = useLocation();
   return (
-    <div className="sidebar">
+    <aside className="sidebar">
       <Link to="/dashboard" className={`icon ${location.pathname === '/dashboard' ? 'active-icon' : ''}`}>
         <WindowIcon />
         <span className="icon-text">Home</span>
@@ -19,6 +19,6 @@ export default function SideBar() {
         <PersonIcon />
         <span className="icon-text">Profile</span>
       </Link>
-    </div>
+    </aside>
   )
 }

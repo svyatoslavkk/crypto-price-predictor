@@ -46,7 +46,7 @@ export default function TopCoin() {
   
   const [currentBitcoinPrice, setCurrentBitcoinPrice] = useState(0);
   const [currentBitcoinPriceDouble, setCurrentBitcoinPriceDouble] = useState(0);
-  const [finalPrice, setFinalPrice] = useState(0);
+  const [timer, setTimer] = useState<number | null>(null);
 
   /////////////////////////
   const [loading, setLoading] = useState(true);
@@ -104,12 +104,13 @@ export default function TopCoin() {
   const { data: bitcoinInfo } = useGetBitcoinInfoQuery('bitcoin');
 
   const upBet = async () => {
+    setBetDirection("UP");
     const initialResponse = await fetch(`${url}/products/BTC-USD/ticker`);
     const initialData = await initialResponse.json();
     const initialPrice = initialData.price;
     console.log("KEEPPRICE", initialPrice);
   
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, betTime * 1000));
   
     const finalResponse = await fetch(`${url}/products/BTC-USD/ticker`);
     const finalData = await finalResponse.json();
@@ -130,12 +131,13 @@ export default function TopCoin() {
   }
 
   const downBet = async () => {
+    setBetDirection("DOWN");
     const initialResponse = await fetch(`${url}/products/BTC-USD/ticker`);
     const initialData = await initialResponse.json();
     const initialPrice = initialData.price;
     console.log("KEEPPRICE", initialPrice);
   
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, betTime * 1000));
   
     const finalResponse = await fetch(`${url}/products/BTC-USD/ticker`);
     const finalData = await finalResponse.json();
@@ -517,7 +519,6 @@ export default function TopCoin() {
             <span>Down</span>
           </button>
         </div>
-        {/* <button onClick={upBet}>KEEP PRICE</button> */}
         {countdown > 0 && (
           <div className="now-bet">
             <div className="flex-info" style={{color: 'white'}}>
@@ -543,6 +544,29 @@ export default function TopCoin() {
             </div>
           </div>
         )}
+      </div>
+      
+      <div className="active-bet">
+        <div className="text-items-column">
+          <div className="flex-info" style={{color: 'white'}}>
+            <AccessTimeIcon fontSize="small" />
+            <h3 className="small-text">{betTime}</h3>
+          </div>
+          <div className="flex-info">
+            <span className="small-text">Choice:</span>
+            <span className="small-text" style={{ color: betDirection === 'UP' ? '#0cff41' : '#ff5e5e' }}>
+              {betDirection}
+            </span>
+          </div>
+        </div>
+        <div className="text-items-column" style={{alignItems: 'flex-end'}}>
+          <div className="flex-info">
+            <span className="small-text">Bet: {pointAmount}$</span>
+          </div>
+          <div className="flex-info">
+            <span className="small-text">Initial price: 45.000$</span>
+          </div>
+        </div>
       </div>
       
       <CoinsRow />

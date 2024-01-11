@@ -130,3 +130,19 @@
   align-items: center;
   justify-content: center;
 }
+
+////////////////////////////////////////////
+.active-bet {
+  position: fixed;
+  bottom: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #333;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  z-index: 500;
+}
