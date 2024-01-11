@@ -25,6 +25,15 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import NewsSection from "../newsSection/NewsSection";
 
+interface BetDetails {
+  direction: string;
+  startTime: string;
+  startPrice: number;
+  endTime: string | null;
+  endPrice: number | null;
+  result: string | null;
+}
+
 export default function TopCoin() {
   const [currencies, setcurrencies] = useState<any[]>([]);
   const [pair, setpair] = useState("BTC-USD");
@@ -107,22 +116,6 @@ export default function TopCoin() {
   const upBet = async () => {
     const userDocRef = doc(database, 'Users Data', 'uVMuEWH4IjGdAcqDANR7');
     const userDocSnapshot = await getDoc(userDocRef);
-  
-    if (userDocSnapshot.exists()) {
-      const newBalance = (userDocSnapshot.data().balance || 0) - 10;
-      setLastPointBet(10);
-      const newTotalBets = (userDocSnapshot.data().totalBets || 0) + 1;
-  
-      await updateDoc(userDocRef, { balance: newBalance, totalBets: newTotalBets });
-  
-      setFireData(prevData =>
-        prevData.map(data =>
-          data.uid === user.uid ? { ...data, balance: newBalance, totalBets: newTotalBets } : data
-        )
-      );
-    } else {
-      console.error('Документ пользователя не найден.');
-    }
 
     setBetDirection("UP");
     setCountdown(betTime);
@@ -143,6 +136,39 @@ export default function TopCoin() {
     const initialPrice = initialData.price;
     setStartPrice(initialPrice);
     console.log("KEEPPRICE", initialPrice);
+    const betDetails: BetDetails = {
+      direction: 'UP',
+      startTime: new Date().toISOString(),
+      startPrice: initialPrice,
+      endTime: null,
+      endPrice: null,
+      result: null,
+    };
+  
+    if (userDocSnapshot.exists()) {
+      const newBalance = (userDocSnapshot.data().balance || 0) - 10;
+      setLastPointBet(10);
+      const newTotalBets = (userDocSnapshot.data().totalBets || 0) + 1;
+  
+      await updateDoc(userDocRef, { 
+        balance: newBalance, 
+        totalBets: newTotalBets,
+        historyBets: [...(userDocSnapshot.data()?.historyBets || []), betDetails],
+      });
+  
+      setFireData(prevData =>
+        prevData.map(data =>
+          data.uid === user.uid ? { 
+            ...data, 
+            balance: newBalance, 
+            totalBets: newTotalBets,
+            historyBets: [...(userDocSnapshot.data()?.historyBets || []), betDetails],
+          } : data
+        )
+      );
+    } else {
+      console.error('Документ пользователя не найден.');
+    }
   
     await new Promise(resolve => setTimeout(resolve, betTime * 1000));
   
@@ -162,10 +188,29 @@ export default function TopCoin() {
         if (userDocSnapshot.data().uid === user?.uid) {
           const newBalance = (userDocSnapshot.data().balance || 0) + (10 * 2);
           const newWinBets = (userDocSnapshot.data().winBets || 0) + 1;
-          await updateDoc(userDocRef, { balance: newBalance, winBets: newWinBets });
+          const updatedBets = (userDocSnapshot.data()?.historyBets || []).map((bet: BetDetails) =>
+            bet.startTime === betDetails.startTime
+              ? {
+                  ...bet,
+                  endTime: new Date().toISOString(),
+                  endPrice: finalPrice,
+                  result: finalPrice > initialPrice ? 'win' : 'lose',
+                }
+              : bet
+          );
+          await updateDoc(userDocRef, { 
+            balance: newBalance, 
+            winBets: newWinBets,
+            historyBets: updatedBets,
+          });
           setFireData(prevData =>
             prevData.map(userData =>
-              userData.uid === user.uid ? { ...userData, balance: newBalance, winBets: newWinBets } : userData
+              userData.uid === user.uid ? { 
+                ...userData, 
+                balance: newBalance, 
+                winBets: newWinBets,
+                historyBets: updatedBets,
+              } : userData
             )
           );
         }
@@ -178,10 +223,37 @@ export default function TopCoin() {
       let finalPriceStatus = `Цена в конце прогноза: ${finalPrice}`;
       console.log(`${predictionResult} ${predictionStatus} ${finalPriceStatus}`);
       setBetStatus("lose");
+      if (userDocSnapshot.exists()) {
+        if (userDocSnapshot.data().uid === user?.uid) {
+          const updatedBets = (userDocSnapshot.data()?.historyBets || []).map((bet: BetDetails) =>
+            bet.startTime === betDetails.startTime
+              ? {
+                  ...bet,
+                  endTime: new Date().toISOString(),
+                  endPrice: finalPrice,
+                  result: finalPrice > initialPrice ? 'win' : 'lose',
+                }
+              : bet
+          );
+          await updateDoc(userDocRef, { 
+            historyBets: updatedBets,
+          });
+          setFireData(prevData =>
+            prevData.map(userData =>
+              userData.uid === user.uid ? { 
+                ...userData,
+                historyBets: updatedBets,
+              } : userData
+            )
+          );
+        }
+      } else {
+        console.error('Документ пользователя не найден.');
+      }
     }
     setIsBetResultShown(true);
     setTimeout(() => setIsBetResultShown(false), 4000);
-  }
+  };
 
   const downBet = async () => {
     const userDocRef = doc(database, 'Users Data', 'uVMuEWH4IjGdAcqDANR7');

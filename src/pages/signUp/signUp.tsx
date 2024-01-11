@@ -57,6 +57,7 @@ export default function SignUp() {
           balance: 100,
           totalBets: 0,
           winBets: 0,
+          historyBets: [],
         });
 
         const docId = docRef.id;

@@ -109,6 +109,12 @@ export default function ProfileInfo() {
         >
           <span>History</span>
         </button>
+        <button
+          className={`full-btn ${activeButton === "Test" ? "active" : ""}`}
+          onClick={() => setActiveButton("Test")}
+        >
+          <span>Test</span>
+        </button>
       </div>
       <div className="list-column">
         {activeButton === "Achievements" && (
@@ -129,6 +135,23 @@ export default function ProfileInfo() {
         {activeButton === "History" && (
           <>
             <DevLoader />
+          </>
+        )}
+        {activeButton === "Test" && (
+          <>
+          <div className="list-column">
+            <div className="history-bet-item">
+              <div className="text-items-column">
+                <span className="small-text">Choice: UP</span>
+                <span className="small-text">11.01.2024 22:51</span>
+              </div>
+              <div className="text-items-column">
+                <span className="small-text">Initial price: 46800.44</span>
+                <span className="small-text">Final price: 46842.74</span>
+              </div>
+              <h3 className="small-header">WIN</h3>
+            </div>
+          </div>
           </>
         )}
       </div>

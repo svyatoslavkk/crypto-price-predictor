@@ -20,3 +20,9 @@
   border: 1px solid orange;
 }
 
+.history-bet-item {
+  @include list-item-styles;
+  justify-content: space-between;
+  padding: 0.5rem;
+  background-color: #111;
+}
