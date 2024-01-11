@@ -42,11 +42,12 @@ export default function TopCoin() {
   const [currentPrice, setCurrentPrice] = useState("0.00");
   const [pointAmount, setPointAmount] = useState(10);
   const [lastPointBet, setLastPointBet] = useState(0);
-  const [showBetMessage, setShowBetMessage] = useState(false);
   
   const [currentBitcoinPrice, setCurrentBitcoinPrice] = useState(0);
   const [currentBitcoinPriceDouble, setCurrentBitcoinPriceDouble] = useState(0);
-  const [timer, setTimer] = useState<number | null>(null);
+  const [isBetResultShown, setIsBetResultShown] = useState(false);
+  const [startPrice, setStartPrice] = useState(0);
+  const [endPrice, setEndPrice] = useState(0);
 
   /////////////////////////
   const [loading, setLoading] = useState(true);
@@ -104,10 +105,43 @@ export default function TopCoin() {
   const { data: bitcoinInfo } = useGetBitcoinInfoQuery('bitcoin');
 
   const upBet = async () => {
+    const userDocRef = doc(database, 'Users Data', 'uVMuEWH4IjGdAcqDANR7');
+    const userDocSnapshot = await getDoc(userDocRef);
+  
+    if (userDocSnapshot.exists()) {
+      const newBalance = (userDocSnapshot.data().balance || 0) - 10;
+      setLastPointBet(10);
+      const newTotalBets = (userDocSnapshot.data().totalBets || 0) + 1;
+  
+      await updateDoc(userDocRef, { balance: newBalance, totalBets: newTotalBets });
+  
+      setFireData(prevData =>
+        prevData.map(data =>
+          data.uid === user.uid ? { ...data, balance: newBalance, totalBets: newTotalBets } : data
+        )
+      );
+    } else {
+      console.error('Документ пользователя не найден.');
+    }
+
     setBetDirection("UP");
+    setCountdown(betTime);
+    let startTime = performance.now();
+    const animate = () => {
+      const currentTime = performance.now();
+      const elapsedTime = (currentTime - startTime) / 1000;
+      setCountdown((prev) => Math.max(betTime - elapsedTime, 0));
+      if (elapsedTime < betTime) {
+        requestAnimationFrame(animate);
+      } else {
+        console.log("Таймер завершен!");
+      }
+    };
+    requestAnimationFrame(animate);
     const initialResponse = await fetch(`${url}/products/BTC-USD/ticker`);
     const initialData = await initialResponse.json();
     const initialPrice = initialData.price;
+    setStartPrice(initialPrice);
     console.log("KEEPPRICE", initialPrice);
   
     await new Promise(resolve => setTimeout(resolve, betTime * 1000));
@@ -122,19 +156,71 @@ export default function TopCoin() {
       let predictionStatus = `Прогноз: UP - Цена при прогнозе: ${initialPrice}`;
       let finalPriceStatus = `Цена в конце прогноза: ${finalPrice}`;
       console.log(`${predictionResult} ${predictionStatus} ${finalPriceStatus}`);
+      setBetStatus("win");
+      
+      if (userDocSnapshot.exists()) {
+        if (userDocSnapshot.data().uid === user?.uid) {
+          const newBalance = (userDocSnapshot.data().balance || 0) + (10 * 2);
+          const newWinBets = (userDocSnapshot.data().winBets || 0) + 1;
+          await updateDoc(userDocRef, { balance: newBalance, winBets: newWinBets });
+          setFireData(prevData =>
+            prevData.map(userData =>
+              userData.uid === user.uid ? { ...userData, balance: newBalance, winBets: newWinBets } : userData
+            )
+          );
+        }
+      } else {
+        console.error('Документ пользователя не найден.');
+      }
     } else if (finalPrice < initialPrice) {
       let predictionResult = "Не угадали!";
       let predictionStatus = `Прогноз: UP - Цена при прогнозе: ${initialPrice}`;
       let finalPriceStatus = `Цена в конце прогноза: ${finalPrice}`;
       console.log(`${predictionResult} ${predictionStatus} ${finalPriceStatus}`);
+      setBetStatus("lose");
     }
+    setIsBetResultShown(true);
+    setTimeout(() => setIsBetResultShown(false), 4000);
   }
 
   const downBet = async () => {
+    const userDocRef = doc(database, 'Users Data', 'uVMuEWH4IjGdAcqDANR7');
+    const userDocSnapshot = await getDoc(userDocRef);
+  
+    if (userDocSnapshot.exists()) {
+      const newBalance = (userDocSnapshot.data().balance || 0) - 10;
+      setLastPointBet(10);
+      const newTotalBets = (userDocSnapshot.data().totalBets || 0) + 1;
+  
+      await updateDoc(userDocRef, { balance: newBalance, totalBets: newTotalBets });
+  
+      setFireData(prevData =>
+        prevData.map(data =>
+          data.uid === user.uid ? { ...data, balance: newBalance, totalBets: newTotalBets } : data
+        )
+      );
+    } else {
+      console.error('Документ пользователя не найден.');
+    }
+
     setBetDirection("DOWN");
+    setCountdown(betTime);
+    let startTime = performance.now();
+    const animate = () => {
+      const currentTime = performance.now();
+      const elapsedTime = (currentTime - startTime) / 1000;
+      setCountdown((prev) => Math.max(betTime - elapsedTime, 0));
+      if (elapsedTime < betTime) {
+        requestAnimationFrame(animate);
+      } else {
+        console.log("Таймер завершен!");
+      }
+    };
+    requestAnimationFrame(animate);
     const initialResponse = await fetch(`${url}/products/BTC-USD/ticker`);
     const initialData = await initialResponse.json();
     const initialPrice = initialData.price;
+    setStartPrice(initialPrice);
     console.log("KEEPPRICE", initialPrice);
   
     await new Promise(resolve => setTimeout(resolve, betTime * 1000));
@@ -149,94 +235,32 @@ export default function TopCoin() {
       let predictionStatus = `Прогноз: DOWN - Цена при прогнозе: ${initialPrice}`;
       let finalPriceStatus = `Цена в конце прогноза: ${finalPrice}`;
       console.log(`${predictionResult} ${predictionStatus} ${finalPriceStatus}`);
+      setBetStatus("win");
+      
+      if (userDocSnapshot.exists()) {
+        if (userDocSnapshot.data().uid === user?.uid) {
+          const newBalance = (userDocSnapshot.data().balance || 0) + (10 * 2);
+          const newWinBets = (userDocSnapshot.data().winBets || 0) + 1;
+          await updateDoc(userDocRef, { balance: newBalance, winBets: newWinBets });
+          setFireData(prevData =>
+            prevData.map(userData =>
+              userData.uid === user.uid ? { ...userData, balance: newBalance, winBets: newWinBets } : userData
+            )
+          );
+        }
+      } else {
+        console.error('Документ пользователя не найден.');
+      }
     } else if (finalPrice > initialPrice) {
       let predictionResult = "Не угадали!";
       let predictionStatus = `Прогноз: DOWN - Цена при прогнозе: ${initialPrice}`;
       let finalPriceStatus = `Цена в конце прогноза: ${finalPrice}`;
       console.log(`${predictionResult} ${predictionStatus} ${finalPriceStatus}`);
+      setBetStatus("lose");
     }
+    setIsBetResultShown(true);
+    setTimeout(() => setIsBetResultShown(false), 4000);
   }
-
-  const placeBet = async (direction: string) => {
-    setBetDirection(direction);
-    setPredictionTime(new Date().getTime());
-    const initialBitcoinPrice = parseFloat(currentBitcoinPrice);
-    setBetPrice(initialBitcoinPrice);
-    setCountdown(betTime);
-    setBetStatus("");
-  
-    const userDocRef = doc(database, 'Users Data', 'uVMuEWH4IjGdAcqDANR7');
-    const userDocSnapshot = await getDoc(userDocRef);
-  
-    if (userDocSnapshot.exists()) {
-      const newBalance = (userDocSnapshot.data().balance || 0) - pointAmount;
-      setLastPointBet(pointAmount);
-      const newTotalBets = (userDocSnapshot.data().totalBets || 0) + 1;
-  
-      await updateDoc(userDocRef, { balance: newBalance, totalBets: newTotalBets });
-  
-      setFireData(prevData =>
-        prevData.map(data =>
-          data.uid === user.uid ? { ...data, balance: newBalance, totalBets: newTotalBets } : data
-        )
-      );
-    } else {
-      console.error('Документ пользователя не найден.');
-    }
-  
-    let startTime = performance.now();
-    const animate = () => {
-      const currentTime = performance.now();
-      const elapsedTime = (currentTime - startTime) / 1000;
-  
-      setCountdown((prev) => betTime - elapsedTime);
-  
-      if (elapsedTime < betTime) {
-        requestAnimationFrame(animate);
-      } else {
-        handleBetResult(initialBitcoinPrice);
-      }
-    };
-    requestAnimationFrame(animate);
-  };
-  
-  const handleBetResult = async (initialPrice: number) => {
-    const finalBitcoinPrice = parseFloat(currentBitcoinPrice);
-    const userDocRef = doc(database, 'Users Data', 'uVMuEWH4IjGdAcqDANR7');
-    const userDocSnapshot = await getDoc(userDocRef);
-  
-    const currentTime = new Date().getTime();
-    const elapsedTime = (currentTime - predictionTime) / 1000;
-  
-    const targetTime = betTime;
-  
-    const isBetCorrect =
-      elapsedTime >= targetTime &&
-      ((betDirection === "up" && finalBitcoinPrice > initialPrice) ||
-        (betDirection === "down" && finalBitcoinPrice < initialPrice));
-  
-    setBetStatus(isBetCorrect ? "win" : "lose");
-  
-    if (userDocSnapshot.exists()) {
-      if (userDocSnapshot.data().uid === user?.uid && isBetCorrect) {
-        const newBalance = (userDocSnapshot.data().balance || 0) + (lastPointBet * 2);
-        const newWinBets = (userDocSnapshot.data().winBets || 0) + 1;
-        await updateDoc(userDocRef, { balance: newBalance, winBets: newWinBets });
-        setFireData(prevData =>
-          prevData.map(userData =>
-            userData.uid === user.uid ? { ...userData, balance: newBalance, winBets: newWinBets } : userData
-          )
-        );
-      }
-    } else {
-      console.error('Документ пользователя не найден.');
-    }
-  
-    const predictionResult = isBetCorrect ? "Угадали!" : "Не угадали.";
-    const predictionStatus = `Прогноз: ${betDirection.toUpperCase()} - Цена при прогнозе: ${initialPrice}`;
-    const finalPriceStatus = `Цена в конце прогноза: ${finalBitcoinPrice}`;
-    console.log(`${predictionResult} ${predictionStatus} ${finalPriceStatus}`);
-  };
 
   const exImg = 'https://www.aipromptsgalaxy.com/wp-content/uploads/2023/06/subrat_female_avatar_proud_face_Aurora_a_25-year-old_girl_with__fd0e4c59-bb7e-4636-9258-6690ec6a71e7.png';
 
@@ -377,21 +401,6 @@ export default function TopCoin() {
     };
   }, []);
 
-  useEffect(() => {
-    if (betStatus) {
-      setShowBetMessage(true);
-
-      const betMessageTimer = setTimeout(() => {
-        setShowBetMessage(false);
-      }, 4000);
-
-      return () => {
-        clearTimeout(betMessageTimer);
-      };
-    }
-
-  }, [betStatus]);
-
   return (
     <div className="top-coin">
       {/* <h2 className="medium-header">Top Coin</h2>
@@ -519,38 +528,14 @@ export default function TopCoin() {
             <span>Down</span>
           </button>
         </div>
-        {countdown > 0 && (
-          <div className="now-bet">
-            <div className="flex-info" style={{color: 'white'}}>
-              <AccessTimeIcon fontSize="small" />
-              <h3 className="small-text">{countdown.toFixed(1)}</h3>
-            </div>
-            <div className="flex-info">
-              <span className="small-text">Choice:</span>
-              <span className="small-text" style={{ color: betDirection === 'up' ? '#0cff41' : '#ff5e5e' }}>
-                {betDirection.toUpperCase()}
-              </span>
-            </div>
-          </div>
-        )}
-
-        {showBetMessage && (
-          <div className="now-bet">
-            <div className="flex-info">
-              <h3 className="small-header" style={{ color: betStatus === 'win' ? '#0cff41' : '#ff5e5e' }}>{betStatus === 'win' ? 'YOU WIN' : 'YOU LOSE'}</h3>
-            </div>
-            <div className="flex-info">
-              <h3 className="small-text">+10$</h3>
-            </div>
-          </div>
-        )}
       </div>
       
+      {countdown > 0 && (
       <div className="active-bet">
         <div className="text-items-column">
           <div className="flex-info" style={{color: 'white'}}>
             <AccessTimeIcon fontSize="small" />
-            <h3 className="small-text">{betTime}</h3>
+            <h3 className="small-text">{Math.abs(countdown.toFixed(1))}</h3>
           </div>
           <div className="flex-info">
             <span className="small-text">Choice:</span>
@@ -564,10 +549,19 @@ export default function TopCoin() {
             <span className="small-text">Bet: {pointAmount}$</span>
           </div>
           <div className="flex-info">
-            <span className="small-text">Initial price: 45.000$</span>
+            <span className="small-text">Initial price: {startPrice}$</span>
           </div>
         </div>
       </div>
+      )}
+
+      {isBetResultShown && (
+        <div className="active-bet" style={{display: 'flex', justifyContent: 'center'}}>
+          <h3 className="large-header" style={{color: betStatus === 'win' ? '#0cff41' : '#ff5e5e'}}>
+            {betStatus === 'win' ? 'YOU WIN!' : 'TRY AGAIN'}
+          </h3>
+        </div>
+      )}
       
       <CoinsRow />
       <NewsSection />
