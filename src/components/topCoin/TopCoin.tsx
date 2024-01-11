@@ -103,6 +103,58 @@ export default function TopCoin() {
 
   const { data: bitcoinInfo } = useGetBitcoinInfoQuery('bitcoin');
 
+  const upBet = async () => {
+    const initialResponse = await fetch(`${url}/products/BTC-USD/ticker`);
+    const initialData = await initialResponse.json();
+    const initialPrice = initialData.price;
+    console.log("KEEPPRICE", initialPrice);
+  
+    await new Promise(resolve => setTimeout(resolve, 2000));
+  
+    const finalResponse = await fetch(`${url}/products/BTC-USD/ticker`);
+    const finalData = await finalResponse.json();
+    const finalPrice = finalData.price;
+    console.log("2 SEC AFTER", finalPrice);
+
+    if (finalPrice > initialPrice) {
+      let predictionResult = "Угадали!";
+      let predictionStatus = `Прогноз: UP - Цена при прогнозе: ${initialPrice}`;
+      let finalPriceStatus = `Цена в конце прогноза: ${finalPrice}`;
+      console.log(`${predictionResult} ${predictionStatus} ${finalPriceStatus}`);
+    } else if (finalPrice < initialPrice) {
+      let predictionResult = "Не угадали!";
+      let predictionStatus = `Прогноз: UP - Цена при прогнозе: ${initialPrice}`;
+      let finalPriceStatus = `Цена в конце прогноза: ${finalPrice}`;
+      console.log(`${predictionResult} ${predictionStatus} ${finalPriceStatus}`);
+    }
+  }
+
+  const downBet = async () => {
+    const initialResponse = await fetch(`${url}/products/BTC-USD/ticker`);
+    const initialData = await initialResponse.json();
+    const initialPrice = initialData.price;
+    console.log("KEEPPRICE", initialPrice);
+  
+    await new Promise(resolve => setTimeout(resolve, 2000));
+  
+    const finalResponse = await fetch(`${url}/products/BTC-USD/ticker`);
+    const finalData = await finalResponse.json();
+    const finalPrice = finalData.price;
+    console.log("2 SEC AFTER", finalPrice);
+
+    if (finalPrice < initialPrice) {
+      let predictionResult = "Угадали!";
+      let predictionStatus = `Прогноз: DOWN - Цена при прогнозе: ${initialPrice}`;
+      let finalPriceStatus = `Цена в конце прогноза: ${finalPrice}`;
+      console.log(`${predictionResult} ${predictionStatus} ${finalPriceStatus}`);
+    } else if (finalPrice > initialPrice) {
+      let predictionResult = "Не угадали!";
+      let predictionStatus = `Прогноз: DOWN - Цена при прогнозе: ${initialPrice}`;
+      let finalPriceStatus = `Цена в конце прогноза: ${finalPrice}`;
+      console.log(`${predictionResult} ${predictionStatus} ${finalPriceStatus}`);
+    }
+  }
+
   const placeBet = async (direction: string) => {
     setBetDirection(direction);
     setPredictionTime(new Date().getTime());
@@ -143,7 +195,6 @@ export default function TopCoin() {
         handleBetResult(initialBitcoinPrice);
       }
     };
-  
     requestAnimationFrame(animate);
   };
   
@@ -290,22 +341,6 @@ export default function TopCoin() {
       };
     }
   }, [pair, price]);
-
-  const keepCurrPrice = async () => {
-    const initialResponse = await fetch(`${url}/products/BTC-USD/ticker`);
-    const initialData = await initialResponse.json();
-    const initialPrice = initialData.price;
-  
-    console.log("KEEPPRICE", initialPrice);
-  
-    await new Promise(resolve => setTimeout(resolve, 2000));
-  
-    const finalResponse = await fetch(`${url}/products/BTC-USD/ticker`);
-    const finalData = await finalResponse.json();
-    const finalPrice = finalData.price;
-  
-    console.log("2 SEC AFTER", finalPrice);
-  };
 
   useEffect(() => {
     const fetchBitcoinPrice = async () => {
@@ -473,16 +508,16 @@ export default function TopCoin() {
           </div>
         </div>
         <div className="buttons">
-          <button className="up-btn" onClick={() => placeBet("up")}>
+          <button className="up-btn" onClick={upBet}>
             <TrendingUpIcon />
             <span>Up</span>
           </button>
-          <button className="down-btn" onClick={() => placeBet("down")}>
+          <button className="down-btn" onClick={downBet}>
             <TrendingDownIcon />
             <span>Down</span>
           </button>
         </div>
-        <button onClick={keepCurrPrice}>KEEP PRICE</button>
+        {/* <button onClick={upBet}>KEEP PRICE</button> */}
         {countdown > 0 && (
           <div className="now-bet">
             <div className="flex-info" style={{color: 'white'}}>
