@@ -555,7 +555,7 @@ export default function TopCoin() {
       </div>
       )}
 
-      {isBetResultShown && (
+      {countdown <= 0 && isBetResultShown && (
         <div className="active-bet" style={{display: 'flex', justifyContent: 'center'}}>
           <h3 className="large-header" style={{color: betStatus === 'win' ? '#0cff41' : '#ff5e5e'}}>
             {betStatus === 'win' ? 'YOU WIN!' : 'TRY AGAIN'}

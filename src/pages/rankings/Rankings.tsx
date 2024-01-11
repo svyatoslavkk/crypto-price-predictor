@@ -53,7 +53,7 @@ export default function Rankings() {
   const pageTitle = "Rankings";
 
   const loadingUI = Array.from({ length: 5 }, (_, index) => (
-    <li className="rank-item">
+    <li key={index} className="rank-item">
       <SimpleLoader />
       <div className="flex-info">
         <img src={exImg} className="medium-sq-img" alt="Avatar" style={{opacity: 0}} />

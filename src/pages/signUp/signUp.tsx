@@ -9,7 +9,7 @@ import {
   createUserWithEmailAndPassword,
   updateProfile
 } from 'firebase/auth';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, doc, updateDoc } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
 import LoaderScreen from '../../components/loaders/loaderScreen/LoaderScreen';
 
@@ -50,13 +50,19 @@ export default function SignUp() {
         sessionStorage.setItem('Token', response.user?.accessToken);
         sessionStorage.setItem('FullName', userName);
 
-        await addDoc(collectionRef, {
+        const docRef = await addDoc(collectionRef, {
           uid: currentUser.uid,
           userName: userName,
           email: currentUser.email,
           balance: 100,
           totalBets: 0,
           winBets: 0,
+        });
+
+        const docId = docRef.id;
+  
+        await updateDoc(doc(collectionRef, docId), {
+          docId: docId,
         });
         navigate('/profile');
       }
