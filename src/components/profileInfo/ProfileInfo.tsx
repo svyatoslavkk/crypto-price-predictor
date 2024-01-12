@@ -1,4 +1,5 @@
 import checkIcon from '../../assets/check-mark.png';
+import questionIcon from '../../assets/question-icon.png';
 import { useState, useEffect } from 'react';
 import {
   getAuth,
@@ -12,7 +13,6 @@ import {
   getDoc
 } from 'firebase/firestore';
 import { app, database } from '../../firebase/firebaseConfig';
-import DevLoader from '../loaders/devLoader/DevLoader';
 
 export interface UserData {
   userName: string;
@@ -24,6 +24,7 @@ export default function ProfileInfo() {
   const [activeButton, setActiveButton] = useState("Achievements");
   const [user, setUser] = useState<any>(null);
   const [fireData, setFireData] = useState<any[]>([]);
+  const [visibleBets, setVisibleBets] = useState(10);
   const auth = getAuth(app);
   const collectionRef = collection(database, 'Users Data');
 
@@ -36,6 +37,16 @@ export default function ProfileInfo() {
       console.error('Error getting data:', error);
     }
   };
+
+  const reversedHistory = fireData
+  ? fireData
+      .filter((data) => data.uid === user?.uid)
+      .map((data) => data.historyBets)
+      .flat()
+      .reverse()
+  : [];
+
+  console.log("reversedHistory", reversedHistory);
 
   useEffect(() => {
     let token = sessionStorage.getItem('Token');
@@ -63,36 +74,40 @@ export default function ProfileInfo() {
   
   const achievements = [
     {
-      image: checkIcon,
+      image: winTotal > 0 ? checkIcon : questionIcon,
       header: "Novice Trader",
       description: "Make your first successful prediction.",
       achieved: winTotal > 0 ? true : false,
     },
     {
-      image: checkIcon,
+      image: questionIcon,
       header: "Accurate Forecast",
       description: "Successfully predict 3 times in a row.",
       achieved: false,
     },
     {
-      image: checkIcon,
+      image: questionIcon,
       header: "Master of Trends",
-      description: "Successfully predict 5 times in a row.",
+      description: "Successfully predict 6 times in a row.",
       achieved: false,
     },
     {
-      image: checkIcon,
+      image: questionIcon,
       header: "Relentless Predictor",
-      description: "Successfully predict 8 times in a row.",
+      description: "Successfully predict 9 times in a row.",
       achieved: false,
     },
     {
-      image: checkIcon,
+      image: questionIcon,
       header: "Best of the Best",
       description: "Successfully predict 12 times in a row.",
       achieved: false,
     },
-  ]
+  ];
+
+  const handleLoadMore = () => {
+    setVisibleBets((prev) => prev + 10);
+  };
 
   return (
     <div className="profile-info">
@@ -108,12 +123,6 @@ export default function ProfileInfo() {
           onClick={() => setActiveButton("History")}
         >
           <span>History</span>
-        </button>
-        <button
-          className={`full-btn ${activeButton === "Test" ? "active" : ""}`}
-          onClick={() => setActiveButton("Test")}
-        >
-          <span>Test</span>
         </button>
       </div>
       <div className="list-column">
@@ -134,23 +143,25 @@ export default function ProfileInfo() {
         )}
         {activeButton === "History" && (
           <>
-            <DevLoader />
-          </>
-        )}
-        {activeButton === "Test" && (
-          <>
-          <div className="list-column">
-            <div className="history-bet-item">
-              <div className="text-items-column">
-                <span className="small-text">Choice: UP</span>
-                <span className="small-text">11.01.2024 22:51</span>
-              </div>
-              <div className="text-items-column">
-                <span className="small-text">Initial price: 46800.44</span>
-                <span className="small-text">Final price: 46842.74</span>
-              </div>
-              <h3 className="small-header">WIN</h3>
-            </div>
+          <div className="history-bet-column">
+            {reversedHistory.slice(0, visibleBets).map((bet) => (
+                <div key={bet.openTime} className="history-bet-item">
+                  <div className="text-items-column">
+                    <span className="small-text">
+                      Choice: <strong>{bet.direction}</strong>
+                    </span>
+                    <span className="small-text">{bet.openTime}</span>
+                  </div>
+                  <div className="text-items-column">
+                    <span className="small-text">Initial price: {bet.openPrice}</span>
+                    <span className="small-text">Final price: {bet.closePrice}</span>
+                  </div>
+                  <h3 className="small-header" style={{color: bet.result === 'win' ? '#0cff41' : '#ff5e5e'}}>{bet.result.toUpperCase()}</h3>
+                </div>
+            ))}
+            <button className="sq-btn" onClick={handleLoadMore}>
+              <h3 className="small-header">More</h3>
+            </button>
           </div>
           </>
         )}

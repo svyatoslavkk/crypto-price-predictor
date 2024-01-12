@@ -20,6 +20,15 @@
   border: 1px solid orange;
 }
 
+.history-bet-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  margin-bottom: 5rem;
+  overflow-y: auto;
+}
+
 .history-bet-item {
   @include list-item-styles;
   justify-content: space-between;

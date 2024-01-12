@@ -25,6 +25,14 @@ $secondary-color: #442200;
   letter-spacing: 0.5px;
 }
 
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgba(40, 40, 40, 0.7);
+  border-radius: 8px;
+}
+
 body {
   background: linear-gradient(to bottom, #232323, #232323);
 }
