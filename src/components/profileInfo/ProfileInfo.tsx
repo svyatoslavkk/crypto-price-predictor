@@ -46,8 +46,6 @@ export default function ProfileInfo() {
       .reverse()
   : [];
 
-  console.log("reversedHistory", reversedHistory);
-
   useEffect(() => {
     let token = sessionStorage.getItem('Token');
     if (token) {
@@ -71,6 +69,71 @@ export default function ProfileInfo() {
       .map(data => data.winBets || 0)
       .reduce((acc, val) => acc + val, 0)
   : 0;
+
+  const threeWinsRow = (history: any[]) => {
+    let consecutiveWins = 0;
+    for (const bet of history) {
+      if (bet.result === 'win') {
+        consecutiveWins++;
+        if (consecutiveWins === 3) {
+          return true;
+        }
+      } else {
+        consecutiveWins = 0
+      }
+    }
+    return false;
+  }
+
+  const sixWinsRow = (history: any[]) => {
+    let consecutiveWins = 0;
+    for (const bet of history) {
+      if (bet.result === 'win') {
+        consecutiveWins++;
+        if (consecutiveWins === 6) {
+          return true;
+        }
+      } else {
+        consecutiveWins = 0
+      }
+    }
+    return false;
+  }
+
+  const nineWinsRow = (history: any[]) => {
+    let consecutiveWins = 0;
+    for (const bet of history) {
+      if (bet.result === 'win') {
+        consecutiveWins++;
+        if (consecutiveWins === 9) {
+          return true;
+        }
+      } else {
+        consecutiveWins = 0
+      }
+    }
+    return false;
+  }
+
+  const twelveWinsRow = (history: any[]) => {
+    let consecutiveWins = 0;
+    for (const bet of history) {
+      if (bet.result === 'win') {
+        consecutiveWins++;
+        if (consecutiveWins === 12) {
+          return true;
+        }
+      } else {
+        consecutiveWins = 0
+      }
+    }
+    return false;
+  }
+
+  const isAccurateForecastAchieved = threeWinsRow(reversedHistory);
+  const isMasterOfTrendsAchieved = sixWinsRow(reversedHistory);
+  const isRelentlessPredictorAchieved = nineWinsRow(reversedHistory);
+  const isBestOfTheBestAchieved = twelveWinsRow(reversedHistory);
   
   const achievements = [
     {
@@ -80,28 +143,28 @@ export default function ProfileInfo() {
       achieved: winTotal > 0 ? true : false,
     },
     {
-      image: questionIcon,
+      image: isAccurateForecastAchieved ? checkIcon : questionIcon,
       header: "Accurate Forecast",
       description: "Successfully predict 3 times in a row.",
-      achieved: false,
+      achieved: isAccurateForecastAchieved,
     },
     {
-      image: questionIcon,
+      image: isMasterOfTrendsAchieved ? checkIcon : questionIcon,
       header: "Master of Trends",
       description: "Successfully predict 6 times in a row.",
-      achieved: false,
+      achieved: isMasterOfTrendsAchieved,
     },
     {
-      image: questionIcon,
+      image: isRelentlessPredictorAchieved ? checkIcon : questionIcon,
       header: "Relentless Predictor",
       description: "Successfully predict 9 times in a row.",
-      achieved: false,
+      achieved: isRelentlessPredictorAchieved,
     },
     {
-      image: questionIcon,
+      image: isBestOfTheBestAchieved ? checkIcon : questionIcon,
       header: "Best of the Best",
       description: "Successfully predict 12 times in a row.",
-      achieved: false,
+      achieved: isBestOfTheBestAchieved,
     },
   ];
 

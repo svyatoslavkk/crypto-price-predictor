@@ -23,6 +23,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CoinsRow from "../coinsRow/CoinsRow";
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
 import NewsSection from "../newsSection/NewsSection";
 
 interface BetDetails {
@@ -76,6 +77,12 @@ export default function TopCoin() {
     }
   };
 
+  const documentInfo = fireData
+  ? fireData
+      .filter((data) => data.uid === user?.uid)
+      .map((data) => (data.docId ? data.docId : 'NO_DOC'))
+  : [];
+
   useEffect(() => {
     let token = sessionStorage.getItem('Token');
     if (token) {
@@ -114,7 +121,12 @@ export default function TopCoin() {
   const { data: bitcoinInfo } = useGetBitcoinInfoQuery('bitcoin');
 
   const upBet = async () => {
-    const userDocRef = doc(database, 'Users Data', 'uVMuEWH4IjGdAcqDANR7');
+    const docId = documentInfo[0];
+    if (!docId) {
+      console.error('Не удалось получить идентификатор документа.');
+      return;
+    }
+    const userDocRef = doc(database, 'Users Data', docId);
     const userDocSnapshot = await getDoc(userDocRef);
 
     setBetDirection("UP");
@@ -263,7 +275,12 @@ export default function TopCoin() {
   };
 
   const downBet = async () => {
-    const userDocRef = doc(database, 'Users Data', 'uVMuEWH4IjGdAcqDANR7');
+    const docId = documentInfo[0];
+    if (!docId) {
+      console.error('Не удалось получить идентификатор документа.');
+      return;
+    }
+    const userDocRef = doc(database, 'Users Data', docId);
     const userDocSnapshot = await getDoc(userDocRef);
   
     if (userDocSnapshot.exists()) {
@@ -595,10 +612,15 @@ export default function TopCoin() {
               <h3 key={data.id} className="small-header">${data.balance ? data.balance.toFixed(2) : '$0.00'}</h3>
             ))
             }
-            <div className="percentage-progress">
-              <ArrowCircleUpIcon fontSize='small' />
-              <span>23.30%</span>
-            </div>
+            <button className="active-bonus-btn">
+              <div className="gift-icon">
+                <CardGiftcardIcon fontSize='small' />
+              </div>
+              <span>Collect a Daily Gift!</span>
+            </button>
+            <button className="waiting-bonus-btn">
+              <span>Next Bonus: 08:27:19</span>
+            </button>
           </div>
           <div className="mini-window">
             <div className="top">
@@ -661,11 +683,11 @@ export default function TopCoin() {
           </div>
         </div>
         <div className="buttons">
-          <button className="up-btn" onClick={upBet}>
+          <button className="up-btn" onClick={upBet} >
             <TrendingUpIcon />
             <span>Up</span>
           </button>
-          <button className="down-btn" onClick={downBet}>
+          <button className="down-btn" onClick={downBet} >
             <TrendingDownIcon />
             <span>Down</span>
           </button>
@@ -704,6 +726,16 @@ export default function TopCoin() {
           </h3>
         </div>
       )}
+
+      {/* <div className="loader-screen">
+        <div className="bonus-window">
+          <h2 className="large-header">Daily Bonus</h2>
+          <h3 className="medium-header">$11-72</h3>
+          <button className="sq-btn">
+            <span className="small-header">OK</span>
+          </button>
+        </div>
+      </div> */}
       
       <CoinsRow />
       <NewsSection />

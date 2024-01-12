@@ -10,8 +10,9 @@
 }
 
 .percentage-progress {
+  position: relative;
   display: flex;
-  gap: 0.1rem;
+  gap: 0.3rem;
   padding: 0.3rem;
   border-radius: 0.75rem;
   font-weight: 500;
@@ -19,7 +20,61 @@
   justify-content: center;
   background-color: #222;
   color: #0cff41;
-  font-size: 14px;
+  font-size: 12px;
+  transition: 0.1s ease;
+}
+
+.active-bonus-btn {
+  position: relative;
+  display: flex;
+  gap: 0.3rem;
+  padding: 0.3rem;
+  border-radius: 0.75rem;
+  font-weight: 500;
+  align-items: center;
+  justify-content: center;
+  background-color: #222;
+  color: #0cff41;
+  font-size: 12px;
+  transition: 0.1s ease;
+  animation: pulse 3s infinite alternate;
+}
+
+.waiting-bonus-btn {
+  position: relative;
+  display: flex;
+  gap: 0.3rem;
+  padding: 0.3rem;
+  border-radius: 0.75rem;
+  font-weight: 500;
+  align-items: center;
+  justify-content: center;
+  background-color: #222;
+  color: #ddd;
+  font-size: 12px;
+  transition: 0.1s ease;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 12px rgba(255, 165, 0, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 8px rgba(255, 165, 0, 0.2);
+  }
+}
+
+.gift-icon {
+  animation: shake 1.9s infinite;
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
 }
 
 .balance-section {
