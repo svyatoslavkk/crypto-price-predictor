@@ -8,6 +8,7 @@ import SimpleLoader from "../../components/loaders/simpleLoader/SimpleLoader";
 interface User {
   id: string;
   userName: string;
+  avatar: string;
   email: string;
   rank: number;
   balance: string;
@@ -79,7 +80,7 @@ export default function Rankings() {
         {users.sort((a, b) => parseInt(b.balance, 10) - parseInt(a.balance, 10)).map((user: User) => (
           <li key={user.id} className="rank-item">
             <div className="flex-info">
-              <img src={exImg} className="medium-sq-img" alt="Avatar" />
+              <img src={user.avatar} className="medium-sq-img" alt="Avatar" />
               <div className="text-items-column">
                 <h3 className="medium-text">{user.userName}</h3>
                 <h3 className="medium-header">#{user.rank}</h3>

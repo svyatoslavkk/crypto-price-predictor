@@ -10,6 +10,7 @@ import {
   updateProfile
 } from 'firebase/auth';
 import { collection, addDoc, doc, updateDoc } from 'firebase/firestore';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { Link } from 'react-router-dom';
 import LoaderScreen from '../../components/loaders/loaderScreen/LoaderScreen';
 
@@ -20,6 +21,7 @@ export default function SignUp() {
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [avatar, setAvatar] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const collectionRef = collection(database, 'Users Data');
 
@@ -42,8 +44,18 @@ export default function SignUp() {
       const currentUser = auth.currentUser;
   
       if (currentUser) {
+        let pictureUrl = null;
+        
+        if (avatar) {
+          const storage = getStorage(app);
+          const storageRef = ref(storage, 'avatars/' + currentUser?.uid + '.jpg');
+          await uploadBytes(storageRef, avatar);
+          pictureUrl = await getDownloadURL(storageRef);
+        }
+
         await updateProfile(currentUser, {
           displayName: userName,
+          photoURL: pictureUrl,
         });
 
         console.log(response.user);
@@ -58,8 +70,10 @@ export default function SignUp() {
           totalBets: 0,
           winBets: 0,
           historyBets: [],
+          lastClaimedBonus: "2000-01-01T18:10:59.977Z",
+          ...(avatar && { avatar: pictureUrl }),
         });
-
+  
         const docId = docRef.id;
   
         await updateDoc(doc(collectionRef, docId), {
@@ -91,6 +105,14 @@ export default function SignUp() {
     }
   };
 
+  const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+  
+    if (file) {
+      setAvatar(file);
+    }
+  };
+
   return (
     <div className="signup">
       <div className="ring">
@@ -99,6 +121,17 @@ export default function SignUp() {
         <i style={{ '--clr' : '#fffd44' } as React.CSSProperties}></i>
         <div className="login">
           <h2>Register</h2>
+          <div className="inputBx">
+            <label htmlFor="avatarInput" className="avatar-label">
+              Choose Avatar
+            </label>
+            <input
+              type="file"
+              id="avatarInput"
+              accept="image/*"
+              onChange={handleAvatarChange}
+            />
+          </div>
           <div className="inputBx">
             <input 
               type="text" 

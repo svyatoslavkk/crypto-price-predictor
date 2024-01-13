@@ -34,7 +34,7 @@ $secondary-color: #442200;
 }
 
 body {
-  background: linear-gradient(to bottom, #232323, #232323);
+  background: linear-gradient(to bottom, #171717, #171717);
 }
 
 button {
@@ -45,6 +45,8 @@ button {
 
 img {
   object-fit: cover;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: optimizeQuality;
 }
 
 ul, li {

@@ -16,6 +16,7 @@ import {
 import { app, database } from '../../firebase/firebaseConfig';
 
 export interface UserData {
+  avatar: string;
   userName: string;
   balance: number;
   uid: string;
@@ -59,7 +60,11 @@ export default function ProfileTop() {
     <div className="profile-top">
       <TopButtons />
       <div className="avatar-section">
-        <img src={exImg} className="large-circle-img" alt="Avatar" />
+        {fireData && fireData
+        .filter((data: UserData) => data.uid === user?.uid)
+        .map((data) => (
+          <img key={data.id} src={data.avatar ? data.avatar : exImg} className="large-circle-img" alt="Avatar" />
+        ))}
       </div>
       <div className="username-section">
         {fireData && fireData
