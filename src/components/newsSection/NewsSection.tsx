@@ -32,7 +32,7 @@ export default function NewsSection() {
       <ul className="list-column" style={{marginBottom: 80}}>
         {cryptoNewsLoading && loadingUI}
         {sortedNews && sortedNews.slice(0, 3).map((item) => (
-          <a href={item.url} target="_blank" rel="noopener noreferrer">
+          <a key={item.url} href={item.url} target="_blank" rel="noopener noreferrer">
             <li key={item.publishedAt} className="list-item">
               <img src={item.urlToImage || adaptiveImg} className="large-sq-img" alt="Article Image" />
               <div className="text-items-column">

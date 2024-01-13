@@ -25,6 +25,7 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
 import NewsSection from "../newsSection/NewsSection";
+import { formatTime } from "../../utils/formatTime";
 
 interface BetDetails {
   direction: string;
@@ -47,8 +48,6 @@ export default function TopCoin() {
   const [betDirection, setBetDirection] = useState("");
   const [betStatus, setBetStatus] = useState("");
   const [countdown, setCountdown] = useState(0);
-  const [predictionTime, setPredictionTime] = useState<number | null>(null);
-  const [betPrice, setBetPrice] = useState<number | null>(0);
   const [currentPrice, setCurrentPrice] = useState("0.00");
   const [pointAmount, setPointAmount] = useState(10);
   const [lastPointBet, setLastPointBet] = useState(0);
@@ -57,7 +56,14 @@ export default function TopCoin() {
   const [currentBitcoinPriceDouble, setCurrentBitcoinPriceDouble] = useState(0);
   const [isBetResultShown, setIsBetResultShown] = useState(false);
   const [startPrice, setStartPrice] = useState(0);
-  const [endPrice, setEndPrice] = useState(0);
+
+  const [bonusStatus, setBonusStatus] = useState("waiting"); // "inactive", "active", "waiting"
+  const [bonusAmount, setBonusAmount] = useState(0);
+  const [timeUntilNextBonus, setTimeUntilNextBonus] = useState(0);
+  const [lastClaimedBonusTime, setLastClaimedBonusTime] = useState("");
+
+  const [checkBonusAvailable, setCheckBonusAvailable] = useState(false);
+  // const [timeDifference, setTimeDifference] = useState(calculateTimeDifference());
 
   /////////////////////////
   const [loading, setLoading] = useState(true);
@@ -66,22 +72,18 @@ export default function TopCoin() {
   const auth = getAuth(app);
   const collectionRef = collection(database, 'Users Data');
 
+  const { data: bitcoinInfo } = useGetBitcoinInfoQuery('bitcoin');
+
   const getData = async () => {
     try {
       const response = await getDocs(collectionRef);
       setFireData(response.docs.map((data) => ({ ...data.data(), id: data.id })));
       setLoading(false);
-      console.log("FIREDATA", fireData);
+      console.log("DATA", fireData);
     } catch (error) {
       console.error('Error getting data:', error);
     }
   };
-
-  const documentInfo = fireData
-  ? fireData
-      .filter((data) => data.uid === user?.uid)
-      .map((data) => (data.docId ? data.docId : 'NO_DOC'))
-  : [];
 
   useEffect(() => {
     let token = sessionStorage.getItem('Token');
@@ -101,6 +103,75 @@ export default function TopCoin() {
   }, []);
   /////////////////////////
 
+  const documentInfo = fireData
+  ? fireData
+      .filter((data) => data.uid === user?.uid)
+      .map((data) => (data.docId ? data.docId : 'NO_DOC'))
+  : [];
+
+  const lastTimeClaiming = fireData
+  ? fireData
+      .filter((data) => data.uid === user?.uid)
+      .map((data) => data.lastClaimedBonus ? new Date(data.lastClaimedBonus) : new Date("2000-01-01T14:10:53.245Z"))
+  : null;
+
+  if (lastTimeClaiming && lastTimeClaiming.length > 0 && lastTimeClaiming[0]) {
+    const currentTime = new Date();
+    console.log("currentTime", currentTime);
+    console.log("lastTimeClaiming", lastTimeClaiming[0]);
+
+    const nextDate = new Date(lastTimeClaiming[0].getTime() + (24 * 60 * 60 * 1000));
+    console.log("nextDate", nextDate);
+    
+    const timeDifferenceInSeconds = Math.floor((nextDate - currentTime) / 1000);
+    const editedFormatDiff = formatTime(timeDifferenceInSeconds);
+    console.log("timeDifferenceInSeconds", editedFormatDiff);
+  } else {
+    console.error('Нет данных о последнем запросе бонуса.');
+  }
+  // useEffect(() => {
+  //   // Ваш код или функция, которую вы хотите выполнить каждую секунду
+  //   const intervalId = setInterval(() => {
+  //     // Ваш код
+  //     console.log('Функция, выполняемая каждую секунду');
+  //   }, 1000);
+
+  //   // Очистка интервала при размонтировании компонента
+  //   return () => clearInterval(intervalId);
+  // }, []);
+
+  // useEffect(() => {
+  //   const intervalId = setInterval(() => {
+  //     setTimeDifference(calculateTimeDifference());
+  //   }, 1000);
+
+  //   return () => clearInterval(intervalId);
+  // }, [lastTimeClaiming]);
+
+  // function calculateTimeDifference() {
+  //   const currentTime = new Date();
+  //   const nextDate = new Date(lastTimeClaiming[0].getTime() + (24 * 60 * 60 * 1000));
+  //   const differenceInSeconds = Math.floor((nextDate - currentTime) / 1000);
+
+  //   return differenceInSeconds;
+  // }
+
+  const checkBonus = async () => {
+    const currentTime = new Date();
+    const docId = documentInfo[0];
+    const userDocRef = doc(database, 'Users Data', docId);
+    const userDocSnapshot = await getDoc(userDocRef);
+    if (userDocSnapshot.exists()) {
+      const lastClaimedBonus = new Date(userDocSnapshot.data().lastClaimedBonus || "2000-01-01T18:28:00.245Z");
+      const timeDifference: number = currentTime.getTime() - lastClaimedBonus.getTime();
+      // console.log("timeDifference", timeDifference);
+      const hoursDifference: number = timeDifference / (1000 * 60 * 60);
+      const isMoreThan24Hours: boolean = hoursDifference > 24;
+      // console.log("isMoreThan24Hours", isMoreThan24Hours);
+    }
+  }
+  // checkBonus();
+
   const ws = useRef(new WebSocket("wss://ws-feed.pro.coinbase.com"));
   let first = useRef(false);
   const url = "https://api.pro.coinbase.com";
@@ -117,8 +188,6 @@ export default function TopCoin() {
 
   //   setpair(e.target.value);
   // };
-
-  const { data: bitcoinInfo } = useGetBitcoinInfoQuery('bitcoin');
 
   const upBet = async () => {
     const docId = documentInfo[0];
@@ -419,7 +488,70 @@ export default function TopCoin() {
     }
     setIsBetResultShown(true);
     setTimeout(() => setIsBetResultShown(false), 4000);
-  }
+  };
+
+  /************************** COLLECT DAILY BONUS **************************/
+  /************************** COLLECT DAILY BONUS **************************/
+  /************************** COLLECT DAILY BONUS **************************/
+  /************************** COLLECT DAILY BONUS **************************/
+  /************************** COLLECT DAILY BONUS **************************/
+  /************************** COLLECT DAILY BONUS **************************/
+  /************************** COLLECT DAILY BONUS **************************/
+  /************************** COLLECT DAILY BONUS **************************/
+  /************************** COLLECT DAILY BONUS **************************/
+  // const updateNextBonusTime = () => {
+  //   const currentTime = new Date().getTime();
+  //   const timeElapsedSinceLastClaim = currentTime - lastClaimedBonusTime;
+  //   const timeUntilNext = Math.max(0, BONUS_INTERVAL - timeElapsedSinceLastClaim);
+  //   setTimeUntilNextBonus(timeUntilNext);
+  // };
+
+  // useEffect(() => {
+  //   const intervalId = setInterval(updateNextBonusTime, 1000);
+  
+  //   return () => clearInterval(intervalId);
+  // }, [lastClaimedBonusTime]);
+
+  // const handleClaimDailyBonus = async () => {
+  //   if (bonusStatus === "active") {
+  //     setBonusStatus("waiting");
+
+  //     const currentTime = new Date().getTime();
+  //     const timeElapsedSinceLastClaim = currentTime - lastClaimedBonusTime;
+  //     const timeUntilNext = Math.max(0, BONUS_INTERVAL - timeElapsedSinceLastClaim);
+  //     setTimeUntilNextBonus(timeUntilNext);
+  
+  //     setTimeout(async () => {
+  //       const randomBonusAmount = Math.floor(Math.random() * (72 - 11 + 1)) + 11;
+  
+  //       setBonusAmount(randomBonusAmount);
+  //       setBonusStatus("claimed");
+  
+  //       const docId = documentInfo[0];
+  //       if (docId) {
+  //         const userDocRef = doc(database, 'Users Data', docId);
+  //         const userDocSnapshot = await getDoc(userDocRef);
+  
+  //         if (userDocSnapshot.exists()) {
+  //           await updateDoc(userDocRef, {
+  //             balance: (userDocSnapshot.data().balance || 0) + randomBonusAmount,
+  //             lastClaimedBonus: new Date().toISOString(),
+  //           });
+  
+  //           setFireData(prevData =>
+  //             prevData.map(data =>
+  //               data.uid === user.uid ? {
+  //                 ...data,
+  //                 balance: (data.balance || 0) + randomBonusAmount,
+  //                 lastClaimedBonus: new Date().toISOString(),
+  //               } : data
+  //             )
+  //           );
+  //         }
+  //       }
+  //     }, 3000);
+  //   }
+  // };
 
   const exImg = 'https://www.aipromptsgalaxy.com/wp-content/uploads/2023/06/subrat_female_avatar_proud_face_Aurora_a_25-year-old_girl_with__fd0e4c59-bb7e-4636-9258-6690ec6a71e7.png';
 
@@ -612,15 +744,19 @@ export default function TopCoin() {
               <h3 key={data.id} className="small-header">${data.balance ? data.balance.toFixed(2) : '$0.00'}</h3>
             ))
             }
-            <button className="active-bonus-btn">
-              <div className="gift-icon">
-                <CardGiftcardIcon fontSize='small' />
-              </div>
-              <span>Collect a Daily Gift!</span>
-            </button>
-            <button className="waiting-bonus-btn">
-              <span>Next Bonus: 08:27:19</span>
-            </button>
+            {bonusStatus === "active" && (
+              <button className="active-bonus-btn" onClick={() => handleClaimDailyBonus()}>
+                <div className="gift-icon">
+                  <CardGiftcardIcon fontSize='small' />
+                </div>
+                <span>Collect a Daily Gift!</span>
+              </button>
+            )}
+            {/* {bonusStatus === "waiting" && (
+              <button className="waiting-bonus-btn">
+                <span>Next Bonus: {formatTime(timeDifference)}</span>
+              </button>
+            )} */}
           </div>
           <div className="mini-window">
             <div className="top">
@@ -727,15 +863,17 @@ export default function TopCoin() {
         </div>
       )}
 
-      {/* <div className="loader-screen">
-        <div className="bonus-window">
-          <h2 className="large-header">Daily Bonus</h2>
-          <h3 className="medium-header">$11-72</h3>
-          <button className="sq-btn">
-            <span className="small-header">OK</span>
-          </button>
+      {/* {bonusStatus === "waiting" && (
+        <div className="loader-screen">
+          <div className="bonus-window">
+            <h2 className="large-header">Daily Bonus</h2>
+            <h3 className="medium-header">${bonusAmount}</h3>
+            <button className="sq-btn" onClick={() => setBonusStatus("inactive")}>
+              <span className="small-header">OK</span>
+            </button>
+          </div>
         </div>
-      </div> */}
+      )} */}
       
       <CoinsRow />
       <NewsSection />
