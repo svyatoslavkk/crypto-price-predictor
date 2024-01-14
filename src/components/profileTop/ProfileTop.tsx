@@ -2,22 +2,11 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 import TopButtons from '../topButtons/TopButtons';
 import { useState, useEffect } from "react";
-import {
-  getAuth,
-  onAuthStateChanged,
-} from 'firebase/auth';
-import { 
-  collection, 
-  getDocs,
-  doc,
-  updateDoc,
-  getDoc
-} from 'firebase/firestore';
-import { app, database } from '../../firebase/firebaseConfig';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import CasinoIcon from '@mui/icons-material/Casino';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
+import { useUserContext } from '../../context/UserContext';
 
 export interface UserData {
   avatar: string;
@@ -28,37 +17,11 @@ export interface UserData {
 
 export default function ProfileTop() {
   const exImg = 'https://www.aipromptsgalaxy.com/wp-content/uploads/2023/06/subrat_female_avatar_proud_face_Aurora_a_25-year-old_girl_with__fd0e4c59-bb7e-4636-9258-6690ec6a71e7.png';
-  const [user, setUser] = useState<any>(null);
-  const [fireData, setFireData] = useState<any[]>([]);
-  const auth = getAuth(app);
-  const collectionRef = collection(database, 'Users Data');
-
-  const getData = async () => {
-    try {
-      const response = await getDocs(collectionRef);
-      setFireData(response.docs.map((data) => ({ ...data.data(), id: data.id })));
-      console.log("FIREDATA", fireData);
-    } catch (error) {
-      console.error('Error getting data:', error);
-    }
-  };
+  const { user, fireData, fetchData } = useUserContext();
 
   useEffect(() => {
-    let token = sessionStorage.getItem('Token');
-    if (token) {
-      getData();
-
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
-        if (user) {
-          setUser(user);
-        } else {
-          setUser(null);
-        }
-      });
-
-      return () => unsubscribe();
-    }
-  }, []);
+    fetchData();
+  }, [fetchData]);
 
   return (
     <div className="profile-top">
