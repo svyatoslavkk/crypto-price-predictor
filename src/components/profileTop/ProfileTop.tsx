@@ -14,6 +14,10 @@ import {
   getDoc
 } from 'firebase/firestore';
 import { app, database } from '../../firebase/firebaseConfig';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import CasinoIcon from '@mui/icons-material/Casino';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import ShowChartIcon from '@mui/icons-material/ShowChart';
 
 export interface UserData {
   avatar: string;
@@ -92,27 +96,35 @@ export default function ProfileTop() {
         </div>
         <div className="stats-info">
           <div className="stat">
-            <h3 className="stat-value">#1</h3>
+            <ShowChartIcon fontSize="small" sx={{ color: '#f0de69' }} />
+            <h3 className="small-header">#1</h3>
             <span className="small-text">Rank</span>
           </div>
           <div className="stat">
+            <EmojiEventsIcon fontSize="small" sx={{ color: '#f0de69' }} />
             {fireData && fireData
               .filter(data => data.uid === user?.uid)
               .map((data) => {
                 const winRate = (data.winBets / data.totalBets) * 100;
                 return (
-                  <h3 key={data.id} className="stat-value">{data.totalBets !== 0 ? winRate.toFixed(0) : 0}%</h3>
+                  <h3 key={data.id} className="small-header">{data.totalBets !== 0 ? winRate.toFixed(0) : 0}%</h3>
                 );
             })}
             <span className="small-text">Win Rate</span>
           </div>
           <div className="stat">
+            <CasinoIcon fontSize="small" sx={{ color: '#f0de69' }} />
             {fireData && fireData
             .filter(data => data.uid === user?.uid)
             .map((data) => (
-              <h3 key={data.id} className="stat-value">{data.totalBets !== undefined ? data.totalBets : '-'}</h3>
+              <h3 key={data.id} className="small-header">{data.totalBets !== undefined ? data.totalBets : '-'}</h3>
             ))}
             <span className="small-text">Total bets</span>
+          </div>
+          <div className="stat">
+            <FavoriteIcon fontSize="small" sx={{ color: '#f0de69' }} />
+            <h3 className="small-header">1M</h3>
+            <span className="small-text">Followers</span>
           </div>
         </div>
       </div>

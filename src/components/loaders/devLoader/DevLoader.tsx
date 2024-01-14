@@ -11,7 +11,7 @@ export default function DevLoader() {
           <div className="control maximize"></div>
         </div>
       </div>
-      <div className="text">On development...</div>
+      <div className="text">You have no bets...</div>
     </div>
   )
 }

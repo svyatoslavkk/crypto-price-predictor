@@ -13,6 +13,7 @@ import {
   getDoc
 } from 'firebase/firestore';
 import { app, database } from '../../firebase/firebaseConfig';
+import DevLoader from '../loaders/devLoader/DevLoader';
 
 export interface UserData {
   userName: string;
@@ -206,6 +207,7 @@ export default function ProfileInfo() {
         )}
         {activeButton === "History" && (
           <>
+          {reversedHistory.length > 0 ? (
           <div className="history-bet-column">
             {reversedHistory.slice(0, visibleBets).map((bet) => (
                 <div key={bet.openTime} className="history-bet-item">
@@ -226,6 +228,9 @@ export default function ProfileInfo() {
               <h3 className="small-header">More</h3>
             </button>
           </div>
+          ) : (
+            <DevLoader />
+          )}
           </>
         )}
       </div>

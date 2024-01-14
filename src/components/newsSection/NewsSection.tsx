@@ -2,6 +2,13 @@ import { useGetCryptoNewsQuery } from "../../redux/features/api/newsApi";
 import { Link } from "react-router-dom";
 import SimpleLoader from "../loaders/simpleLoader/SimpleLoader";
 
+interface News {
+  publishedAt: string;
+  urlToImage: string;
+  url: string;
+  title: string;
+}
+
 export default function NewsSection() {
   const adaptiveImg = 'https://play-lh.googleusercontent.com/jGpj_gR6iUi1FqHZ8w__2G0zonoONbRYkYIgARnKpOtKL7we9d213Bvn6AOUMF5WVgOV=w240-h480-rw';
   const { data: cryptoNews, error: cryptoNewsError, isLoading: cryptoNewsLoading } = useGetCryptoNewsQuery();
@@ -21,22 +28,22 @@ export default function NewsSection() {
 
   return (
     <div className="news-section">
-      <div className="top-section">
-        <h3 className="medium-header">News</h3>
+      <div className="header-section">
+        <h3 className="small-header">News</h3>
         <Link to="/news">
           <button className="transparent-btn">
             More
           </button>
         </Link>
       </div>
-      <ul className="list-column" style={{marginBottom: 80}}>
+      <ul className="list-column" style={{marginBottom: 55}}>
         {cryptoNewsLoading && loadingUI}
-        {sortedNews && sortedNews.slice(0, 3).map((item) => (
+        {sortedNews && sortedNews.slice(0, 3).map((item: News) => (
           <a key={item.url} href={item.url} target="_blank" rel="noopener noreferrer">
             <li key={item.publishedAt} className="list-item">
               <img src={item.urlToImage || adaptiveImg} className="large-sq-img" alt="Article Image" />
               <div className="text-items-column">
-                <h3 className="small-header">{item.title}</h3>
+                <h3 className="small-text">{item.title}</h3>
               </div>
             </li>
           </a>

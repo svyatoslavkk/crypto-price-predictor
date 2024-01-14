@@ -4,6 +4,7 @@ import { collection, getDocs, onSnapshot, QuerySnapshot, DocumentData } from 'fi
 import { database } from "../../firebase/firebaseConfig";
 import TopButtons from "../../components/topButtons/TopButtons";
 import SimpleLoader from "../../components/loaders/simpleLoader/SimpleLoader";
+import ProfilePanel from "../../components/profilePanel/ProfilePanel";
 
 interface User {
   id: string;
@@ -73,29 +74,32 @@ export default function Rankings() {
   ));
 
   return (
-    <div className="rankings">
-      <TopButtons pageTitle={pageTitle} />
-      <ul className="list-column">
-        {loading && loadingUI}
-        {users.sort((a, b) => parseInt(b.balance, 10) - parseInt(a.balance, 10)).map((user: User) => (
-          <li key={user.id} className="rank-item">
-            <div className="flex-info">
-              <img src={user.avatar} className="medium-sq-img" alt="Avatar" />
-              <div className="text-items-column">
-                <h3 className="medium-text">{user.userName}</h3>
-                <h3 className="medium-header">#{user.rank}</h3>
-              </div>
-            </div>
-            <div className="text-items-column">
-              <h3 className="small-header" style={{textAlign: 'right'}}>${user.balance}</h3>
-              <button className="sq-btn-mod">
-                <span className="tiny-color-text">View Profile</span>
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
+    <div className="screen-container">
       <SideBar />
+      <div className="rankings">
+        <TopButtons pageTitle={pageTitle} />
+        <ul className="list-column">
+          {loading && loadingUI}
+          {users.sort((a, b) => parseInt(b.balance, 10) - parseInt(a.balance, 10)).map((user: User) => (
+            <li key={user.id} className="rank-item">
+              <div className="flex-info">
+                <img src={user.avatar} className="medium-sq-img" alt="Avatar" />
+                <div className="text-items-column">
+                  <h3 className="medium-text">{user.userName}</h3>
+                  <h3 className="medium-header">#{user.rank}</h3>
+                </div>
+              </div>
+              <div className="text-items-column">
+                <h3 className="small-header" style={{textAlign: 'right'}}>${user.balance}</h3>
+                <button className="sq-btn-mod">
+                  <span className="tiny-color-text">View Profile</span>
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <ProfilePanel />
     </div>
   )
 }

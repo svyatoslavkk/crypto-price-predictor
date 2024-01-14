@@ -13,6 +13,9 @@
 @import './components/coinsRow/coinsRow.scss';
 @import './components/newsSection/newsSection.scss';
 @import './pages/news/news.scss';
+@import './components/profilePanel/profilePanel.scss';
+@import './components/headerPanel/headerPanel.scss';
+@import './components/modernBalance/modernBalance.scss';
 
 $primary-color: #572b06;
 $secondary-color: #442200;
@@ -21,7 +24,7 @@ $secondary-color: #442200;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Space Grotesk', sans-serif;
   letter-spacing: 0.5px;
 }
 
@@ -34,7 +37,7 @@ $secondary-color: #442200;
 }
 
 body {
-  background: linear-gradient(to bottom, #171717, #171717);
+  background: linear-gradient(to bottom, #171716, #171716);
 }
 
 button {
@@ -55,6 +58,15 @@ ul, li {
 
 a {
   text-decoration: none
+}
+
+input:focus {
+  outline: none;
+}
+
+.screen-container {
+  display: flex;
+  gap: 0rem
 }
 
 .container {
@@ -98,6 +110,12 @@ a {
 .medium-text {
   color: #ddd;
   font-size: 16px;
+  font-weight: 500;
+}
+
+.large-text {
+  color: #ddd;
+  font-size: 20px;
   font-weight: 500;
 }
 
@@ -304,4 +322,25 @@ a {
   border-radius: 3px;
   width: 100%;
   background-color: #555;
+}
+
+.top-section {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.header-section {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+@media (min-width: 876px) {
+  body {
+    background: linear-gradient(to bottom, #050505, #050505);
+  }
+  .top-section {
+    display: none;
+  }
 }

@@ -1,3 +1,9 @@
+.coins-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
 .slider {
   display: flex;
   gap: 0.5rem;
@@ -62,4 +68,35 @@
 .error-bg-img {
   width: 100%;
   height: auto;
+}
+
+.left-icon {
+  position: absolute;
+  background-color: transparent;
+  border-radius: 50%;
+  top: 50%;
+  left: 2px;
+  transform: translateY(-50%);
+  z-index: 999;
+  color: #ccc;
+  opacity: 0.6;
+  transition: 0.1s ease;
+}
+
+.right-icon {
+  position: absolute;
+  background-color: transparent;
+  border-radius: 50%;
+  top: 50%;
+  right: 2px;
+  transform: translateY(-50%);
+  z-index: 999;
+  color: #ccc;
+  opacity: 0.6;
+  transition: 0.1s ease;
+}
+
+.left-icon:hover,
+.right-icon:hover {
+  opacity: 1;
 }

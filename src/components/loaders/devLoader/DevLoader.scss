@@ -11,7 +11,7 @@
   }
   45%,
   55% {
-    width: 9.8em;
+    width: 9.9em;
   }
   90%,
   100% {
@@ -83,7 +83,7 @@
   white-space: nowrap;
   overflow: hidden;
   border-right: 0.2em solid green;
-  animation: typeAndDelete 7s steps(18) infinite,
+  animation: typeAndDelete 7s steps(19) infinite,
     blinkCursor 0.5s step-end infinite alternate;
   margin-top: 1.5em;
 }

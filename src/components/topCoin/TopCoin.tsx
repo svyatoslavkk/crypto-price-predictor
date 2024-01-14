@@ -44,7 +44,7 @@ export default function TopCoin() {
   const [priceChangeColor, setPriceChangeColor] = useState("");
   const [percentageDiff, setPercentageDiff] = useState(0);
   const prevPriceRef = useRef<number | null>(null);
-  const [betTime, setBetTime] = useState(3);
+  const [betTime, setBetTime] = useState(6);
   const [betDirection, setBetDirection] = useState("");
   const [betStatus, setBetStatus] = useState("");
   const [countdown, setCountdown] = useState(0);
@@ -111,6 +111,12 @@ export default function TopCoin() {
   ? fireData
       .filter((data) => data.uid === user?.uid)
       .map((data) => data.lastClaimedBonus ? new Date(data.lastClaimedBonus) : new Date("2000-01-01T14:10:53.245Z"))
+  : null;
+
+  const currentBalance = fireData
+  ? fireData
+    .filter((data) => data.uid === user?.uid)
+    .map((data) => data.balance ? data.balance : 0)[0]
   : null;
 
   /************************** COLLECT DAILY BONUS **************************/
@@ -640,68 +646,76 @@ export default function TopCoin() {
         <h2>PRICE{`$${price}`}</h2>
       </div> */}
       {loading ? (
-        <div className="double-window">
-          <div className="mini-window">
-            <SimpleLoader />
-            <div className="top" style={{opacity: 0}}>
-              <h3 className="small-text" style={{opacity: 0}}>Balance</h3>
-              <div style={{opacity: 0}}></div>
+        <div className="user-preview">
+          <div className="double-window">
+            <div className="mini-window">
+              <SimpleLoader />
+              <div className="top" style={{opacity: 0}}>
+                <h3 className="small-text" style={{opacity: 0}}>Balance</h3>
+                <div style={{opacity: 0}}></div>
+              </div>
+              <h3 className="small-header" style={{opacity: 0}}>$0.00</h3>
+              <div className="percentage-progress" style={{opacity: 0}}>
+                <ArrowCircleUpIcon fontSize='small' />
+                <span>23.30%</span>
+              </div>
             </div>
-            <h3 className="small-header" style={{opacity: 0}}>$0.00</h3>
-            <div className="percentage-progress" style={{opacity: 0}}>
-              <ArrowCircleUpIcon fontSize='small' />
-              <span>23.30%</span>
+            <div className="mini-window">
+              <SimpleLoader />
+              <div className="top" style={{opacity: 0}}>
+                <h3 className="small-text">Profile</h3>
+                <div></div>
+              </div>
+              <img src={exImg} className="medium-circle-img" alt="Avatar" style={{opacity: 0}} />
+              <span className="small-header" style={{opacity: 0}}>auth_name</span>
             </div>
-          </div>
-          <div className="mini-window">
-            <SimpleLoader />
-            <div className="top" style={{opacity: 0}}>
-              <h3 className="small-text">Profile</h3>
-              <div></div>
-            </div>
-            <img src={exImg} className="medium-circle-img" alt="Avatar" style={{opacity: 0}} />
-            <span className="small-header" style={{opacity: 0}}>auth_name</span>
           </div>
         </div>
       ) : (
-        <div className="double-window">
-          <div className="mini-window">
-            <div className="top">
-              <h3 className="small-text">Balance</h3>
-              <div></div>
+        <div className="user-preview">
+          <div className="double-window">
+            <div className="mini-window">
+              <div className="top">
+                <h3 className="small-text">Balance</h3>
+                <div></div>
+              </div>
+              {fireData && fireData
+              .filter((data) => data.uid === user?.uid)
+              .map((data) => (
+                <h3 key={data.id} className="small-header">${data.balance ? data.balance.toFixed(2) : '$0.00'}</h3>
+              ))
+              }
+              {bonusStatus === "active" && (
+                <button className="active-bonus-btn" onClick={claimDailyBonus}>
+                  <div className="gift-icon">
+                    <CardGiftcardIcon fontSize='small' />
+                  </div>
+                  <span>Collect a Daily Gift!</span>
+                </button>
+              )}
+              {bonusStatus === "waiting" && (
+                <button className="waiting-bonus-btn">
+                  <span>Next Bonus: {checkBonusAvailable}</span>
+                </button>
+              )}
             </div>
-            {fireData && fireData
-            .filter((data) => data.uid === user?.uid)
-            .map((data) => (
-              <h3 key={data.id} className="small-header">${data.balance ? data.balance.toFixed(2) : '$0.00'}</h3>
-            ))
-            }
-            {bonusStatus === "active" && (
-              <button className="active-bonus-btn" onClick={claimDailyBonus}>
-                <div className="gift-icon">
-                  <CardGiftcardIcon fontSize='small' />
-                </div>
-                <span>Collect a Daily Gift!</span>
-              </button>
-            )}
-            {bonusStatus === "waiting" && (
-              <button className="waiting-bonus-btn">
-                <span>Next Bonus: {checkBonusAvailable}</span>
-              </button>
-            )}
-          </div>
-          <div className="mini-window">
-            <div className="top">
-              <h3 className="small-text">Profile</h3>
-              <div></div>
+            <div className="mini-window">
+              <div className="top">
+                <h3 className="small-text">Profile</h3>
+                <div></div>
+              </div>
+              {fireData && fireData
+              .filter((data) => data.uid === user?.uid)
+              .map((data) => (
+                <img key={data.id} src={data.avatar ? data.avatar: exImg} className="medium-circle-img" alt="Avatar" />
+              ))}
+              {fireData && fireData
+              .filter((data) => data.uid === user?.uid)
+              .map((data) => (
+                <span key={data.id} className="small-header">{data.userName ? data.userName : 'NO_AUTH'}</span>
+              ))
+              }
             </div>
-            <img src={exImg} className="medium-circle-img" alt="Avatar" />
-            {fireData && fireData
-            .filter((data) => data.uid === user?.uid)
-            .map((data) => (
-              <span key={data.id} className="small-header">{data.userName ? data.userName : 'NO_AUTH'}</span>
-            ))
-            }
           </div>
         </div>
       )}
@@ -732,11 +746,24 @@ export default function TopCoin() {
         </div>
         <div className="buttons">
           <div className="select-section">
-            <button className="sq-btn" onClick={() => setBetTime((prev) => Math.max(prev - 1, 1))}>
+            <button className="sq-btn" onClick={() => setBetTime((prev) => Math.max(prev - 1, 6))}>
               <RemoveIcon fontSize="small" />
             </button>
-            <input className="short-input" value={betTime} onChange={(e) => setBetTime(Number(e.target.value))} />
-            <button className="sq-btn" onClick={() => setBetTime((prev) => prev + 1)}>
+            <input 
+              className="short-input" 
+              value={betTime}
+              type="text"
+              pattern="[6-9]|1[0-9]|20"
+              onChange={(e) => {
+                const value = e.target.value;
+                if (/^[6-9]|1[0-9]|20$/.test(value) || value === '') {
+                  setBetTime(value === '' ? '' : Number(value));
+                }
+              }}
+              min="6"
+              max="20"
+            />
+            <button className="sq-btn" onClick={() => setBetTime((prev) => Math.min(prev + 1, 20))}>
               <AddIcon fontSize="small" />
             </button>
           </div>
@@ -744,7 +771,12 @@ export default function TopCoin() {
             <button className="sq-btn" onClick={() => setPointAmount((prev) => Math.max(prev - 10, 10))}>
               <RemoveIcon fontSize="small" />
             </button>
-            <input className="short-input" value={pointAmount} onChange={(e) => setPointAmount(Number(e.target.value))} />
+            <input 
+              className="short-input"
+              value={pointAmount} 
+              onChange={(e) => setPointAmount(Number(e.target.value))}
+              max={currentBalance * 0.2}
+            />
             <button className="sq-btn" onClick={() => setPointAmount((prev) => prev + 10)}>
               <AddIcon fontSize="small" />
             </button>

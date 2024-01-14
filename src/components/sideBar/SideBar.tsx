@@ -2,10 +2,28 @@ import WindowIcon from '@mui/icons-material/Window';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import PersonIcon from '@mui/icons-material/Person';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { Link, useLocation } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { getAuth, signOut } from 'firebase/auth';
 
 export default function SideBar() {
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const location = useLocation();
+  const auth = getAuth();
+
+  const handleLogout = async () => {
+    try {
+      setLoading(true);
+      await signOut(auth);
+      navigate('/signup');
+    } catch (error) {
+      console.error('Logout error:', error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <aside className="sidebar">
       <div className="top-level">
@@ -25,7 +43,7 @@ export default function SideBar() {
           <span className="icon-text">Profile</span>
         </Link>
       </div>
-      <div className="bottom-level">
+      <div className="bottom-level" onClick={handleLogout}>
         <div className="icon">
           <LogoutIcon />
           <span className="icon-text">Logout</span>

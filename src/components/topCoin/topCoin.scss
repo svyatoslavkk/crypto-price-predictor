@@ -1,4 +1,5 @@
 .top-coin {
+  position: relative;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -69,6 +70,7 @@
 }
 
 .double-window {
+  position: relative;
   display: flex;
   gap: 0.5rem;
   width: 100%;
@@ -106,18 +108,6 @@
   color: #ddd;
 }
 
-.now-bet {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  display: flex;
-  flex-direction: column;
-  padding: 0.3rem;
-  border-radius: 0.3rem;
-  gap: 0.3rem;
-  background-color: #272727;
-}
-
 .select-section {
   display: flex;
   gap: 0.5rem;
@@ -141,7 +131,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #333;
+  background-color: #171717;
   padding: 0.5rem;
   border-radius: 0.5rem;
   z-index: 500;
@@ -156,4 +146,32 @@
   padding: 2rem 2rem;
   border-radius: 0.5rem;
   background-color: #333;
+}
+
+@media (min-width: 876px) {
+  .user-preview {
+    display: none;
+  }
+  .double-window {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    overflow-x: auto;
+  }
+  .mini-window {
+    min-width: 0;
+  }
+  .active-bet {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    transform: translateX(95%);
+    width: 25%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #171717;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    z-index: 500;
+  }
 }

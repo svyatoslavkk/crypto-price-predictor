@@ -3,6 +3,8 @@ import { useGetCoinListQuery } from "../../redux/features/api/api";
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import SimpleLoader from "../loaders/simpleLoader/SimpleLoader";
+import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
+import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 
 interface Coin {
   image: string;
@@ -73,10 +75,18 @@ export default function CoinsRow() {
   );
   
   return (
-    <div className="double-window">
+    <div className="coins-row">
+      <div className="header-section">
+        <h3 className="small-header">Coins</h3>
+        <div></div>
+      </div>
+      <div className="double-window">
         {showLoading && coinsListLoading && loadingUI}
         {coinsListError && errorUI}
-        {coinsList && coinsList.slice(0, 10).map((item: Coin) => (
+        {/* <button className="left-icon">
+          <ArrowCircleLeftIcon />
+        </button> */}
+        {coinsList && coinsList.slice(0, 4).map((item: Coin) => (
           <div className="mini-window" key={item.name}>
             <div className="flex-info">
               <img src={item.image} className="small-circle-img" alt="Coin" />
@@ -97,6 +107,10 @@ export default function CoinsRow() {
             </div>
           </div>
         ))}
+        {/* <button className="right-icon">
+          <ArrowCircleRightIcon />
+        </button> */}
+      </div>
     </div>
   )
 }

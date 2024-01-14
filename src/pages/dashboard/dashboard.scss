@@ -2,13 +2,15 @@
 
 .dashboard {
   @include container-styles;
-  padding: 1.5rem;
+  position: relative;
+  padding: 1rem;
   gap: 2rem;
   align-items: center;
+  overflow-x: hidden;
 }
 
-.top-section {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
+@media (min-width: 876px) {
+  .dashboard {
+    background-color: #090909;
+  }
 }
