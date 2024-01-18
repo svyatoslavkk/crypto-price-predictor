@@ -9,7 +9,6 @@ import ClearIcon from '@mui/icons-material/Clear';
 export default function HeaderPanel({ userImg, userUserName }) {
   const exImg = 'https://www.aipromptsgalaxy.com/wp-content/uploads/2023/06/subrat_female_avatar_proud_face_Aurora_a_25-year-old_girl_with__fd0e4c59-bb7e-4636-9258-6690ec6a71e7.png';
   const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearchQuery] = useDebounce(searchQuery, 500);
   const collectionRef = collection(database, 'Users Data');
@@ -33,8 +32,6 @@ export default function HeaderPanel({ userImg, userUserName }) {
       setUsers(userList);
     } catch (error) {
       console.error('Error getting users:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -86,10 +83,10 @@ export default function HeaderPanel({ userImg, userUserName }) {
             </ul>
           )}
         </div>
-        <div className="flex-info">
+        {/* <div className="flex-info">
           <span className="medium-text">{userUserName}</span>
           <img src={userImg} className="medium-circle-img" alt="Profile Image" />
-        </div>
+        </div> */}
       </header>
     </>
   )
