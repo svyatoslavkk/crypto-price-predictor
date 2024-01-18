@@ -6,7 +6,11 @@ import {
 import { collection, getDocs } from 'firebase/firestore';
 import { app, database } from '../firebase/firebaseConfig';
 
-const UserContext = createContext<{ user: any, fireData: any[], updateUser: (newUser: any) => void, updateFireData: (newData: any[]) => void } | undefined>(undefined);
+const UserContext = createContext<{
+  user: any;
+  fireData: any[];
+  fetchData: () => Promise<void>;
+} | undefined>(undefined);
 
 interface UserData {
   avatar: string;
@@ -18,9 +22,9 @@ interface UserData {
 export const UserProvider: React.FC<any> = ({ children }) => {
   const [user, setUser] = useState<any>(null);
   const [fireData, setFireData] = useState<any[]>([]);
+  const collectionRef = collection(database, 'Users Data');
 
   const fetchData = async () => {
-    const collectionRef = collection(database, 'Users Data');
     try {
       const response = await getDocs(collectionRef);
       setFireData(response.docs.map((data) => ({ ...data.data(), id: data.id })));

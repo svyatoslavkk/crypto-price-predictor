@@ -1,34 +1,36 @@
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
 import HeaderPanel from '../headerPanel/HeaderPanel';
 import ModernBalance from '../modernBalance/ModernBalance';
-import { useState, useEffect } from "react";
-import {
-  getAuth,
-  onAuthStateChanged,
-} from 'firebase/auth';
-import { 
-  collection, 
-  getDocs,
-  doc,
-  updateDoc,
-  getDoc
-} from 'firebase/firestore';
-import { app, database } from '../../firebase/firebaseConfig';
+import { useState, useEffect } from 'react';
+import { collection, getDocs, onSnapshot, QuerySnapshot, DocumentData } from 'firebase/firestore';
+import { database } from "../../firebase/firebaseConfig";
+import { useUserContext } from '../../context/UserContext';
+
+interface User {
+  id: string;
+  userName: string;
+  avatar: string;
+  email: string;
+  rank: number;
+  balance: string;
+}
 
 export default function ProfilePanel() {
   const exImg = 'https://www.aipromptsgalaxy.com/wp-content/uploads/2023/06/subrat_female_avatar_proud_face_Aurora_a_25-year-old_girl_with__fd0e4c59-bb7e-4636-9258-6690ec6a71e7.png';
-  const [user, setUser] = useState<any>(null);
-  const [fireData, setFireData] = useState<any[]>([]);
-  const auth = getAuth(app);
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
   const collectionRef = collection(database, 'Users Data');
+  const { user, fireData, fetchData } = useUserContext();
 
-  const getData = async () => {
+  const getUsers = async () => {
     try {
-      const response = await getDocs(collectionRef);
-      setFireData(response.docs.map((data) => ({ ...data.data(), id: data.id })));
-      console.log("FIREDATA", fireData);
+      const snapshot = await getDocs(collectionRef);
+      const userList = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as User));
+      setUsers(userList);
     } catch (error) {
-      console.error('Error getting data:', error);
+      console.error('Error getting users:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -44,21 +46,32 @@ export default function ProfilePanel() {
   .filter((data) => data.uid === user?.uid)
   .map((data) => data.balance)[0];
 
-  useEffect(() => {
-    let token = sessionStorage.getItem('Token');
-    if (token) {
-      getData();
+  const myCurrRank = users
+  .filter((data) => data.uid === user?.uid)
+  .map((data) => data.rank)[0];
+  console.log("myCurrRank", myCurrRank)
 
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
-        if (user) {
-          setUser(user);
-        } else {
-          setUser(null);
-        }
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    getUsers();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(collectionRef, (snapshot: QuerySnapshot<DocumentData>) => {
+      const userList = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as User));
+      const sortedUsers = userList.sort((a, b) => parseInt(b.balance, 10) - parseInt(a.balance, 10));
+
+      sortedUsers.forEach((user, index) => {
+        user.rank = index + 1;
       });
 
-      return () => unsubscribe();
-    }
+      setUsers(sortedUsers);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   return (
@@ -89,7 +102,7 @@ export default function ProfilePanel() {
         <div className="panel-rank">
           <span className="small-text">Rank</span>
           <div className="panel-ring">
-            <span className="large-text">#3</span>
+            <span className="large-text">#{myCurrRank}</span>
           </div>
         </div>
       </div>

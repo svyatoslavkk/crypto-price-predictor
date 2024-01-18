@@ -53,6 +53,9 @@
 .bottom-level {
   display: none;
 }
+.icon-news {
+  display: none;
+}
 
 @media (min-width: 876px) {
   .sidebar {
@@ -87,6 +90,9 @@
   .icon {
     padding: 0.5rem;
     border-radius: 0.5rem;
+  }
+  .icon-news {
+    display: flex;
   }
   .active-icon {
     background-color: rgb(51, 51, 51, 0.7);

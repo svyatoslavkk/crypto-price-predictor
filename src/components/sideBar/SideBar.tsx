@@ -1,6 +1,7 @@
 import WindowIcon from '@mui/icons-material/Window';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import PersonIcon from '@mui/icons-material/Person';
+import NewspaperIcon from '@mui/icons-material/Newspaper';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
@@ -37,6 +38,10 @@ export default function SideBar() {
         <Link to="/rankings" className={`icon ${location.pathname === '/rankings' ? 'active-icon' : ''}`}>
           <BarChartIcon />
           <span className="icon-text">Rankings</span>
+        </Link>
+        <Link to="/news" className={`icon icon-news ${location.pathname === '/news' ? 'active-icon' : ''}`}>
+          <NewspaperIcon />
+          <span className="icon-text">News</span>
         </Link>
         <Link to="/profile" className={`icon ${location.pathname === '/profile' ? 'active-icon' : ''}`}>
           <PersonIcon />

@@ -50,7 +50,7 @@ export default function Rankings() {
     });
 
     return () => unsubscribe();
-  }, [collectionRef]);
+  }, []);
 
   const pageTitle = "Rankings";
 

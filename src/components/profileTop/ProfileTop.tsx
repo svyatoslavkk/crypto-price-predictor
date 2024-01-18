@@ -21,7 +21,7 @@ export default function ProfileTop() {
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+  }, []);
 
   return (
     <div className="profile-top">

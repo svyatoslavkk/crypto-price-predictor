@@ -3,6 +3,15 @@
   padding: 1rem;
   gap: 2rem;
   align-items: center;
+  overflow-y: auto;
+  width: 100%;
+}
+
+.news-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
 }
 
 .blog-item {
@@ -30,4 +39,14 @@
   height: 32px;
   background-color: rgba(10, 10, 10, 0.5);
   color: #ddd;
+}
+
+@media (min-width: 1100px) {
+  .news-column {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .blog-item {
+    width: 100%;
+  }
 }
