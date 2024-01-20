@@ -14,3 +14,12 @@ export interface News {
   url: string;
   title: string;
 }
+
+export interface BetDetails {
+  direction: string;
+  openTime: string;
+  openPrice: number;
+  closeTime: string | null;
+  closePrice: number | null;
+  result: string | null;
+}

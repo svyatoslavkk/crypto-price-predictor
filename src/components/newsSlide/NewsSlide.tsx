@@ -12,7 +12,7 @@ export default function NewsSlide() {
   });
 
   return (
-    <section className="coins-row">
+    <section className="news-slide">
       <div className="header-section">
         <h3 className="small-header">News</h3>
         <Link to="/news">

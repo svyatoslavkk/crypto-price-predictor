@@ -20,24 +20,10 @@ import {
 } from 'firebase/firestore';
 import { app, database } from "../../firebase/firebaseConfig";
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import CoinsRow from "../coinsRow/CoinsRow";
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
-import NewsSection from "../newsSection/NewsSection";
-import { formatTime } from "../../utils/formatTime";
-import TopPlayersSlider from "../topPlayersSlider/TopPlayersSlider";
-import NewsSlide from "../newsSlide/NewsSlide";
 import TollIcon from '@mui/icons-material/Toll';
-
-interface BetDetails {
-  direction: string;
-  openTime: string;
-  openPrice: number;
-  closeTime: string | null;
-  closePrice: number | null;
-  result: string | null;
-}
+import { BetDetails } from "../../types/types";
 
 export default function TopCoin() {
   const [currencies, setcurrencies] = useState<any[]>([]);
@@ -60,9 +46,7 @@ export default function TopCoin() {
   const [isBetResultShown, setIsBetResultShown] = useState(false);
   const [startPrice, setStartPrice] = useState(0);
 
-  const [bonusStatus, setBonusStatus] = useState("waiting"); // "inactive", "active", "waiting"
-  const [checkBonusAvailable, setCheckBonusAvailable] = useState("");
-  const [editedFormatDiff, setEditedFormatDiff] = useState("");
+  const { data: bitcoinInfo } = useGetBitcoinInfoQuery('bitcoin');
 
   // const [timeDifference, setTimeDifference] = useState(calculateTimeDifference());
 
@@ -72,8 +56,6 @@ export default function TopCoin() {
   const [fireData, setFireData] = useState<any[]>([]);
   const auth = getAuth(app);
   const collectionRef = collection(database, 'Users Data');
-
-  const { data: bitcoinInfo } = useGetBitcoinInfoQuery('bitcoin');
 
   const getData = async () => {
     try {
@@ -109,71 +91,11 @@ export default function TopCoin() {
       .map((data) => (data.docId ? data.docId : 'NO_DOC'))
   : [];
 
-  const lastTimeClaiming = fireData
-  ? fireData
-      .filter((data) => data.uid === user?.uid)
-      .map((data) => data.lastClaimedBonus ? new Date(data.lastClaimedBonus) : new Date("2000-01-01T14:10:53.245Z"))
-  : null;
-
   const currentBalance = fireData
   ? fireData
     .filter((data) => data.uid === user?.uid)
     .map((data) => data.balance ? data.balance : 0)[0]
   : null;
-
-  /************************** COLLECT DAILY BONUS **************************/
-  /************************** COLLECT DAILY BONUS **************************/
-  /************************** COLLECT DAILY BONUS **************************/
-  /************************** COLLECT DAILY BONUS **************************/
-  /************************** COLLECT DAILY BONUS **************************/
-  /************************** COLLECT DAILY BONUS **************************/
-  /************************** COLLECT DAILY BONUS **************************/
-  /************************** COLLECT DAILY BONUS **************************/
-  /************************** COLLECT DAILY BONUS **************************/
-
-  const claimDailyBonus = async () => {
-    const docId = documentInfo[0];
-    if (!docId) {
-      console.error('Не удалось получить идентификатор документа.');
-      return;
-    }
-    const userDocRef = doc(database, 'Users Data', docId);
-    const userDocSnapshot = await getDoc(userDocRef);
-    if (userDocSnapshot.exists()) {
-      setBonusStatus("waiting");
-      console.log("bonusStatus", bonusStatus);
-      const randomBonusAmount = Math.floor(Math.random() * (72 - 11 + 1)) + 11;
-      setCheckBonusAvailable(editedFormatDiff);
-      await updateDoc(userDocRef, {
-        balance: (userDocSnapshot.data().balance || 0) + randomBonusAmount,
-        lastClaimedBonus: new Date().toISOString(),
-      });
-      setFireData(prevData =>
-        prevData.map(data =>
-          data.uid === user.uid ? {
-            ...data,
-            balance: (data.balance || 0) + randomBonusAmount,
-            lastClaimedBonus: new Date().toISOString(),
-          } : data
-        )
-      );
-    }
-  };
-
-  useEffect(() => {
-    if (lastTimeClaiming && lastTimeClaiming.length > 0 && lastTimeClaiming[0]) {
-      const currentTime = new Date();
-      const nextDate = new Date(lastTimeClaiming[0].getTime() + (24 * 60 * 60 * 1000));
-      const timeDifferenceInSeconds = Math.floor((nextDate - currentTime) / 1000);
-      const editedFormatDiff = formatTime(timeDifferenceInSeconds);
-      setCheckBonusAvailable((prevValue) => prevValue !== editedFormatDiff ? editedFormatDiff : prevValue);
-      if (timeDifferenceInSeconds <= 0) {
-        setBonusStatus("active");
-      }
-    } else {
-      console.error('Нет данных о последнем запросе бонуса.');
-    }
-  }, [bonusStatus, lastTimeClaiming]);
 
   const ws = useRef(new WebSocket("wss://ws-feed.pro.coinbase.com"));
   let first = useRef(false);
@@ -492,8 +414,6 @@ export default function TopCoin() {
     setTimeout(() => setIsBetResultShown(false), 4000);
   };
 
-  const exImg = 'https://www.aipromptsgalaxy.com/wp-content/uploads/2023/06/subrat_female_avatar_proud_face_Aurora_a_25-year-old_girl_with__fd0e4c59-bb7e-4636-9258-6690ec6a71e7.png';
-
   useEffect(() => {
     let pairs: any[] = [];
 
@@ -646,80 +566,6 @@ export default function TopCoin() {
         </select>
         <h2>PRICE{`$${price}`}</h2>
       </div> */}
-      {loading ? (
-        <div className="user-preview">
-          <div className="double-window">
-            <div className="mini-window">
-              <SimpleLoader />
-              <div className="top" style={{opacity: 0}}>
-                <h3 className="small-text" style={{opacity: 0}}>Balance</h3>
-                <div style={{opacity: 0}}></div>
-              </div>
-              <h3 className="small-header" style={{opacity: 0}}>$0.00</h3>
-              <div className="percentage-progress" style={{opacity: 0}}>
-                <ArrowCircleUpIcon fontSize='small' />
-                <span>23.30%</span>
-              </div>
-            </div>
-            <div className="mini-window">
-              <SimpleLoader />
-              <div className="top" style={{opacity: 0}}>
-                <h3 className="small-text">Profile</h3>
-                <div></div>
-              </div>
-              <img src={exImg} className="medium-circle-img" alt="Avatar" style={{opacity: 0}} />
-              <span className="small-header" style={{opacity: 0}}>auth_name</span>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="user-preview">
-          <div className="double-window">
-            <div className="mini-window">
-              <div className="top">
-                <h3 className="small-text">Balance</h3>
-                <div></div>
-              </div>
-              {fireData && fireData
-              .filter((data) => data.uid === user?.uid)
-              .map((data) => (
-                <h3 key={data.id} className="small-header">${data.balance ? data.balance.toFixed(2) : '$0.00'}</h3>
-              ))
-              }
-              {bonusStatus === "active" && (
-                <button className="active-bonus-btn" onClick={claimDailyBonus}>
-                  <div className="gift-icon">
-                    <CardGiftcardIcon fontSize='small' />
-                  </div>
-                  <span>Collect a Daily Gift!</span>
-                </button>
-              )}
-              {bonusStatus === "waiting" && (
-                <button className="waiting-bonus-btn">
-                  <span>Next Bonus: {checkBonusAvailable}</span>
-                </button>
-              )}
-            </div>
-            <div className="mini-window">
-              <div className="top">
-                <h3 className="small-text">Profile</h3>
-                <div></div>
-              </div>
-              {fireData && fireData
-              .filter((data) => data.uid === user?.uid)
-              .map((data) => (
-                <img key={data.id} src={data.avatar ? data.avatar: exImg} className="medium-circle-img" alt="Avatar" />
-              ))}
-              {fireData && fireData
-              .filter((data) => data.uid === user?.uid)
-              .map((data) => (
-                <span key={data.id} className="small-header">{data.userName ? data.userName : 'NO_AUTH'}</span>
-              ))
-              }
-            </div>
-          </div>
-        </div>
-      )}
       <div className="window">
         {bitcoinInfo && (
           <div className="flex-info">
@@ -837,22 +683,6 @@ export default function TopCoin() {
           </h3>
         </div>
       )}
-
-      {/* {bonusStatus === "waiting" && (
-        <div className="loader-screen">
-          <div className="bonus-window">
-            <h2 className="large-header">Daily Bonus</h2>
-            <h3 className="medium-header">${bonusAmount}</h3>
-            <button className="sq-btn" onClick={() => setBonusStatus("inactive")}>
-              <span className="small-header">OK</span>
-            </button>
-          </div>
-        </div>
-      )} */}
-      <TopPlayersSlider />
-      <CoinsRow />
-      <NewsSlide />
-      <NewsSection />
     </div>
   )
 }

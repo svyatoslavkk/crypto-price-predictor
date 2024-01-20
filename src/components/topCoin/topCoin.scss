@@ -74,7 +74,6 @@
   display: flex;
   gap: 0.5rem;
   width: 100%;
-  overflow-x: auto;
 }
 
 .double-window::-webkit-scrollbar {
@@ -93,7 +92,7 @@
   gap: 1rem;
   justify-content: space-between;
   width: 100%;
-  min-width: 190px;
+  min-width: 70px;
   background-color: #111;
   padding: 1.0rem;
   border-radius: 0.5rem;

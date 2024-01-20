@@ -1,3 +1,8 @@
+.news-slide {
+  display: none;
+  transition: 0.3s ease;
+}
+
 .news-slide-image-block {
   position: relative;
   overflow: hidden;
@@ -18,5 +23,13 @@
     transform: translateX(-50%);
     width: 95%;
     text-align: center;
+  }
+}
+
+@media (min-width: 876px) {
+  .news-slide {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
   }
 }
