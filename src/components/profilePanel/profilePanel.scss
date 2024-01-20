@@ -1,10 +1,10 @@
 .profile-panel {
-  padding: 1rem;
+  padding: $big-rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  background-color: #090909;
-  transition: 0.3s ease;
+  gap: $big-rem;
+  background-color: $deep-black;
+  transition: $mid-tran;
 }
 
 .panel-info {
@@ -14,13 +14,13 @@
 
 .panel-main {
   position: relative;
-  border-radius: 1.5rem;
+  border-radius: $large-rem;
   border: 2px solid #3d3d3dcc;
   min-width: 200px;
   max-width: 200px;
   max-height: 200px;
   overflow: hidden;
-  transition: 0.3s ease;
+  transition: $mid-tran;
 }
 
 .panel-darken {
@@ -38,29 +38,29 @@
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 0.5rem;
+  gap: $avg-rem;
   align-items: center;
 }
 
 .panel-rank {
   position: relative;
-  border-radius: 1.5rem;
+  border-radius: $large-rem;
   border: 2px solid #3d3d3dcc;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: $avg-rem;
   align-items: center;
   justify-content: center;
   min-width: 200px;
   max-width: 200px;
-  transition: 0.3s ease;
+  transition: $mid-tran;
 }
 
 .panel-sq-img {
-  border-radius: 1rem;
+  border-radius: $big-rem;
   min-width: 200px;
   max-width: 200px;
-  transition: 0.3s ease;
+  transition: $mid-tran;
 }
 
 .panel-ring {

@@ -6,7 +6,7 @@
 .news-slide-image-block {
   position: relative;
   overflow: hidden;
-  border-radius: 0.5rem;
+  border-radius: $avg-rem;
 
   .news-slide-gradient {
     position: absolute;
@@ -30,6 +30,6 @@
   .news-slide {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: $avg-rem;
   }
 }

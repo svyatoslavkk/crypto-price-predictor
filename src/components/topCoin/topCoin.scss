@@ -3,17 +3,17 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: $avg-rem;
 }
 
 .window {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 1.75rem;
-  background-color: #111;
-  padding: 1.0rem;
-  border-radius: 0.5rem;
+  gap: $large-rem;
+  background-color: $avg-black;
+  padding: $big-rem;
+  border-radius: $avg-rem;
 }
 
 .price-info {
@@ -32,20 +32,20 @@
 .up-btn,
 .down-btn {
   display: flex;
-  gap: 0.3rem;
+  gap: $small-rem;
   align-items: center;
   justify-content: center;
   min-width: 40px;
   width: 100%;
-  padding: 0.5rem;
-  border-radius: 0.75rem;
+  padding: $avg-rem;
+  border-radius: $big-rem;
   font-weight: 600;
-  transition: 0.1s ease;
+  transition: $fast-tran;
   overflow: hidden;
 }
 
 .up-btn {
-  background-color: #0cff41;
+  background-color: $nice-green;
 
   &:hover{
     background-color: #48ff7f;;
@@ -53,7 +53,7 @@
 }
 
 .down-btn {
-  background-color: #ff5e5e;
+  background-color: $nice-red;
 
   &:hover{
     background-color: #ff7878;
@@ -63,7 +63,7 @@
 .double-window {
   position: relative;
   display: flex;
-  gap: 0.5rem;
+  gap: $avg-rem;
   width: 100%;
 }
 
@@ -80,19 +80,19 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: $big-rem;
   justify-content: space-between;
   width: 100%;
   min-width: 70px;
-  background-color: #111;
-  padding: 1.0rem;
-  border-radius: 0.5rem;
+  background-color: $avg-black;
+  padding: $big-rem;
+  border-radius: $avg-rem;
   overflow: hidden;
 }
 
 .select-section {
   display: flex;
-  gap: 0.5rem;
+  gap: $avg-rem;
   width: 100%;
 }
 
@@ -124,9 +124,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #171717;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
+  background-color: $medium-black;
+  padding: $avg-rem;
+  border-radius: $avg-rem;
   z-index: 500;
 }
 
@@ -135,9 +135,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1.5rem;
+  gap: $large-rem;
   padding: 2rem 2rem;
-  border-radius: 0.5rem;
+  border-radius: $avg-rem;
   background-color: #333;
 }
 
@@ -162,9 +162,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: #171717;
-    padding: 0.5rem;
-    border-radius: 0.5rem;
+    background-color: $medium-black;
+    padding: $avg-rem;
+    border-radius: $avg-rem;
     z-index: 500;
   }
 }

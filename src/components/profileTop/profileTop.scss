@@ -4,22 +4,22 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: $big-rem;
   width: 100%;
-  padding: 1.5rem;
+  padding: $large-rem;
 }
 
 .active-bonus-btn,
 .waiting-bonus-btn {
   position: relative;
   display: flex;
-  gap: 0.3rem;
-  padding: 0.3rem;
-  border-radius: 0.75rem;
+  gap: $small-rem;
+  padding: $small-rem;
+  border-radius: $avg-rem;
   font-weight: 500;
   align-items: center;
   justify-content: center;
-  background-color: #222;
+  background-color: $light-black;
   color: #0cff41;
   font-size: 12px;
   transition: 0.1s ease;
@@ -27,7 +27,7 @@
 }
 
 .waiting-bonus-btn {
-  color: #ddd;
+  color: $light-gray;
 }
 
 @keyframes pulse {
@@ -55,20 +55,20 @@
 .balance-section {
   @include list-column-styles;
   background-color: #121212;
-  padding: 1rem;
-  border-radius: 1rem;
+  padding: $big-rem;
+  border-radius: $big-rem;
   align-items: center;
 }
 
 .balance-amount {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: $avg-rem;
 }
 
 .stats-info {
   display: flex;
-  gap: 0.5rem;
+  gap: $avg-rem;
   width: 100%;
 }
 

@@ -8,7 +8,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: $big-rem;
   width: 100%;
 }
 
@@ -17,9 +17,9 @@
   top: 142%;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  border-radius: 0.5rem;
-  padding: 0.5rem;
+  gap: $big-rem;
+  border-radius: $avg-rem;
+  padding: $avg-rem;
   background-color: #202020;
   width: 100%;
   z-index: 999;

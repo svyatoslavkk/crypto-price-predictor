@@ -1,20 +1,20 @@
 .profile-info {
   @include container-styles;
   align-items: center;
-  gap: 1rem;
-  padding: 1.5rem;
-  background-color: #171717;
-  border-top-left-radius: 1.5rem;
-  border-top-right-radius: 1.5rem;
+  gap: $big-rem;
+  padding: $large-rem;
+  background-color: $medium-black;
+  border-top-left-radius: $large-rem;
+  border-top-right-radius: $large-rem;
 }
 
 .full-btn {
   @include stat-styles;
-  border: 1px solid #222;
+  border: 1px solid $light-black;
 }
 
 .full-btn.active {
-  border: 1px solid orange;
+  border: 1px solid $nice-orange;
 }
 
 .history-bet-column {
@@ -26,6 +26,6 @@
 .history-bet-item {
   @include list-item-styles;
   justify-content: space-between;
-  padding: 0.5rem;
-  background-color: #111;
+  padding: $avg-rem;
+  background-color: $avg-black;
 }

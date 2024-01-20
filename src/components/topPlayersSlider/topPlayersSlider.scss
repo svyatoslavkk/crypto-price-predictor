@@ -1,6 +1,6 @@
 .top-players-slider {
   display: flex;
-  gap: 1.8rem;
+  gap: $large-rem;
 }
 
 .chart-item {
@@ -22,5 +22,5 @@
   height: 28px;
   background-color: yellow;
   border-radius: 50%;
-  border: 2px solid #050505;
+  border: 2px solid $ulrta-black;
 }

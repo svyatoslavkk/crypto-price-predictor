@@ -75,7 +75,7 @@ input:focus {
 .container {
   @include container-styles;
   padding: 1.5rem;
-  gap: 1rem;
+  gap: $big-rem;
   align-items: center;
   justify-content: space-between;
   background: linear-gradient(to top, #171716, #171716);
@@ -83,7 +83,7 @@ input:focus {
 
 .buttons {
   display: flex;
-  gap: 1rem;
+  gap: $big-rem;
   justify-content: space-between;
   width: 100%;
 }
@@ -94,8 +94,8 @@ input:focus {
 
 .list-item {
   @include list-item-styles;
-  padding: 0.5rem;
-  background-color: #111;
+  padding: $avg-rem;
+  background-color: $avg-black;
 }
 
 .text-items-column {
@@ -105,7 +105,7 @@ input:focus {
 .flex-info {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: $avg-rem;
 }
 
 .green {
