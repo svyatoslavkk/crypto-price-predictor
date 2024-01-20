@@ -1,13 +1,7 @@
 import { useGetCryptoNewsQuery } from "../../redux/features/api/newsApi";
 import { Link } from "react-router-dom";
 import SimpleLoader from "../loaders/simpleLoader/SimpleLoader";
-
-interface News {
-  publishedAt: string;
-  urlToImage: string;
-  url: string;
-  title: string;
-}
+import { News } from "../../types/types";
 
 export default function NewsSection() {
   const adaptiveImg = 'https://play-lh.googleusercontent.com/jGpj_gR6iUi1FqHZ8w__2G0zonoONbRYkYIgARnKpOtKL7we9d213Bvn6AOUMF5WVgOV=w240-h480-rw';

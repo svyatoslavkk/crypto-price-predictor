@@ -114,6 +114,24 @@
   width: 100%;
 }
 
+.bet-setup-input {
+  position: relative;
+  .time-icon {
+    display: flex;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 6px;
+  }
+  .toll-icon {
+    display: flex;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 6px;
+  }
+}
+
 .current-bet {
   display: flex;
   flex-direction: column;

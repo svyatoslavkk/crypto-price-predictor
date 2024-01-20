@@ -1,0 +1,22 @@
+.news-slide-image-block {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.5rem;
+
+  .news-slide-gradient {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(to bottom, #00000000, #000000cc);
+  }
+  .news-slide-text {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 95%;
+    text-align: center;
+  }
+}

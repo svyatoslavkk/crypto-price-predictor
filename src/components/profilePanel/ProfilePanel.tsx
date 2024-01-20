@@ -49,7 +49,6 @@ export default function ProfilePanel() {
   const myCurrRank = users
   .filter((data) => data.uid === user?.uid)
   .map((data) => data.rank)[0];
-  console.log("myCurrRank", myCurrRank)
 
   useEffect(() => {
     fetchData();
@@ -106,7 +105,7 @@ export default function ProfilePanel() {
           </div>
         </div>
       </div>
-      <ModernBalance userBalance={userBalance} />
+      <ModernBalance />
     </section>
   )
 }

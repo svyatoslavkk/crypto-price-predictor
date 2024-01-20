@@ -26,6 +26,9 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
 import NewsSection from "../newsSection/NewsSection";
 import { formatTime } from "../../utils/formatTime";
+import TopPlayersSlider from "../topPlayersSlider/TopPlayersSlider";
+import NewsSlide from "../newsSlide/NewsSlide";
+import TollIcon from '@mui/icons-material/Toll';
 
 interface BetDetails {
   direction: string;
@@ -77,7 +80,6 @@ export default function TopCoin() {
       const response = await getDocs(collectionRef);
       setFireData(response.docs.map((data) => ({ ...data.data(), id: data.id })));
       setLoading(false);
-      console.log("DATA", fireData);
     } catch (error) {
       console.error('Error getting data:', error);
     }
@@ -459,7 +461,6 @@ export default function TopCoin() {
             result: 'lose',
           };
           const newHistoryBets = [...(userDocSnapshot.data()?.historyBets || []), betDetails];
-          console.log("newHistoryBets", newHistoryBets)
           await updateDoc(userDocRef, { 
             historyBets: newHistoryBets,
           });
@@ -749,20 +750,25 @@ export default function TopCoin() {
             <button className="sq-btn" onClick={() => setBetTime((prev) => Math.max(prev - 1, 6))}>
               <RemoveIcon fontSize="small" />
             </button>
-            <input 
-              className="short-input" 
-              value={betTime}
-              type="text"
-              pattern="[6-9]|1[0-9]|20"
-              onChange={(e) => {
-                const value = e.target.value;
-                if (/^[6-9]|1[0-9]|20$/.test(value) || value === '') {
-                  setBetTime(value === '' ? '' : Number(value));
-                }
-              }}
-              min="6"
-              max="20"
-            />
+            <div className="bet-setup-input">
+              <input 
+                className="short-input" 
+                value={betTime}
+                type="text"
+                pattern="[6-9]|1[0-9]|20"
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (/^[6-9]|1[0-9]|20$/.test(value) || value === '') {
+                    setBetTime(value === '' ? '' : Number(value));
+                  }
+                }}
+                min="6"
+                max="20"
+              />
+              <span className="time-icon">
+                <AccessTimeIcon fontSize="small" sx={{ color: '#555' }} />
+              </span>
+            </div>
             <button className="sq-btn" onClick={() => setBetTime((prev) => Math.min(prev + 1, 20))}>
               <AddIcon fontSize="small" />
             </button>
@@ -771,12 +777,17 @@ export default function TopCoin() {
             <button className="sq-btn" onClick={() => setPointAmount((prev) => Math.max(prev - 10, 10))}>
               <RemoveIcon fontSize="small" />
             </button>
-            <input 
-              className="short-input"
-              value={pointAmount} 
-              onChange={(e) => setPointAmount(Number(e.target.value))}
-              max={currentBalance * 0.2}
-            />
+            <div className="bet-setup-input">
+              <input 
+                className="short-input"
+                value={pointAmount} 
+                onChange={(e) => setPointAmount(Number(e.target.value))}
+                max={currentBalance * 0.2}
+              />
+              <span className="toll-icon">
+                <TollIcon fontSize="small" sx={{ color: '#555' }} />
+              </span>
+            </div>
             <button className="sq-btn" onClick={() => setPointAmount((prev) => prev + 10)}>
               <AddIcon fontSize="small" />
             </button>
@@ -838,8 +849,9 @@ export default function TopCoin() {
           </div>
         </div>
       )} */}
-      
+      <TopPlayersSlider />
       <CoinsRow />
+      <NewsSlide />
       <NewsSection />
     </div>
   )

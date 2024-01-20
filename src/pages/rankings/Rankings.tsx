@@ -5,15 +5,7 @@ import { database } from "../../firebase/firebaseConfig";
 import TopButtons from "../../components/topButtons/TopButtons";
 import SimpleLoader from "../../components/loaders/simpleLoader/SimpleLoader";
 import ProfilePanel from "../../components/profilePanel/ProfilePanel";
-
-interface User {
-  id: string;
-  userName: string;
-  avatar: string;
-  email: string;
-  rank: number;
-  balance: string;
-}
+import { User } from "../../types/types";
 
 export default function Rankings() {
   const exImg = 'https://www.aipromptsgalaxy.com/wp-content/uploads/2023/06/subrat_female_avatar_proud_face_Aurora_a_25-year-old_girl_with__fd0e4c59-bb7e-4636-9258-6690ec6a71e7.png';

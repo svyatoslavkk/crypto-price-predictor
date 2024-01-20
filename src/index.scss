@@ -16,6 +16,8 @@
 @import './components/profilePanel/profilePanel.scss';
 @import './components/headerPanel/headerPanel.scss';
 @import './components/modernBalance/modernBalance.scss';
+@import './components/topPlayersSlider/topPlayersSlider.scss';
+@import './components/newsSlide/newsSlide.scss';
 
 $primary-color: #572b06;
 $secondary-color: #442200;
@@ -177,6 +179,14 @@ input:focus {
   height: 80px;
 }
 
+.medium-album-image {
+  width: 100%;
+  height: auto;
+  min-height: 200px;
+  max-height: 200px;
+  border-radius: 0.5rem;
+}
+
 .classic-button {
   text-align: center;
   padding: 1rem;
@@ -279,14 +289,6 @@ input:focus {
   max-width: 550px;
   max-height: 550px;
   width: 100%;
-}
-
-.medium-album-image {
-  width: 100%;
-  height: auto;
-  min-height: 200px;
-  max-height: 200px;
-  border-radius: 0.5rem;
 }
 
 .list-column {
