@@ -6,7 +6,7 @@ import { User } from '../../types/types';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 
-export default function HeaderPanel({ userImg, userUserName }) {
+export default function HeaderPanel() {
   const [users, setUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearchQuery] = useDebounce(searchQuery, 500);

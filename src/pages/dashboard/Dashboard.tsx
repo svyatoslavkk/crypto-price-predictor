@@ -28,7 +28,6 @@ export default function Dashboard() {
       setLoading(false);
     }
   };
-  const exImg = 'https://www.aipromptsgalaxy.com/wp-content/uploads/2023/06/subrat_female_avatar_proud_face_Aurora_a_25-year-old_girl_with__fd0e4c59-bb7e-4636-9258-6690ec6a71e7.png';
 
   return (
     <div className="screen-container">

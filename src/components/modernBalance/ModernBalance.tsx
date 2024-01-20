@@ -11,9 +11,7 @@ import SimpleLoader from '../loaders/simpleLoader/SimpleLoader';
 
 export default function ModernBalance() {
   const [user, setUser] = useState<any>(null);
-  const [users, setUsers] = useState<User[]>([]);
   const [userBalance, setUserBalance] = useState("");
-  const [fireData, setFireData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const collectionRef = collection(database, 'Users Data');
 
@@ -32,7 +30,6 @@ export default function ModernBalance() {
     try {
       const snapshot = await getDocs(collectionRef);
       const userList = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as User));
-      setUsers(userList);
     } catch (error) {
       console.error('Error getting users:', error);
     }
@@ -41,8 +38,6 @@ export default function ModernBalance() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const fireData = await getData();
-        setFireData(fireData);
 
         getUsers();
 
@@ -80,7 +75,6 @@ export default function ModernBalance() {
         user.rank = index + 1;
       });
 
-      setUsers(sortedUsers);
       setLoading(false);
     });
 

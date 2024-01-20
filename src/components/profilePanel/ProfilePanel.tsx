@@ -75,10 +75,7 @@ export default function ProfilePanel() {
 
   return (
     <section className="profile-panel">
-      <HeaderPanel 
-        userImg={userImg}
-        userUserName={userUserName}
-      />
+      <HeaderPanel />
       <div className="panel-info">
         <div className="panel-main">
           {fireData && fireData

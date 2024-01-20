@@ -16,7 +16,7 @@ interface Coin {
 
 export default function CoinsRow() {
   const [showLoading, setShowLoading] = useState(true);
-  const { data: coinsList, error: coinsListError, isLoading: coinsListLoading } = useGetCoinListQuery();
+  const { data: coinsList, error: coinsListError, isLoading: coinsListLoading } = useGetCoinListQuery({});
   const loadingImg = 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1200px-Bitcoin.svg.png';
   const errorImg = 'https://cdn.gobankingrates.com/wp-content/uploads/2018/03/bitcoin-ethereum-cryptocurrency-taxes-blockchain-iStock-886921308.jpg';
 
