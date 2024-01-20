@@ -4,7 +4,6 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 import SimpleLoader from "../loaders/simpleLoader/SimpleLoader";
 import { formatData } from "../../utils/formatData";
 import {
@@ -42,13 +41,10 @@ export default function TopCoin() {
   const [lastPointBet, setLastPointBet] = useState(0);
   
   const [currentBitcoinPrice, setCurrentBitcoinPrice] = useState(0);
-  const [currentBitcoinPriceDouble, setCurrentBitcoinPriceDouble] = useState(0);
   const [isBetResultShown, setIsBetResultShown] = useState(false);
   const [startPrice, setStartPrice] = useState(0);
 
   const { data: bitcoinInfo } = useGetBitcoinInfoQuery('bitcoin');
-
-  // const [timeDifference, setTimeDifference] = useState(calculateTimeDifference());
 
   /////////////////////////
   const [loading, setLoading] = useState(true);
@@ -83,7 +79,6 @@ export default function TopCoin() {
       return () => unsubscribe();
     }
   }, []);
-  /////////////////////////
 
   const documentInfo = fireData
   ? fireData
@@ -96,10 +91,75 @@ export default function TopCoin() {
     .filter((data) => data.uid === user?.uid)
     .map((data) => data.balance ? data.balance : 0)[0]
   : null;
+  /////////////////////////
 
-  const ws = useRef(new WebSocket("wss://ws-feed.pro.coinbase.com"));
+  const ws = useRef<WebSocket | null>(null);
   let first = useRef(false);
   const url = "https://api.pro.coinbase.com";
+
+  const handleWebSocketOpen = () => {
+    console.log("WebSocket connected!");
+  };
+
+  const handleWebSocketMessage = (event: MessageEvent) => {
+    const data = JSON.parse(event.data);
+    if (data.type === "ticker" && data.product_id === "BTC-USD") {
+      setCurrentBitcoinPrice(data.price);
+    }
+  };
+
+  const handleWebSocketClose = () => {
+    console.log("WebSocket closed!");
+  };
+
+  const handleWebSocketError = (error: Event) => {
+    console.error("WebSocket error:", error);
+  };
+
+  const connectWebSocket = () => {
+    const webSocketUrl = "wss://ws-feed.pro.coinbase.com";
+    ws.current = new WebSocket(webSocketUrl);
+    ws.current.addEventListener("open", handleWebSocketOpen);
+    ws.current.addEventListener("message", handleWebSocketMessage);
+    ws.current.addEventListener("close", handleWebSocketClose);
+    ws.current.addEventListener("error", handleWebSocketError);
+  };
+
+  const disconnectWebSocket = () => {
+    if (ws.current) {
+      ws.current.close();
+    }
+  };
+
+  useEffect(() => {
+    connectWebSocket();
+
+    return () => {
+      disconnectWebSocket();
+    };
+  }, []);
+
+  useEffect(() => {
+    const fetchBitcoinPrice = async () => {
+      try {
+        const response = await fetch(
+          "https://api.pro.coinbase.com/products/BTC-USD/ticker"
+        );
+        const bitcoinData = await response.json();
+        setCurrentBitcoinPrice(bitcoinData.price);
+      } catch (error) {
+        console.error("Error fetching Bitcoin price:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const bitcoinPriceInterval = setInterval(fetchBitcoinPrice, 500);
+
+    return () => {
+      clearInterval(bitcoinPriceInterval);
+    };
+  }, []);
 
   // const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
   //   let unsubMsg = {
@@ -512,18 +572,16 @@ export default function TopCoin() {
 
         if (data.product_id === "BTC-USD") {
           setCurrentBitcoinPrice(data.price);
-          setCurrentBitcoinPriceDouble(data.price);
         }
       };
     }
-  }, [pair, price]);
+  }, [currentBitcoinPrice, pair, price]);
 
   useEffect(() => {
     const fetchBitcoinPrice = async () => {
       const response = await fetch(`${url}/products/BTC-USD/ticker`);
       const bitcoinData = await response.json();
       setCurrentBitcoinPrice(bitcoinData.price);
-      setCurrentBitcoinPriceDouble(bitcoinData.price);
     };
 
     fetchBitcoinPrice();
@@ -542,7 +600,6 @@ export default function TopCoin() {
       const data = JSON.parse(e.data);
       if (data.type === "ticker") {
         setCurrentBitcoinPrice(data.price);
-        setCurrentBitcoinPriceDouble(data.price);
       }
     };
 
@@ -552,6 +609,10 @@ export default function TopCoin() {
   }, []);
 
   return (
+    <>
+    {loading ? (
+      <p style={{color: 'white'}}>Loading</p>
+    ) : (
     <div className="top-coin">
       {/* <h2 className="medium-header">Top Coin</h2>
       <div>
@@ -574,9 +635,9 @@ export default function TopCoin() {
           </div>
         )}
         {currentBitcoinPrice && (
-        <div className="price-info">
-          <span style={{ color: priceChangeColor }}>{`$${pair === "BTC-USD" ? currentBitcoinPrice : price}`}</span>
-        </div>
+          <div className="price-info">
+            <span style={{ color: priceChangeColor }}>{`$${pair === "BTC-USD" ? currentBitcoinPrice : price}`}</span>
+          </div>
         )}
         <div className="change-diff">
           {percentageDiff > 0 ? (
@@ -684,5 +745,7 @@ export default function TopCoin() {
         </div>
       )}
     </div>
+    )}
+    </>
   )
 }

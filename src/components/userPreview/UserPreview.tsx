@@ -20,7 +20,6 @@ export default function UserPreview() {
   const exImg = 'https://www.aipromptsgalaxy.com/wp-content/uploads/2023/06/subrat_female_avatar_proud_face_Aurora_a_25-year-old_girl_with__fd0e4c59-bb7e-4636-9258-6690ec6a71e7.png';
   const [bonusStatus, setBonusStatus] = useState("waiting"); // "inactive", "active", "waiting"
   const [checkBonusAvailable, setCheckBonusAvailable] = useState("");
-  const [editedFormatDiff, setEditedFormatDiff] = useState("");
   /////////////////////////
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
@@ -62,7 +61,6 @@ export default function UserPreview() {
       setBonusStatus("waiting");
       console.log("bonusStatus", bonusStatus);
       const randomBonusAmount = Math.floor(Math.random() * (72 - 11 + 1)) + 11;
-      setCheckBonusAvailable(editedFormatDiff);
       await updateDoc(userDocRef, {
         balance: (userDocSnapshot.data().balance || 0) + randomBonusAmount,
         lastClaimedBonus: new Date().toISOString(),
@@ -89,8 +87,6 @@ export default function UserPreview() {
       if (timeDifferenceInSeconds <= 0) {
         setBonusStatus("active");
       }
-    } else {
-      console.error('Нет данных о последнем запросе бонуса.');
     }
   }, [bonusStatus, lastTimeClaiming]);
 
@@ -124,10 +120,6 @@ export default function UserPreview() {
                 <div style={{opacity: 0}}></div>
               </div>
               <h3 className="small-header" style={{opacity: 0}}>$0.00</h3>
-              <div className="percentage-progress" style={{opacity: 0}}>
-                <ArrowCircleUpIcon fontSize='small' />
-                <span>23.30%</span>
-              </div>
             </div>
             <div className="mini-window">
               <SimpleLoader />

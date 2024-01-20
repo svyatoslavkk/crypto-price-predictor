@@ -76,7 +76,7 @@ export default function CoinsRow() {
 
   return (
     <>
-      <div className="coins-row">
+      <div className="list-column">
         <div className="header-section">
           <h3 className="small-header">Coins</h3>
           <div></div>

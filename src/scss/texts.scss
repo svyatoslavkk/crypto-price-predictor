@@ -1,0 +1,62 @@
+.header-text {
+  color: #fff;
+  letter-spacing: 1px;
+}
+
+.large-header {
+  color: #fff;
+  font-weight: 600;
+  font-size: 26px;
+}
+
+.medium-header {
+  color: #fff;
+  font-weight: 600;
+  font-size: 20px;
+}
+
+.small-header {
+  color: #fff;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.small-text {
+  color: #ddd;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.medium-text {
+  color: #ddd;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.large-text {
+  color: #ddd;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.tiny-color-text {
+  color: orange;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.small-color-text {
+  color: orange;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.link-text {
+  color: rgb(255, 190, 70);
+  font-size: 16px;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

@@ -9,7 +9,6 @@
 @import './components/topButtons/topButtons.scss';
 @import './components/profileInfo/profileInfo.scss';
 @import './pages/rankings/rankings.scss';
-@import './components/timers/classicTimer.scss';
 @import './components/coinsRow/coinsRow.scss';
 @import './components/newsSection/newsSection.scss';
 @import './pages/news/news.scss';
@@ -19,9 +18,10 @@
 @import './components/topPlayersSlider/topPlayersSlider.scss';
 @import './components/newsSlide/newsSlide.scss';
 @import './components/userPreview/userPreview.scss';
-
-$primary-color: #572b06;
-$secondary-color: #442200;
+@import './scss/buttons.scss';
+@import './scss/images.scss';
+@import './scss/texts.scss';
+@import './scss/inputs.scss';
 
 * {
   margin: 0;
@@ -78,225 +78,18 @@ input:focus {
   gap: 1rem;
   align-items: center;
   justify-content: space-between;
-  background: linear-gradient(to top, $primary-color, $secondary-color);
+  background: linear-gradient(to top, #171716, #171716);
 }
 
-.header-text {
-  color: #fff;
-  letter-spacing: 1px;
-}
-
-.large-header {
-  color: #fff;
-  font-weight: 600;
-  font-size: 26px;
-}
-
-.medium-header {
-  color: #fff;
-  font-weight: 600;
-  font-size: 20px;
-}
-
-.small-header {
-  color: #fff;
-  font-weight: 600;
-  font-size: 16px;
-}
-
-.small-text {
-  color: #ddd;
-  font-size: 13px;
-  font-weight: 500;
-}
-
-.medium-text {
-  color: #ddd;
-  font-size: 16px;
-  font-weight: 500;
-}
-
-.large-text {
-  color: #ddd;
-  font-size: 20px;
-  font-weight: 500;
-}
-
-.tiny-color-text {
-  color: orange;
-  font-size: 11px;
-  font-weight: 500;
-}
-
-.small-color-text {
-  color: orange;
-  font-size: 13px;
-  font-weight: 500;
-}
-
-.link-text {
-  color: rgb(255, 190, 70);
-  font-size: 16px;
-  text-decoration: none;
-}
-.link-text:hover,
-.link-text:focus {
-  text-decoration: underline;
-}
-
-.large-sq-img {
-  border-radius: 0.5rem;
-  width: 80px;
-  height: 80px;
-}
-
-.medium-sq-img {
-  border-radius: 0.5rem;
-  width: 48px;
-  height: 48px;
-}
-
-.small-sq-img {
-  border-radius: 0.5rem;
-  width: 24px;
-  height: 24px;
-}
-
-.small-circle-img {
-  border-radius: 50%;
-  width: 24px;
-  height: 24px;
-}
-
-.medium-circle-img {
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
-}
-
-.large-circle-img {
-  border-radius: 50%;
-  width: 80px;
-  height: 80px;
-}
-
-.medium-album-image {
-  width: 100%;
-  height: auto;
-  min-height: 200px;
-  max-height: 200px;
-  border-radius: 0.5rem;
-}
-
-.classic-button {
-  text-align: center;
-  padding: 1rem;
-  border-radius: 1rem;
-  font-weight: 500;
-  font-size: 18px;
-  background-color: #9f6409;
-  color: #fff;
-  width: 100%;
-  text-decoration: none;
-  transition: 0.1s ease;
-
-  &:hover,
-  &:focus {
-    background-color: #c27a0f;
-  }
-}
-
-.small-circle-button {
-  border-radius: 50%;
+.buttons {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  background-color: rgba(10, 10, 10, 0.5);
-  color: #fff;
-  transition: 0.1s ease;
-}
-
-.sq-btn {
-  @include sq-btn;
-  background-color: rgba(10, 10, 10, 0.5);
-  color: #ddd;
-}
-
-.sq-btn:hover,
-.sq-btn:focus {
-  background-color: rgba(10, 10, 10, 0.8);
-}
-
-.sq-btn-mod {
-  @include sq-btn;
-  background-color: #333;
-  color: orange;
-}
-
-.sq-btn-mod:hover,
-.sq-btn-mod:focus {
-  background-color: #444444;
-}
-
-.sq-red-btn {
-  @include sq-btn;
-  background-color: rgba(255, 94, 94, 0.50);
-}
-
-.sq-green-btn {
-  @include sq-btn;
-  background-color: rgb(12, 255, 65, 0.5);
-}
-
-.small-circle-button:hover,
-.small-circle-button:focus {
-  background-color: rgba(10, 10, 10, 1);
-}
-
-.transparent-btn {
-  background-color: transparent;
-  color: orange;
-  font-weight: 600;
-  transition: 0.1s ease;
-}
-
-.transparent-btn:hover {
-  color: rgb(255, 196, 85);
-}
-
-.classic-input {
-  width: 100%;
-  padding: 1rem;
-  border-radius: 1rem;
-  background-color: transparent;
-  border: 2px solid #555;
-  color: #fff;
-  font-size: 14px;
-}
-
-.short-input {
-  border-radius: 0.5rem;
-  border: 2px solid #444;
-  padding: 0.5rem;
-  background-color: rgb(30, 30, 30, 0.5);
-  color: #fff;
-  font-weight: 500;
-  width: 100%;
-}
-
-.illustration-img {
-  max-width: 550px;
-  max-height: 550px;
+  gap: 1rem;
+  justify-content: space-between;
   width: 100%;
 }
 
 .list-column {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  width: 100%;
+  @include list-column-styles;
 }
 
 .list-item {
@@ -330,12 +123,7 @@ input:focus {
   background-color: #555;
 }
 
-.top-section {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-}
-
+.top-section,
 .header-section {
   width: 100%;
   display: flex;

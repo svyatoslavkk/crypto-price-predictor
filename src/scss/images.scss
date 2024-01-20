@@ -1,0 +1,49 @@
+.large-sq-img {
+  border-radius: 0.5rem;
+  width: 80px;
+  height: 80px;
+}
+
+.medium-sq-img {
+  border-radius: 0.5rem;
+  width: 48px;
+  height: 48px;
+}
+
+.small-sq-img {
+  border-radius: 0.5rem;
+  width: 24px;
+  height: 24px;
+}
+
+.small-circle-img {
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+}
+
+.medium-circle-img {
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+}
+
+.large-circle-img {
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+}
+
+.medium-album-image {
+  width: 100%;
+  height: auto;
+  min-height: 200px;
+  max-height: 200px;
+  border-radius: 0.5rem;
+}
+
+.illustration-img {
+  max-width: 550px;
+  max-height: 550px;
+  width: 100%;
+}

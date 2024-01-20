@@ -20,12 +20,27 @@
   overflow: hidden;
 }
 
+@mixin column-center-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 @mixin list-item-styles {
   position: relative;
   display: flex;
   align-items: center;
   gap: 0.5rem;
   border-radius: 0.5rem;
+}
+
+@mixin list-column-styles {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  transition: 0.3s ease;
 }
 
 @mixin sq-btn {
@@ -42,4 +57,16 @@
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+}
+
+@mixin large-header-styles {
+  color: #fff;
+  font-weight: 600;
+  font-size: 26px;
+}
+
+@mixin small-text-styles {
+  color: #ddd;
+  font-size: 13px;
+  font-weight: 500;
 }

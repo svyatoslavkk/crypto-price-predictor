@@ -21,7 +21,7 @@ export default function NewsSection() {
   ));
 
   return (
-    <div className="news-section">
+    <div className="list-column news-section">
       <div className="header-section">
         <h3 className="small-header">News</h3>
         <Link to="/news">

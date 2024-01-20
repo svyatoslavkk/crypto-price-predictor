@@ -52,10 +52,6 @@ export default function ProfileTop() {
           .map((data) => (
             <h3 key={data.id} className="large-header">${data.balance ? data.balance.toFixed(2) : '0.00'}</h3>
           ))}
-          <div className="percentage-progress">
-            <ArrowCircleUpIcon fontSize='small' />
-            <span>23.30%</span>
-          </div>
         </div>
         <div className="stats-info">
           <div className="stat">

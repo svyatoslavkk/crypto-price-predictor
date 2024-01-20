@@ -1,12 +1,5 @@
-.news-section {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  transition: 0.3s ease;
-}
-
 @media (min-width: 876px) {
-  .news-section {
+  .list-column.news-section {
     display: none;
   }
 }

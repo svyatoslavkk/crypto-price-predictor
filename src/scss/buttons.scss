@@ -1,0 +1,93 @@
+.classic-button {
+  text-align: center;
+  padding: 1rem;
+  border-radius: 1rem;
+  font-weight: 500;
+  font-size: 18px;
+  background-color: #9f6409;
+  color: #fff;
+  width: 100%;
+  text-decoration: none;
+  transition: 0.1s ease;
+
+  &:hover,
+  &:focus {
+    background-color: #c27a0f;
+  }
+}
+
+.small-circle-button {
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background-color: rgba(10, 10, 10, 0.5);
+  color: #fff;
+  transition: 0.1s ease;
+
+  &:hover {
+    background-color: rgba(10, 10, 10, 1);
+  }
+}
+
+.modern-circle-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 0px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  background-color: #282828;
+  color: #8e8e8e;
+  transition: 0.1s ease;
+
+  &:hover {
+    background-color: #383838;
+  }
+}
+
+.sq-btn {
+  @include sq-btn;
+  background-color: rgba(10, 10, 10, 0.5);
+  color: #ddd;
+
+  &:hover {
+    background-color: rgba(10, 10, 10, 0.8);
+  }
+}
+
+.sq-btn-mod {
+  @include sq-btn;
+  background-color: #333;
+  color: orange;
+
+  &:hover {
+    background-color: #444444;
+  }
+}
+
+.sq-red-btn {
+  @include sq-btn;
+  background-color: rgba(255, 94, 94, 0.50);
+}
+
+.sq-green-btn {
+  @include sq-btn;
+  background-color: rgb(12, 255, 65, 0.5);
+}
+
+.transparent-btn {
+  background-color: transparent;
+  color: orange;
+  font-weight: 600;
+  transition: 0.1s ease;
+
+  &:hover {
+    color: rgb(255, 196, 85);
+  }
+}

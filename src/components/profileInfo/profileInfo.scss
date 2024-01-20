@@ -1,10 +1,7 @@
 .profile-info {
-  display: flex;
-  flex-direction: column;
+  @include container-styles;
   align-items: center;
   gap: 1rem;
-  width: 100%;
-  height: 100vh;
   padding: 1.5rem;
   background-color: #171717;
   border-top-left-radius: 1.5rem;
@@ -21,10 +18,7 @@
 }
 
 .history-bet-column {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  width: 100%;
+  @include list-column-styles;
   margin-bottom: 5rem;
   overflow-y: auto;
 }
