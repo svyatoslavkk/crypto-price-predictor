@@ -6,13 +6,16 @@ import TopButtons from "../../components/topButtons/TopButtons";
 import ProfilePanel from "../../components/profilePanel/ProfilePanel";
 import ProfileFullScreen from "../../components/profileFullScreen/ProfileFullScreen";
 import { User } from "../../types/types";
+import { useNavigate } from 'react-router-dom';
 
 export default function Rankings() {
   const exImg = 'https://www.aipromptsgalaxy.com/wp-content/uploads/2023/06/subrat_female_avatar_proud_face_Aurora_a_25-year-old_girl_with__fd0e4c59-bb7e-4636-9258-6690ec6a71e7.png';
   const [users, setUsers] = useState<User[]>([]);
+  const [fetchRank, setFetchRank] = useState(0);
   const [loading, setLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const collectionRef = collection(database, 'Users Data');
+  const navigate = useNavigate();
 
   const getUsers = async () => {
     try {
@@ -33,12 +36,11 @@ export default function Rankings() {
   useEffect(() => {
     const unsubscribe = onSnapshot(collectionRef, (snapshot: QuerySnapshot<DocumentData>) => {
       const userList = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as User));
-      const sortedUsers = userList.sort((a, b) => parseInt(b.balance, 10) - parseInt(a.balance, 10));
+      const sortedUsers = userList.sort((a, b) => b.balance - a.balance);
 
       sortedUsers.forEach((user, index) => {
         user.rank = index + 1;
       });
-
       setUsers(sortedUsers);
     });
 
@@ -46,6 +48,10 @@ export default function Rankings() {
   }, []);
 
   const pageTitle = "Rankings";
+
+  const handleViewProfile = (user: User) => {
+    navigate(`/${user.uid}`);
+  };
 
   return (
     <div className="screen-container">
@@ -74,7 +80,7 @@ export default function Rankings() {
                   </div>
                   <div className="text-items-column">
                     <h3 className="small-header" style={{textAlign: 'right'}}>${user.balance}</h3>
-                    <button className="sq-btn-mod" onClick={() => setSelectedUser(user)}>
+                    <button className="sq-btn-mod" onClick={() => handleViewProfile(user)}>
                       <span className="tiny-color-text">View Profile</span>
                     </button>
                   </div>
@@ -85,12 +91,6 @@ export default function Rankings() {
         </ul>
       </div>
       <ProfilePanel />
-      {selectedUser && (
-        <>
-          <ProfileFullScreen user={selectedUser} onClose={() => setSelectedUser(null)} />
-          <div className="overlap" onClick={() => setSelectedUser(null)}></div>
-        </>
-      )}
     </div>
   )
 }

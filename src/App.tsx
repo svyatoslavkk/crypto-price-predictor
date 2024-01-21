@@ -6,7 +6,7 @@ import Dashboard from './pages/dashboard/Dashboard';
 import Rankings from './pages/rankings/Rankings';
 import Profile from './pages/profile/Profile';
 import News from './pages/news/News';
-import CountdownTimer from './components/countdownTimer/CountdownTimer';
+import UserProfilePage from './pages/userProfilePage/UserProfilePage';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
@@ -25,8 +25,8 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/rankings" element={<Rankings />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/test" element={<CountdownTimer />} />
             <Route path="/news" element={<News />} />
+            <Route path="/:uid" element={<UserProfilePage />} />
           </Routes>
         </UserProvider>
       </BrowserRouter>
