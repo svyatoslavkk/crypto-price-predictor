@@ -19,7 +19,7 @@ export default function TopButtons({ pageTitle }: TopButtonsProps) {
       setLoading(true);
       await signOut(auth);
       navigate('/signup');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Logout error:', error.message);
     } finally {
       setLoading(false);

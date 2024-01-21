@@ -154,7 +154,7 @@ export default function TopCoin() {
       }
     };
 
-    const bitcoinPriceInterval = setInterval(fetchBitcoinPrice, 500);
+    const bitcoinPriceInterval = setInterval(fetchBitcoinPrice, 300);
 
     return () => {
       clearInterval(bitcoinPriceInterval);

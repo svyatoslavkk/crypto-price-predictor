@@ -6,8 +6,8 @@ import { News } from "../../types/types";
 
 export default function NewsSlide() {
   const adaptiveImg = 'https://ichef.bbci.co.uk/news/976/cpsprodpb/11EAB/production/_131278337_gettyimages-1436167319.jpg';
-  const { data: cryptoNews, error: cryptoNewsError, isLoading: cryptoNewsLoading } = useGetCryptoNewsQuery();
-  const sortedNews = cryptoNews?.articles.slice().sort((a, b) => {
+  const { data: cryptoNews, error: cryptoNewsError, isLoading: cryptoNewsLoading } = useGetCryptoNewsQuery({});
+  const sortedNews = cryptoNews?.articles.slice().sort((a: News, b: News) => {
     return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
   });
 

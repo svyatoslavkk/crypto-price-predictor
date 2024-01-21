@@ -5,8 +5,8 @@ import { News } from "../../types/types";
 
 export default function NewsSection() {
   const adaptiveImg = 'https://play-lh.googleusercontent.com/jGpj_gR6iUi1FqHZ8w__2G0zonoONbRYkYIgARnKpOtKL7we9d213Bvn6AOUMF5WVgOV=w240-h480-rw';
-  const { data: cryptoNews, error: cryptoNewsError, isLoading: cryptoNewsLoading } = useGetCryptoNewsQuery();
-  const sortedNews = cryptoNews?.articles.slice().sort((a, b) => {
+  const { data: cryptoNews, error: cryptoNewsError, isLoading: cryptoNewsLoading } = useGetCryptoNewsQuery({});
+  const sortedNews = cryptoNews?.articles.slice().sort((a: News, b: News) => {
     return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
   });
 

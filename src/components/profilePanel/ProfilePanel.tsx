@@ -1,19 +1,13 @@
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
 import HeaderPanel from '../headerPanel/HeaderPanel';
 import ModernBalance from '../modernBalance/ModernBalance';
+import ModernWinrate from '../modernWinrate/ModernWinrate';
 import { useState, useEffect } from 'react';
 import { collection, getDocs, onSnapshot, QuerySnapshot, DocumentData } from 'firebase/firestore';
 import { database } from "../../firebase/firebaseConfig";
 import { useUserContext } from '../../context/UserContext';
-
-interface User {
-  id: string;
-  userName: string;
-  avatar: string;
-  email: string;
-  rank: number;
-  balance: string;
-}
+import { User } from '../../types/types';
+import { Link } from 'react-router-dom';
 
 export default function ProfilePanel() {
   const exImg = 'https://www.aipromptsgalaxy.com/wp-content/uploads/2023/06/subrat_female_avatar_proud_face_Aurora_a_25-year-old_girl_with__fd0e4c59-bb7e-4636-9258-6690ec6a71e7.png';
@@ -34,17 +28,20 @@ export default function ProfilePanel() {
     }
   };
 
-  const userImg = fireData
-  .filter((data) => data.uid === user?.uid)
-  .map((data) => data.avatar)[0];
+  const myData = users
+  .filter((data) => data.uid === user?.uid)[0];
+  console.log("myData", myData);
 
-  const userUserName = fireData
+  const myTotalBets = users
   .filter((data) => data.uid === user?.uid)
-  .map((data) => data.userName)[0];
+  .map((data) => data.totalBets)[0];
 
-  const userBalance = fireData
+  const myWinBets = users
   .filter((data) => data.uid === user?.uid)
-  .map((data) => data.balance)[0];
+  .map((data) => data.winBets)[0];
+
+  const myWinrate = myWinBets / myTotalBets * 100;
+  console.log("myWinrate", myWinrate.toFixed(0));
 
   const myCurrRank = users
   .filter((data) => data.uid === user?.uid)
@@ -61,7 +58,7 @@ export default function ProfilePanel() {
   useEffect(() => {
     const unsubscribe = onSnapshot(collectionRef, (snapshot: QuerySnapshot<DocumentData>) => {
       const userList = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as User));
-      const sortedUsers = userList.sort((a, b) => parseInt(b.balance, 10) - parseInt(a.balance, 10));
+      const sortedUsers = userList.sort((a, b) => b.balance - a.balance);
 
       sortedUsers.forEach((user, index) => {
         user.rank = index + 1;
@@ -79,30 +76,33 @@ export default function ProfilePanel() {
       <div className="panel-info">
         <div className="panel-main">
           {fireData && fireData
-          .filter((data) => data.uid === user?.uid)
-          .map((data) => (
+          .filter((data: User) => data.uid === user?.uid)
+          .map((data: User) => (
             <img key={data.id} src={data.avatar ? data.avatar : exImg} className="panel-sq-img" alt="Profile Image" />
           ))}
           <div className="panel-darken"></div>
           <div className="panel-username">
             {fireData && fireData
-            .filter((data) => data.uid === user?.uid)
-            .map((data) => (
+            .filter((data: User) => data.uid === user?.uid)
+            .map((data: User) => (
               <span key={data.id} className="medium-text">{data.userName ? data.userName : 'NO_AUTH'}</span>
             ))}
-            <button className="sq-btn">
-              <ArrowOutwardIcon />
-            </button>
+            <Link to="/profile">
+              <button className="sq-btn">
+                <ArrowOutwardIcon />
+              </button>
+            </Link>
           </div>
         </div>
         <div className="panel-rank">
           <span className="small-text">Rank</span>
           <div className="panel-ring">
-            <span className="large-text">#{myCurrRank}</span>
+            <span className="extra-large-text">#{myCurrRank}</span>
           </div>
         </div>
       </div>
       <ModernBalance />
+      <ModernWinrate myWinrate={myWinrate} />
     </section>
   )
 }

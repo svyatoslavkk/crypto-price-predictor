@@ -1,5 +1,4 @@
 import SimpleLoader from "../loaders/simpleLoader/SimpleLoader"
-import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 import { useState, useEffect } from "react";
 import {
   getAuth,
@@ -81,7 +80,7 @@ export default function UserPreview() {
     if (lastTimeClaiming && lastTimeClaiming.length > 0 && lastTimeClaiming[0]) {
       const currentTime = new Date();
       const nextDate = new Date(lastTimeClaiming[0].getTime() + (24 * 60 * 60 * 1000));
-      const timeDifferenceInSeconds = Math.floor((nextDate - currentTime) / 1000);
+      const timeDifferenceInSeconds = Math.floor((nextDate.getTime() - currentTime.getTime()) / 1000);
       const editedFormatDiff = formatTime(timeDifferenceInSeconds);
       setCheckBonusAvailable((prevValue) => prevValue !== editedFormatDiff ? editedFormatDiff : prevValue);
       if (timeDifferenceInSeconds <= 0) {

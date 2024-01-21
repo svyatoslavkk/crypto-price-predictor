@@ -3,12 +3,8 @@ import questionIcon from '../../assets/question-icon.png';
 import { useState, useEffect } from 'react';
 import DevLoader from '../loaders/devLoader/DevLoader';
 import { useUserContext } from '../../context/UserContext';
-
-export interface UserData {
-  userName: string;
-  balance: number;
-  uid: string;
-}
+import { User } from '../../types/types';
+import { BetDetails } from '../../types/types';
 
 export default function ProfileInfo() {
   const [activeButton, setActiveButton] = useState("Achievements");
@@ -21,17 +17,17 @@ export default function ProfileInfo() {
 
   const reversedHistory = fireData
   ? fireData
-      .filter((data) => data.uid === user?.uid)
-      .map((data) => data.historyBets)
+      .filter((data: User) => data.uid === user?.uid)
+      .map((data: User) => data.historyBets)
       .flat()
       .reverse()
   : [];
 
   const winTotal: number = fireData
   ? fireData
-      .filter(data => data.uid === user?.uid)
-      .map(data => data.winBets || 0)
-      .reduce((acc, val) => acc + val, 0)
+      .filter((data: User) => data.uid === user?.uid)
+      .map((data: User) => data.winBets || 0)
+      .reduce((acc: number, val: number) => acc + val, 0)
   : 0;
 
   const threeWinsRow = (history: any[]) => {
@@ -172,7 +168,7 @@ export default function ProfileInfo() {
           <>
           {reversedHistory.length > 0 ? (
           <div className="history-bet-column">
-            {reversedHistory.slice(0, visibleBets).map((bet) => (
+            {reversedHistory.slice(0, visibleBets).map((bet: BetDetails) => (
                 <div key={bet.openTime} className="history-bet-item">
                   <div className="text-items-column">
                     <span className="small-text">

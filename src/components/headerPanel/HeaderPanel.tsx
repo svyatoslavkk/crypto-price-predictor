@@ -41,7 +41,7 @@ export default function HeaderPanel() {
   useEffect(() => {
     const unsubscribe = onSnapshot(collectionRef, (snapshot: QuerySnapshot<DocumentData>) => {
       const userList = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as User));
-      const sortedUsers = userList.sort((a, b) => parseInt(b.balance, 10) - parseInt(a.balance, 10));
+      const sortedUsers = userList.sort((a, b) => b.balance - a.balance);
 
       sortedUsers.forEach((user, index) => {
         user.rank = index + 1;

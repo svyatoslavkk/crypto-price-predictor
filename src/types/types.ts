@@ -5,7 +5,10 @@ export type User = {
   avatar: string;
   email: string;
   rank: number;
-  balance: string;
+  balance: number;
+  winBets: number;
+  totalBets: number;
+  historyBets: [];
 }
 
 export interface News {
@@ -19,7 +22,7 @@ export interface BetDetails {
   direction: string;
   openTime: string;
   openPrice: number;
-  closeTime: string | null;
-  closePrice: number | null;
-  result: string | null;
+  closeTime: string;
+  closePrice: number;
+  result: string;
 }

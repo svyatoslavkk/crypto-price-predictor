@@ -1,0 +1,31 @@
+.modern-winrate {
+  @include list-column-styles;
+}
+
+.modern-progress {
+  position: relative;
+  background: rgba(255,255,255,0.1);
+  justify-content: flex-start;
+  border-radius: 100px;
+  align-items: center;
+  padding: 0 5px;
+  display: flex;
+  height: 40px;
+  width: 100%;
+}
+
+.progress-winrate {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.modern-progress-value {
+  animation: load 1s normal forwards;
+  box-shadow: 0 10px 40px -10px $nice-orange;
+  border-radius: 100px;
+  background: $nice-orange;
+  height: 30px;
+  width: 0;
+}

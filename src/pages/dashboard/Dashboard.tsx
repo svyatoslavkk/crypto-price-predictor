@@ -22,7 +22,7 @@ export default function Dashboard() {
       setLoading(true);
       await signOut(auth);
       navigate('/signup');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Logout error:', error.message);
     } finally {
       setLoading(false);
@@ -40,7 +40,7 @@ export default function Dashboard() {
           </button>
         </div>
         <UserPreview />
-        <TopCoin />
+        {/* <TopCoin /> */}
         <TopPlayersSlider />
         <CoinsRow />
         <NewsSlide />

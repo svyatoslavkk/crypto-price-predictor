@@ -6,9 +6,6 @@ import { database } from "../../firebase/firebaseConfig";
 import { User } from '../../types/types';
 
 export default function TopPlayersSlider() {
-
-  const exImg = 'https://www.aipromptsgalaxy.com/wp-content/uploads/2023/06/subrat_female_avatar_proud_face_Aurora_a_25-year-old_girl_with__fd0e4c59-bb7e-4636-9258-6690ec6a71e7.png';
-  
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const collectionRef = collection(database, 'Users Data');
@@ -32,7 +29,7 @@ export default function TopPlayersSlider() {
   useEffect(() => {
     const unsubscribe = onSnapshot(collectionRef, (snapshot: QuerySnapshot<DocumentData>) => {
       const userList = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as User));
-      const sortedUsers = userList.sort((a, b) => parseInt(b.balance, 10) - parseInt(a.balance, 10));
+      const sortedUsers = userList.sort((a, b) => b.balance - a.balance);
 
       sortedUsers.forEach((user, index) => {
         user.rank = index + 1;
@@ -45,7 +42,7 @@ export default function TopPlayersSlider() {
   }, []);
 
   return(
-    <section className="coins-row">
+    <section className="list-column">
       <div className="header-section">
         <h3 className="small-header">Top Players</h3>
         <div></div>
@@ -61,7 +58,7 @@ export default function TopPlayersSlider() {
         } }
         aria-labelledby="basic-example-heading"
       >
-        {users.sort((a, b) => parseInt(b.balance, 10) - parseInt(a.balance, 10)).map((user: User) => (
+        {users.sort((a, b) => b.balance - a.balance).map((user: User) => (
           <SplideSlide key={user.uid}>
             <div className="chart-item">
               <div className="visual-info">
