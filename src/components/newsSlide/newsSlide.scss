@@ -1,3 +1,24 @@
+.news-slide-item-loading {
+  width: 100%;
+  background: #222;
+  border-radius: $avg-rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+
+  .card__image {
+    background: linear-gradient(95deg, #222 8%, #292929 18%, #222 33%);
+    background-size: 200% 100%;
+    animation: 1.5s shine linear infinite;
+    height: 200px;
+    border-radius: $avg-rem;
+  }
+}
+
+@keyframes shine {
+  to {
+    background-position-x: -200%;
+  }
+}
+
 .news-slide {
   display: none;
   transition: 0.3s ease;

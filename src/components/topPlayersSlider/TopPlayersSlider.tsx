@@ -41,6 +41,38 @@ export default function TopPlayersSlider() {
     return () => unsubscribe();
   }, []);
 
+  if (!loading) {
+    return (
+      <section className="list-column">
+        <div className="header-section">
+          <h3 className="small-header">Top Players</h3>
+          <div></div>
+        </div>
+        <Splide
+          options={ {
+            perPage: 4,
+            perMove: 1,
+            rewind : true,
+            height: '8.0rem',
+            pagination: false,
+            gap    : '0.5rem',
+          } }
+          aria-labelledby="basic-example-heading"
+        >
+          {[...Array(7)].map((_, index) => (
+            <SplideSlide key={index}>
+              <div className="chart-item-loading">
+                <div className="large-sq-img"></div>
+                <span className="mid-line"></span>
+                <span className="small-line"></span>
+              </div>
+            </SplideSlide>
+          ))}
+        </Splide>
+      </section>
+    )
+  }
+
   return(
     <section className="list-column">
       <div className="header-section">

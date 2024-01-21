@@ -28,25 +28,53 @@ export default function CoinsRow() {
     return () => clearTimeout(delay);
   }, []);
 
-  const loadingUI = Array.from({ length: 5 }, (_, index) => (
-    <div key={index} className="mini-window">
-      <SimpleLoader />
-      <div className="flex-info" style={{ opacity: 0 }}>
-        <img src={loadingImg} className="small-circle-img" alt="Coin" />
-        <div className="text-items-column">
-          <h3 className="small-header">Bitcoin</h3>
-          <span className="small-text">BTC</span>
+  if (!coinsListLoading) {
+    return (
+      <div className="list-column">
+        <div className="header-section">
+          <h3 className="small-header">Coins</h3>
+          <div></div>
         </div>
+        <Splide 
+          options={ {
+            perPage: 3,
+            perMove: 1,
+            rewind : true,
+            height: '7.6rem',
+            pagination: false,
+            gap    : '0.5rem',
+          } }
+          aria-labelledby="basic-example-heading"
+        >
+          <SplideSlide>
+            <div className="mini-window-loading">
+              <div className="card__image"></div>
+            </div>
+          </SplideSlide>
+          <SplideSlide>
+            <div className="mini-window-loading">
+              <div className="card__image"></div>
+            </div>
+          </SplideSlide>
+          <SplideSlide>
+            <div className="mini-window-loading">
+              <div className="card__image"></div>
+            </div>
+          </SplideSlide>
+          <SplideSlide>
+            <div className="mini-window-loading">
+              <div className="card__image"></div>
+            </div>
+          </SplideSlide>
+          <SplideSlide>
+            <div className="mini-window-loading">
+              <div className="card__image"></div>
+            </div>
+          </SplideSlide>
+        </Splide>
       </div>
-      <div className="flex-info" style={{ opacity: 0 }}>
-        <span className="medium-text">$45090</span>
-        <div className={`percentage-progress`}>
-          <KeyboardArrowDownIcon fontSize='small' />
-          <span>1%</span>
-        </div>
-      </div>
-    </div>
-  ));
+    )
+  }
 
   const errorUI = (
     <div className="mini-window">
@@ -116,10 +144,6 @@ export default function CoinsRow() {
             </SplideSlide>
           ))}
         </Splide>
-        <div className="double-window">
-          {showLoading && coinsListLoading && loadingUI}
-          {coinsListError && errorUI}
-        </div>
       </div>
     </>
   )

@@ -7,6 +7,35 @@
   @include column-center-item;
 }
 
+.chart-item-loading {
+  @include column-center-item;
+  gap: $small-rem;
+
+  .large-sq-img,
+  .mid-line,
+  .small-line {
+    background: linear-gradient(95deg, #222 8%, #292929 18%, #222 33%);
+    background-size: 200% 100%;
+    animation: 1.5s shine linear infinite;
+    border-radius: $avg-rem;
+  }
+  .large-sq-img {
+    background-color: #222;
+  }
+  .mid-line {
+    border-radius: 0.5rem;
+    width: 75px;
+    height: 14px;
+    background-color: #222;
+  }
+  .small-line {
+    border-radius: 0.5rem;
+    width: 60px;
+    height: 11px;
+    background-color: #222;
+  }
+}
+
 .visual-info {
   position: relative;
   width: 80px;
