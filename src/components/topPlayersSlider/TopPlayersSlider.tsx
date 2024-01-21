@@ -53,7 +53,7 @@ export default function TopPlayersSlider() {
             perPage: 4,
             perMove: 1,
             rewind : true,
-            height: '8.0rem',
+            height: '7.4rem',
             pagination: false,
             gap    : '0.5rem',
           } }
@@ -84,7 +84,7 @@ export default function TopPlayersSlider() {
           perPage: 4,
           perMove: 1,
           rewind : true,
-          height: '8.0rem',
+          height: '7.4rem',
           pagination: false,
           gap    : '0.5rem',
         } }

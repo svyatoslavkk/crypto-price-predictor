@@ -29,8 +29,7 @@ export default function ProfilePanel() {
   };
 
   const myData = users
-  .filter((data) => data.uid === user?.uid)[0];
-  console.log("myData", myData);
+  .filter((data) => data.uid === user?.uid)[0]; 
 
   const myTotalBets = users
   .filter((data) => data.uid === user?.uid)
@@ -41,7 +40,6 @@ export default function ProfilePanel() {
   .map((data) => data.winBets)[0];
 
   const myWinrate = myWinBets / myTotalBets * 100;
-  console.log("myWinrate", myWinrate.toFixed(0));
 
   const myCurrRank = users
   .filter((data) => data.uid === user?.uid)

@@ -5,11 +5,13 @@ import { database } from "../../firebase/firebaseConfig";
 import { User } from '../../types/types';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
+import ProfileFullScreen from '../profileFullScreen/ProfileFullScreen';
 
 export default function HeaderPanel() {
   const [users, setUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearchQuery] = useDebounce(searchQuery, 500);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const collectionRef = collection(database, 'Users Data');
 
   const handleInputChange = (e: any) => {
@@ -74,15 +76,26 @@ export default function HeaderPanel() {
           {debouncedSearchQuery.length >= 3 && (
             <ul className="explore-results">
               {filteredUsers.map((user: User) => (
-                <li key={user.id} className="flex-info">
-                  <img src={user.avatar} className="small-sq-img" alt="Profile Img" />
-                  <span className="small-text">{user.userName}</span>
+                <li key={user.id} className="flex-between">
+                  <div className="flex-info">
+                    <img src={user.avatar} className="small-sq-img" alt="Profile Img" />
+                    <span className="small-text">{user.userName}</span>
+                  </div>
+                  <button className="sq-btn-mod" onClick={() => setSelectedUser(user)}>
+                    <span className="tiny-color-text">View Profile</span>
+                  </button>
                 </li>
               ))}
             </ul>
           )}
         </div>
       </header>
+      {selectedUser && (
+        <>
+          <ProfileFullScreen user={selectedUser} onClose={() => setSelectedUser(null)} />
+          <div className="overlap" onClick={() => setSelectedUser(null)}></div>
+        </>
+      )}
     </>
   )
 }

@@ -1,5 +1,9 @@
-import checkIcon from '../../assets/check-mark.png';
 import questionIcon from '../../assets/question-icon.png';
+import buyBtcIcon from '../../assets/Bitcoin Buy-2.png';
+import miningIcon from '../../assets/Mining Bitcoin-1.png';
+import btcIcon from '../../assets/Bitcoin-1.png';
+import safeIcon from '../../assets/Safe-1.png';
+import tick from '../../assets/Tick-3.png';
 import { useState, useEffect } from 'react';
 import DevLoader from '../loaders/devLoader/DevLoader';
 import { useUserContext } from '../../context/UserContext';
@@ -97,31 +101,31 @@ export default function ProfileInfo() {
   
   const achievements = [
     {
-      image: winTotal > 0 ? checkIcon : questionIcon,
+      image: winTotal > 0 ? tick : questionIcon,
       header: "Novice Trader",
       description: "Make your first successful prediction.",
       achieved: winTotal > 0 ? true : false,
     },
     {
-      image: isAccurateForecastAchieved ? checkIcon : questionIcon,
+      image: isAccurateForecastAchieved ? buyBtcIcon : questionIcon,
       header: "Accurate Forecast",
       description: "Successfully predict 3 times in a row.",
       achieved: isAccurateForecastAchieved,
     },
     {
-      image: isMasterOfTrendsAchieved ? checkIcon : questionIcon,
+      image: isMasterOfTrendsAchieved ? miningIcon : questionIcon,
       header: "Master of Trends",
       description: "Successfully predict 6 times in a row.",
       achieved: isMasterOfTrendsAchieved,
     },
     {
-      image: isRelentlessPredictorAchieved ? checkIcon : questionIcon,
+      image: isRelentlessPredictorAchieved ? btcIcon : questionIcon,
       header: "Relentless Predictor",
       description: "Successfully predict 9 times in a row.",
       achieved: isRelentlessPredictorAchieved,
     },
     {
-      image: isBestOfTheBestAchieved ? checkIcon : questionIcon,
+      image: isBestOfTheBestAchieved ? safeIcon : questionIcon,
       header: "Best of the Best",
       description: "Successfully predict 12 times in a row.",
       achieved: isBestOfTheBestAchieved,
@@ -154,7 +158,7 @@ export default function ProfileInfo() {
             {achievements.map((item) => {
               return (
                 <div className="list-item" key={item.header} style={{ opacity: item.achieved ? 1 : 0.2 }}>
-                  <img className="small-sq-img" src={item.image} alt="Check Icon" />
+                  <img className="avg-sq-img" src={item.image} alt="Check Icon" />
                   <div>
                     <h3 className="small-header">{item.header}</h3>
                     <span className="small-text">{item.description}</span>

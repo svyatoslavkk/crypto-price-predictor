@@ -23,6 +23,7 @@
 @import './scss/texts.scss';
 @import './scss/inputs.scss';
 @import './components/modernWinrate/modernWinrate.scss';
+@import './components/profileFullScreen/profileFullScreen.scss';
 
 * {
   margin: 0;
@@ -129,6 +130,21 @@ input:focus {
   width: 100%;
   display: flex;
   justify-content: space-between;
+}
+
+.flex-between {
+  @include flex-between-styles;
+}
+
+.overlap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(10, 10, 10, 0.8);
+  cursor: pointer;
+  z-index: 10001;
 }
 
 @media (min-width: 876px) {

@@ -8,7 +8,7 @@ $medium-black: #171717;
 $light-black: #222;
 $ultra-light-black: #282828;
 $light-gray: #ddd;
-$small-rem: 0.2rem;
+$small-rem: 0.25rem;
 $avg-rem: 0.5rem;
 $big-rem: 1.0rem;
 $large-rem: 1.5rem;
@@ -59,6 +59,13 @@ $mid-tran: 0.3s ease;
   gap: $avg-rem;
   width: 100%;
   transition: 0.3s ease;
+}
+
+@mixin flex-between-styles {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $avg-rem;
 }
 
 @mixin sq-btn {

@@ -10,8 +10,19 @@
 .rank-item {
   @include list-item-styles;
   justify-content: space-between;
-  background-color: #111;
+  background-color: #222;
   padding: 0.75rem;
+}
+
+.rank-item-loading {
+
+  .card__image {
+    background: linear-gradient(95deg, #222 8%, #292929 18%, #222 33%);
+    background-size: 200% 100%;
+    animation: 1.5s shine linear infinite;
+    height: 73px;
+    border-radius: $avg-rem;
+  }
 }
 
 @media (min-width: 876px) {

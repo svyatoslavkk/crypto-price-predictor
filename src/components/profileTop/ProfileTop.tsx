@@ -1,6 +1,8 @@
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import TopButtons from '../topButtons/TopButtons';
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { collection, getDocs, onSnapshot, QuerySnapshot, DocumentData } from 'firebase/firestore';
+import { database } from "../../firebase/firebaseConfig";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import CasinoIcon from '@mui/icons-material/Casino';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
@@ -10,10 +12,48 @@ import { User } from '../../types/types';
 
 export default function ProfileTop() {
   const exImg = 'https://www.aipromptsgalaxy.com/wp-content/uploads/2023/06/subrat_female_avatar_proud_face_Aurora_a_25-year-old_girl_with__fd0e4c59-bb7e-4636-9258-6690ec6a71e7.png';
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+  const collectionRef = collection(database, 'Users Data');
   const { user, fireData, fetchData } = useUserContext();
+
+  const getUsers = async () => {
+    try {
+      const snapshot = await getDocs(collectionRef);
+      const userList = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as User));
+      setUsers(userList);
+    } catch (error) {
+      console.error('Error getting users:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const myCurrRank = users
+  .filter((data) => data.uid === user?.uid)
+  .map((data) => data.rank)[0];
 
   useEffect(() => {
     fetchData();
+  }, []);
+
+  useEffect(() => {
+    getUsers();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(collectionRef, (snapshot: QuerySnapshot<DocumentData>) => {
+      const userList = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as User));
+      const sortedUsers = userList.sort((a, b) => b.balance - a.balance);
+
+      sortedUsers.forEach((user, index) => {
+        user.rank = index + 1;
+      });
+
+      setUsers(sortedUsers);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const pageTitle = '';
@@ -51,7 +91,7 @@ export default function ProfileTop() {
         <div className="stats-info">
           <div className="stat">
             <ShowChartIcon fontSize="small" sx={{ color: '#f0de69' }} />
-            <h3 className="small-header">#1</h3>
+            <h3 className="small-header">#{myCurrRank}</h3>
             <span className="small-text">Rank</span>
           </div>
           <div className="stat">
