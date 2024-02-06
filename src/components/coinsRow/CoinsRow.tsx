@@ -28,7 +28,7 @@ export default function CoinsRow() {
     return () => clearTimeout(delay);
   }, []);
 
-  if (!coinsListLoading) {
+  if (coinsListLoading) {
     return (
       <div className="list-column">
         <div className="header-section">

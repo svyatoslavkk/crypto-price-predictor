@@ -12,7 +12,7 @@ export default function NewsSlide() {
     return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
   });
 
-  if (!cryptoNewsLoading) {
+  if (cryptoNewsLoading) {
     return (
       <section className="news-slide">
         <div className="header-section">

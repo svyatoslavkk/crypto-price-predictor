@@ -115,11 +115,6 @@ export default function ProfileTop() {
             ))}
             <span className="small-text">Total bets</span>
           </div>
-          <div className="stat">
-            <FavoriteIcon fontSize="small" sx={{ color: '#f0de69' }} />
-            <h3 className="small-header">1M</h3>
-            <span className="small-text">Followers</span>
-          </div>
         </div>
       </div>
     </div>

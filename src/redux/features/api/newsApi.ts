@@ -1,5 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
+const NEWS_API = import.meta.env.VITE_NEWS_API;
+
 export const newsApi = createApi({
   reducerPath: 'newsApi',
   baseQuery: fetchBaseQuery({
@@ -10,7 +12,7 @@ export const newsApi = createApi({
   }),
   endpoints: (builder) => ({
     getCryptoNews: builder.query({
-      query: () => `everything?q=cryptocurrency&apiKey=6894eb23ee924fc4903667c1818434aa`,
+      query: () => `everything?q=cryptocurrency&apiKey=${NEWS_API}`,
     }),
   }),
 });

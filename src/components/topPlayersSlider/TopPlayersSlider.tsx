@@ -41,7 +41,7 @@ export default function TopPlayersSlider() {
     return () => unsubscribe();
   }, []);
 
-  if (!loading) {
+  if (loading) {
     return (
       <section className="list-column">
         <div className="header-section">
@@ -50,7 +50,7 @@ export default function TopPlayersSlider() {
         </div>
         <Splide
           options={ {
-            perPage: 4,
+            perPage: 2,
             perMove: 1,
             rewind : true,
             height: '7.4rem',
