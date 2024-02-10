@@ -4,7 +4,6 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import SimpleLoader from "../loaders/simpleLoader/SimpleLoader";
 import { formatData } from "../../utils/formatData";
 import {
   getAuth,

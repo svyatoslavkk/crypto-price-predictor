@@ -141,3 +141,27 @@ export const TopPlayersSliderLoadingUI = (
     </Splide>
   </section>
 );
+
+export const userPreviewLoadingUI = (
+  <div className="user-preview">
+    <div className="double-window">
+      <div className="mini-window">
+        <SimpleLoader />
+        <div className="top" style={{opacity: 0}}>
+          <h3 className="small-text" style={{opacity: 0}}>Balance</h3>
+          <div style={{opacity: 0}}></div>
+        </div>
+        <h3 className="small-header" style={{opacity: 0}}>$0.00</h3>
+      </div>
+      <div className="mini-window">
+        <SimpleLoader />
+        <div className="top" style={{opacity: 0}}>
+          <h3 className="small-text">Profile</h3>
+          <div></div>
+        </div>
+        <img className="medium-circle-img" alt="Avatar" style={{opacity: 0}} />
+        <span className="small-header" style={{opacity: 0}}>auth_name</span>
+      </div>
+    </div>
+  </div>
+);

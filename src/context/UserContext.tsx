@@ -82,7 +82,6 @@ export const UserProvider: React.FC<any> = ({ children }) => {
       fetchMyData();
     }
   }, [users]);
-  console.log("rankUsers", rankUsers)
 
   useEffect(() => {
     let token = sessionStorage.getItem('Token');

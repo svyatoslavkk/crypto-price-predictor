@@ -4,6 +4,7 @@ import { useGetCryptoNewsQuery } from "../../redux/features/api/newsApi";
 import { useNavigate, useLocation } from 'react-router-dom';
 import SideBar from '../../components/sideBar/SideBar';
 import ProfilePanel from '../../components/profilePanel/ProfilePanel';
+import { INews } from '../../types/types';
 
 interface BlogItem {
   urlToImage: string;
@@ -14,8 +15,8 @@ interface BlogItem {
 
 export default function News() {
   const adaptiveImg = 'https://blockbuild.africa/wp-content/uploads/2021/11/Crypto-project-1.jpg';
-  const { data: cryptoNews } = useGetCryptoNewsQuery();
-  const sortedNews = cryptoNews?.articles.slice().sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+  const { data: cryptoNews } = useGetCryptoNewsQuery({});
+  const sortedNews = cryptoNews?.articles.slice().sort((a: INews, b: INews) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
 
   const navigate = useNavigate();
   const location = useLocation();

@@ -1,51 +1,13 @@
 import SideBar from "../../components/sideBar/SideBar";
-import { useState, useEffect } from 'react';
-import { collection, getDocs, onSnapshot, QuerySnapshot, DocumentData } from 'firebase/firestore';
-import { database } from "../../firebase/firebaseConfig";
 import TopButtons from "../../components/topButtons/TopButtons";
 import ProfilePanel from "../../components/profilePanel/ProfilePanel";
-import ProfileFullScreen from "../../components/profileFullScreen/ProfileFullScreen";
 import { User } from "../../types/types";
 import { useNavigate } from 'react-router-dom';
+import { useUserContext } from "../../context/UserContext";
 
 export default function Rankings() {
-  const exImg = 'https://www.aipromptsgalaxy.com/wp-content/uploads/2023/06/subrat_female_avatar_proud_face_Aurora_a_25-year-old_girl_with__fd0e4c59-bb7e-4636-9258-6690ec6a71e7.png';
-  const [users, setUsers] = useState<User[]>([]);
-  const [fetchRank, setFetchRank] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const collectionRef = collection(database, 'Users Data');
+  const { loading, rankUsers } = useUserContext();
   const navigate = useNavigate();
-
-  const getUsers = async () => {
-    try {
-      const snapshot = await getDocs(collectionRef);
-      const userList = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as User));
-      setUsers(userList);
-    } catch (error) {
-      console.error('Error getting users:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getUsers();
-  }, []);
-
-  useEffect(() => {
-    const unsubscribe = onSnapshot(collectionRef, (snapshot: QuerySnapshot<DocumentData>) => {
-      const userList = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as User));
-      const sortedUsers = userList.sort((a, b) => b.balance - a.balance);
-
-      sortedUsers.forEach((user, index) => {
-        user.rank = index + 1;
-      });
-      setUsers(sortedUsers);
-    });
-
-    return () => unsubscribe();
-  }, []);
 
   const pageTitle = "Rankings";
 
@@ -69,7 +31,7 @@ export default function Rankings() {
             </>
           ) : (
             <>
-              {users.sort((a, b) => b.balance - a.balance).map((user: User) => (
+              {rankUsers.map((user: User) => (
                 <li key={user.uid} className="rank-item">
                   <div className="flex-info">
                     <img src={user.avatar} className="medium-sq-img" alt="Avatar" />

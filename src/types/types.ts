@@ -11,7 +11,7 @@ export type User = {
   historyBets: [];
 }
 
-export interface News {
+export interface INews {
   publishedAt: string;
   urlToImage: string;
   url: string;
