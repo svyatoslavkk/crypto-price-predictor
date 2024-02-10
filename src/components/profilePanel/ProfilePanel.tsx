@@ -28,9 +28,6 @@ export default function ProfilePanel() {
     }
   };
 
-  const myData = users
-  .filter((data) => data.uid === user?.uid)[0]; 
-
   const myTotalBets = users
   .filter((data) => data.uid === user?.uid)
   .map((data) => data.totalBets)[0];
@@ -44,6 +41,42 @@ export default function ProfilePanel() {
   const myCurrRank = users
   .filter((data) => data.uid === user?.uid)
   .map((data) => data.rank)[0];
+
+  const loadingUI = (
+    <div className="panel-info">
+      <div className="panel-main">
+        <div className="panel-main-loading">
+          <div className="card__image"></div>
+        </div>
+        {fireData && fireData
+        .filter((data: User) => data.uid === user?.uid)
+        .map((data: User) => (
+          <img key={data.id} src={data.avatar ? data.avatar : exImg} className="panel-sq-img" alt="Profile Image" style={{opacity: 0}} />
+        ))}
+        <div className="panel-username" style={{opacity: 0}}>
+          {fireData && fireData
+          .filter((data: User) => data.uid === user?.uid)
+          .map((data: User) => (
+            <span key={data.id} className="medium-text">{data.userName ? data.userName : 'NO_AUTH'}</span>
+          ))}
+          <Link to="/profile">
+            <button className="sq-btn">
+              <ArrowOutwardIcon />
+            </button>
+          </Link>
+        </div>
+      </div>
+      <div className="panel-rank">
+        <div className="panel-main-loading">
+          <div className="card__image"></div>
+        </div>
+        <span className="small-text" style={{opacity: 0}}>Rank</span>
+        <div className="panel-ring" style={{opacity: 0}}>
+          <span className="extra-large-text">#{myCurrRank}</span>
+        </div>
+      </div>
+    </div>
+  );
 
   useEffect(() => {
     fetchData();
@@ -71,6 +104,8 @@ export default function ProfilePanel() {
   return (
     <section className="profile-panel">
       <HeaderPanel />
+      {loading && loadingUI}
+      {!loading && (
       <div className="panel-info">
         <div className="panel-main">
           {fireData && fireData
@@ -99,6 +134,7 @@ export default function ProfilePanel() {
           </div>
         </div>
       </div>
+      )}
       <ModernBalance />
       <ModernWinrate myWinrate={myWinrate} />
     </section>

@@ -6,6 +6,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { getAuth, signOut } from 'firebase/auth';
+import LoaderScreen from '../loaders/loaderScreen/LoaderScreen';
 
 export default function SideBar() {
   const [loading, setLoading] = useState(false);
@@ -26,6 +27,7 @@ export default function SideBar() {
   };
 
   return (
+    <>
     <aside className="sidebar">
       <div className="top-level">
         <div className="logo">
@@ -55,5 +57,7 @@ export default function SideBar() {
         </div>
       </div>
     </aside>
+    {loading && <LoaderScreen />}
+    </>
   )
 }

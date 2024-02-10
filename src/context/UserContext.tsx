@@ -5,19 +5,17 @@ import {
 } from 'firebase/auth';
 import { collection, getDocs } from 'firebase/firestore';
 import { app, database } from '../firebase/firebaseConfig';
+import { User } from '../types/types';
 
 const UserContext = createContext<{
-  user: any;
-  fireData: any[];
+  user: User | null;
+  fireData: User[];
   fetchData: () => Promise<void>;
-} | undefined>(undefined);
-
-interface UserData {
-  avatar: string;
-  userName: string;
-  balance: number;
-  uid: string;
-}
+}>({
+  user: null,
+  fireData: [],
+  fetchData: async () => {},
+});
 
 export const UserProvider: React.FC<any> = ({ children }) => {
   const [user, setUser] = useState<any>(null);

@@ -3,7 +3,7 @@ import { Splide, SplideSlide } from '@splidejs/react-splide';
 import '@splidejs/react-splide/css';
 import { useGetCryptoNewsQuery } from "../../redux/features/api/newsApi";
 import { News } from "../../types/types";
-import SimpleLoader from "../loaders/simpleLoader/SimpleLoader";
+import { newsSlideLoadingUI } from "../ui/loadingUI";
 
 export default function NewsSlide() {
   const adaptiveImg = 'https://ichef.bbci.co.uk/news/976/cpsprodpb/11EAB/production/_131278337_gettyimages-1436167319.jpg';
@@ -13,46 +13,7 @@ export default function NewsSlide() {
   });
 
   if (cryptoNewsLoading) {
-    return (
-      <section className="news-slide">
-        <div className="header-section">
-          <h3 className="small-header">News</h3>
-          <Link to="/news">
-            <button className="transparent-btn">
-              More
-            </button>
-          </Link>
-        </div>
-        <Splide 
-          options={ {
-            type: 'loop',
-            perPage: 1,
-            perMove: 1,
-            rewind : true,
-            height: '14.5rem',
-            pagination: true,
-            gap    : '0.5rem',
-          } }
-          aria-labelledby="basic-example-heading"
-        >
-          <SplideSlide>
-            <div className="news-slide-item-loading">
-              <div className="card__image"></div>
-            </div>
-          </SplideSlide>
-          <SplideSlide>
-            <div className="news-slide-item-loading">
-              <div className="card__image"></div>
-            </div>
-          </SplideSlide>
-          <SplideSlide>
-            <div className="news-slide-item-loading">
-              <div className="card__image"></div>
-            </div>
-          </SplideSlide>
-        </Splide>
-      </section>
-    )
+    return newsSlideLoadingUI;
   }
 
   return (

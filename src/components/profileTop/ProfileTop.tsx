@@ -3,7 +3,6 @@ import TopButtons from '../topButtons/TopButtons';
 import { useEffect, useState } from "react";
 import { collection, getDocs, onSnapshot, QuerySnapshot, DocumentData } from 'firebase/firestore';
 import { database } from "../../firebase/firebaseConfig";
-import FavoriteIcon from '@mui/icons-material/Favorite';
 import CasinoIcon from '@mui/icons-material/Casino';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import ShowChartIcon from '@mui/icons-material/ShowChart';

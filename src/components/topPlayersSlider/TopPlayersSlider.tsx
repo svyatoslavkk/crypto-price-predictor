@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { collection, getDocs, onSnapshot, QuerySnapshot, DocumentData } from 'firebase/firestore';
 import { database } from "../../firebase/firebaseConfig";
 import { User } from '../../types/types';
+import { TopPlayersSliderLoadingUI } from '../ui/loadingUI';
 
 export default function TopPlayersSlider() {
   const [users, setUsers] = useState<User[]>([]);
@@ -42,35 +43,7 @@ export default function TopPlayersSlider() {
   }, []);
 
   if (loading) {
-    return (
-      <section className="list-column">
-        <div className="header-section">
-          <h3 className="small-header">Top Players</h3>
-          <div></div>
-        </div>
-        <Splide
-          options={ {
-            perPage: 2,
-            perMove: 1,
-            rewind : true,
-            height: '7.4rem',
-            pagination: false,
-            gap    : '0.5rem',
-          } }
-          aria-labelledby="basic-example-heading"
-        >
-          {[...Array(7)].map((_, index) => (
-            <SplideSlide key={index}>
-              <div className="chart-item-loading">
-                <div className="large-sq-img"></div>
-                <span className="mid-line"></span>
-                <span className="small-line"></span>
-              </div>
-            </SplideSlide>
-          ))}
-        </Splide>
-      </section>
-    )
+    return TopPlayersSliderLoadingUI;
   }
 
   return(

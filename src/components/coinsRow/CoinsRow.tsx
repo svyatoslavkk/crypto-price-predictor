@@ -1,10 +1,9 @@
-import { useState, useEffect } from "react";
 import { useGetCoinListQuery } from "../../redux/features/api/api";
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import SimpleLoader from "../loaders/simpleLoader/SimpleLoader";
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import '@splidejs/react-splide/css';
+import { coinsRowLoadingUI } from "../ui/loadingUI";
 
 interface Coin {
   image: string;
@@ -15,65 +14,12 @@ interface Coin {
 }
 
 export default function CoinsRow() {
-  const [showLoading, setShowLoading] = useState(true);
   const { data: coinsList, error: coinsListError, isLoading: coinsListLoading } = useGetCoinListQuery({});
   const loadingImg = 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1200px-Bitcoin.svg.png';
   const errorImg = 'https://cdn.gobankingrates.com/wp-content/uploads/2018/03/bitcoin-ethereum-cryptocurrency-taxes-blockchain-iStock-886921308.jpg';
 
-  useEffect(() => {
-    const delay = setTimeout(() => {
-      setShowLoading(false);
-    }, 3000);
-
-    return () => clearTimeout(delay);
-  }, []);
-
   if (coinsListLoading) {
-    return (
-      <div className="list-column">
-        <div className="header-section">
-          <h3 className="small-header">Coins</h3>
-          <div></div>
-        </div>
-        <Splide 
-          options={ {
-            perPage: 3,
-            perMove: 1,
-            rewind : true,
-            height: '7.6rem',
-            pagination: false,
-            gap    : '0.5rem',
-          } }
-          aria-labelledby="basic-example-heading"
-        >
-          <SplideSlide>
-            <div className="mini-window-loading">
-              <div className="card__image"></div>
-            </div>
-          </SplideSlide>
-          <SplideSlide>
-            <div className="mini-window-loading">
-              <div className="card__image"></div>
-            </div>
-          </SplideSlide>
-          <SplideSlide>
-            <div className="mini-window-loading">
-              <div className="card__image"></div>
-            </div>
-          </SplideSlide>
-          <SplideSlide>
-            <div className="mini-window-loading">
-              <div className="card__image"></div>
-            </div>
-          </SplideSlide>
-          <SplideSlide>
-            <div className="mini-window-loading">
-              <div className="card__image"></div>
-            </div>
-          </SplideSlide>
-        </Splide>
-      </div>
-    )
+    return coinsRowLoadingUI;
   }
 
   const errorUI = (
@@ -101,6 +47,12 @@ export default function CoinsRow() {
       </div>
     </div>
   );
+
+  if (coinsListError) {
+    return (
+      {errorUI}
+    )
+  }
 
   return (
     <>

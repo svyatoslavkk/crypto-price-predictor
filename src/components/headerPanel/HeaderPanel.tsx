@@ -62,7 +62,7 @@ export default function HeaderPanel() {
           <label className="modern-input-section">
             <input 
               className="modern-input" 
-              placeholder="seacrhing..." 
+              placeholder="seacrhing players..." 
               value={searchQuery}
               onChange={handleInputChange}
             />

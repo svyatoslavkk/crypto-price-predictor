@@ -81,7 +81,7 @@ export default function SignUp() {
         });
         navigate('/profile');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Registration error:', err.message);
     } finally {
       setLoading(false);
@@ -100,7 +100,7 @@ export default function SignUp() {
         userName: usernameFromGoogle,
       });
       navigate('/dashboard');
-    } catch (err) {
+    } catch (err: any) {
       console.error('Google Sign In error:', err.message);
     }
   };

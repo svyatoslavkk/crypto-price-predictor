@@ -53,7 +53,9 @@
   justify-content: center;
   min-width: 200px;
   max-width: 200px;
+  max-height: 200px;
   transition: $mid-tran;
+  overflow: hidden;
 }
 
 .panel-sq-img {
@@ -74,6 +76,21 @@
   justify-content: center;
 }
 
+.panel-main-loading {
+  width: 100%;
+  background: #222;
+  border-radius: $avg-rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+
+  .card__image {
+    background: linear-gradient(95deg, #111 8%, #191919 18%, #111 33%);
+    background-size: 200% 100%;
+    animation: 1.5s shine linear infinite;
+    height: 100vh;
+    border-radius: $avg-rem;
+  }
+}
+
 @media (max-width: 875px) {
   .profile-panel {
     display: none;
@@ -89,6 +106,7 @@
   .panel-rank {
     min-width: 260px;
     max-width: 200px;
+    max-height: 260px;
   }
   .panel-sq-img {
     min-width: 260px;

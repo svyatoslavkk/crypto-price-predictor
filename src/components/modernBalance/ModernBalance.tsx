@@ -8,6 +8,7 @@ import { collection, onSnapshot, QuerySnapshot, DocumentData } from 'firebase/fi
 import { app, database } from '../../firebase/firebaseConfig';
 import { User } from '../../types/types';
 import SimpleLoader from '../loaders/simpleLoader/SimpleLoader';
+import { modernBalanceLoadingUI } from '../ui/loadingUI';
 
 export default function ModernBalance() {
   const [user, setUser] = useState<any>(null);
@@ -18,8 +19,6 @@ export default function ModernBalance() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-
-
         const token = sessionStorage.getItem('Token');
         if (token) {
           const auth = getAuth(app);
@@ -61,18 +60,7 @@ export default function ModernBalance() {
   }, [user]);
 
   if (loading) {
-    return (
-      <section className="modern-balance" style={{backgroundColor: '#22222288'}}>
-        <SimpleLoader />
-        <div className="flex-info" style={{opacity: 0}}>
-          <h3 className="small-text">Your Balance</h3>
-          <TollIcon fontSize="small" sx={{ color: '#fff' }} />
-        </div>
-        <div className="balance" style={{opacity: 0}}>
-          <p className="two-diff-texts"><h2 className="text-style-one">${loading ? '0' : userBalance}</h2><span className="medium-text" style={{marginBottom: 4}}>.00</span></p>
-        </div>
-      </section>
-    );
+    return modernBalanceLoadingUI;
   };
 
   if (!loading) {
