@@ -15,6 +15,7 @@ const UserContext = createContext<{
   rankUsers: User[];
   loading: boolean;
   fetchData: () => Promise<void>;
+  fetchMyData: () => Promise<void>;
 }>({
   user: null,
   users: [],
@@ -23,6 +24,7 @@ const UserContext = createContext<{
   rankUsers: [],
   loading: false,
   fetchData: async () => {},
+  fetchMyData: async () => {},
 });
 
 export const UserProvider: React.FC<any> = ({ children }) => {
@@ -102,7 +104,7 @@ export const UserProvider: React.FC<any> = ({ children }) => {
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, users, fireData, myData, rankUsers, loading, fetchData }}>
+    <UserContext.Provider value={{ user, users, fireData, myData, rankUsers, loading, fetchData, fetchMyData }}>
       {children}
     </UserContext.Provider>
   );

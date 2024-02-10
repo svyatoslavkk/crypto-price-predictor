@@ -36,7 +36,7 @@ export default function CoinsRow() {
           } }
           aria-labelledby="basic-example-heading"
         >
-          {coinsList && coinsList.slice(0, 9).map((item: Coin) => (
+          {coinsList && coinsList.slice(0, 10).map((item: Coin) => (
             <SplideSlide key={item.name}>
               <div className="mini-window">
                 <div className="flex-info">

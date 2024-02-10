@@ -6,24 +6,20 @@ import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { formatData } from "../../utils/formatData";
 import {
-  getAuth,
-  onAuthStateChanged,
-} from 'firebase/auth';
-import { 
-  collection, 
-  getDocs,
   doc,
   updateDoc,
   getDoc
 } from 'firebase/firestore';
-import { app, database } from "../../firebase/firebaseConfig";
+import { database } from "../../firebase/firebaseConfig";
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import TollIcon from '@mui/icons-material/Toll';
 import { BetDetails } from "../../types/types";
+import { useUserContext } from "../../context/UserContext";
 
-export default function TopCoin() {
+export default function Test() {
+  const { user, fireData, myData, loading, fetchData } = useUserContext();
   const [currencies, setcurrencies] = useState<any[]>([]);
   const [pair, setpair] = useState("BTC-USD");
   const [price, setprice] = useState("0.00");
@@ -45,40 +41,6 @@ export default function TopCoin() {
 
   const { data: bitcoinInfo } = useGetBitcoinInfoQuery('bitcoin');
 
-  /////////////////////////
-  const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<any>(null);
-  const [fireData, setFireData] = useState<any[]>([]);
-  const auth = getAuth(app);
-  const collectionRef = collection(database, 'Users Data');
-
-  const getData = async () => {
-    try {
-      const response = await getDocs(collectionRef);
-      setFireData(response.docs.map((data) => ({ ...data.data(), id: data.id })));
-      setLoading(false);
-    } catch (error) {
-      console.error('Error getting data:', error);
-    }
-  };
-
-  useEffect(() => {
-    let token = sessionStorage.getItem('Token');
-    if (token) {
-      getData();
-
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
-        if (user) {
-          setUser(user);
-        } else {
-          setUser(null);
-        }
-      });
-
-      return () => unsubscribe();
-    }
-  }, []);
-
   const documentInfo = fireData
   ? fireData
       .filter((data) => data.uid === user?.uid)
@@ -92,51 +54,9 @@ export default function TopCoin() {
   : null;
   /////////////////////////
 
-  const ws = useRef<WebSocket | null>(null);
+  const ws = useRef(new WebSocket("wss://ws-feed.pro.coinbase.com"));
   let first = useRef(false);
   const url = "https://api.pro.coinbase.com";
-
-  const handleWebSocketOpen = () => {
-    console.log("WebSocket connected!");
-  };
-
-  const handleWebSocketMessage = (event: MessageEvent) => {
-    const data = JSON.parse(event.data);
-    if (data.type === "ticker" && data.product_id === "BTC-USD") {
-      setCurrentBitcoinPrice(data.price);
-    }
-  };
-
-  const handleWebSocketClose = () => {
-    console.log("WebSocket closed!");
-  };
-
-  const handleWebSocketError = (error: Event) => {
-    console.error("WebSocket error:", error);
-  };
-
-  const connectWebSocket = () => {
-    const webSocketUrl = "wss://ws-feed.pro.coinbase.com";
-    ws.current = new WebSocket(webSocketUrl);
-    ws.current.addEventListener("open", handleWebSocketOpen);
-    ws.current.addEventListener("message", handleWebSocketMessage);
-    ws.current.addEventListener("close", handleWebSocketClose);
-    ws.current.addEventListener("error", handleWebSocketError);
-  };
-
-  const disconnectWebSocket = () => {
-    if (ws.current) {
-      ws.current.close();
-    }
-  };
-
-  useEffect(() => {
-    connectWebSocket();
-
-    return () => {
-      disconnectWebSocket();
-    };
-  }, []);
 
   useEffect(() => {
     const fetchBitcoinPrice = async () => {
@@ -148,8 +68,6 @@ export default function TopCoin() {
         setCurrentBitcoinPrice(bitcoinData.price);
       } catch (error) {
         console.error("Error fetching Bitcoin price:", error);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -159,19 +77,28 @@ export default function TopCoin() {
       clearInterval(bitcoinPriceInterval);
     };
   }, []);
+  /////////////////////HANDLE SELECT//////////////////////////
+  /////////////////////HANDLE SELECT//////////////////////////
+  /////////////////////HANDLE SELECT//////////////////////////
+  /////////////////////HANDLE SELECT//////////////////////////
+  /////////////////////HANDLE SELECT//////////////////////////
+  /////////////////////HANDLE SELECT//////////////////////////
+  /////////////////////HANDLE SELECT//////////////////////////
+  /////////////////////HANDLE SELECT//////////////////////////
+  /////////////////////HANDLE SELECT//////////////////////////
+  /////////////////////HANDLE SELECT//////////////////////////
+  const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    let unsubMsg = {
+      type: "unsubscribe",
+      product_ids: [pair],
+      channels: ["ticker"]
+    };
+    let unsub = JSON.stringify(unsubMsg);
 
-  // const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-  //   let unsubMsg = {
-  //     type: "unsubscribe",
-  //     product_ids: [pair],
-  //     channels: ["ticker"]
-  //   };
-  //   let unsub = JSON.stringify(unsubMsg);
+    ws.current.send(unsub);
 
-  //   ws.current.send(unsub);
-
-  //   setpair(e.target.value);
-  // };
+    setpair(e.target.value);
+  };
 
   const upBet = async () => {
     const docId = documentInfo[0];
@@ -214,15 +141,6 @@ export default function TopCoin() {
         totalBets: newTotalBets,
       });
   
-      setFireData(prevData =>
-        prevData.map(data =>
-          data.uid === user.uid ? { 
-            ...data, 
-            balance: newBalance, 
-            totalBets: newTotalBets,
-          } : data
-        )
-      );
     } else {
       console.error('Документ пользователя не найден.');
     }
@@ -262,16 +180,6 @@ export default function TopCoin() {
             winBets: newWinBets,
             historyBets: newHistoryBets,
           });
-          setFireData(prevData =>
-            prevData.map(userData =>
-              userData.uid === user.uid ? { 
-                ...userData, 
-                balance: newBalance, 
-                winBets: newWinBets,
-                historyBets: newHistoryBets,
-              } : userData
-            )
-          );
         }
       } else {
         console.error('Документ пользователя не найден.');
@@ -299,30 +207,15 @@ export default function TopCoin() {
           await updateDoc(userDocRef, { 
             historyBets: newHistoryBets,
           });
-          setFireData(prevData =>
-            prevData.map(userData =>
-              userData.uid === user.uid ? { 
-                ...userData, 
-                historyBets: newHistoryBets,
-              } : userData
-            )
-          );
           await updateDoc(userDocRef, { 
             historyBets: newHistoryBets,
           });
-          setFireData(prevData =>
-            prevData.map(userData =>
-              userData.uid === user.uid ? { 
-                ...userData,
-                historyBets: newHistoryBets,
-              } : userData
-            )
-          );
         }
       } else {
         console.error('Документ пользователя не найден.');
       }
     }
+    fetchData();
     setIsBetResultShown(true);
     setTimeout(() => setIsBetResultShown(false), 4000);
   };
@@ -343,11 +236,6 @@ export default function TopCoin() {
   
       await updateDoc(userDocRef, { balance: newBalance, totalBets: newTotalBets });
   
-      setFireData(prevData =>
-        prevData.map(data =>
-          data.uid === user.uid ? { ...data, balance: newBalance, totalBets: newTotalBets } : data
-        )
-      );
     } else {
       console.error('Документ пользователя не найден.');
     }
@@ -409,16 +297,6 @@ export default function TopCoin() {
             winBets: newWinBets,
             historyBets: newHistoryBets,
           });
-          setFireData(prevData =>
-            prevData.map(userData =>
-              userData.uid === user.uid ? { 
-                ...userData, 
-                balance: newBalance, 
-                winBets: newWinBets,
-                historyBets: newHistoryBets,
-              } : userData
-            )
-          );
         }
       } else {
         console.error('Документ пользователя не найден.');
@@ -445,30 +323,15 @@ export default function TopCoin() {
           await updateDoc(userDocRef, { 
             historyBets: newHistoryBets,
           });
-          setFireData(prevData =>
-            prevData.map(userData =>
-              userData.uid === user.uid ? { 
-                ...userData, 
-                historyBets: newHistoryBets,
-              } : userData
-            )
-          );
           await updateDoc(userDocRef, { 
             historyBets: newHistoryBets,
           });
-          setFireData(prevData =>
-            prevData.map(userData =>
-              userData.uid === user.uid ? { 
-                ...userData,
-                historyBets: newHistoryBets,
-              } : userData
-            )
-          );
         }
       } else {
         console.error('Документ пользователя не найден.');
       }
     }
+    fetchData();
     setIsBetResultShown(true);
     setTimeout(() => setIsBetResultShown(false), 4000);
   };
@@ -481,26 +344,21 @@ export default function TopCoin() {
         .then((res) => res.json())
         .then((data) => (pairs = data));
 
-      let filtered = pairs.filter((pair) => {
-        if (pair.quote_currency === "USD") {
-          return pair;
-        }
-      });
-
-      filtered = filtered.sort((a, b) => {
-        if (a.base_currency < b.base_currency) {
-          return -1;
-        }
-        if (a.base_currency > b.base_currency) {
-          return 1;
-        }
-        return 0;
+      const filtered = pairs.filter((pair) => {
+        const supportedPairs = [
+            'BTC-USD', 'ETH-USD', 'SOL-USD', 'XRP-USD', 
+            'ADA-USD', 'DOGE-USD', 'LINK-USD', 'DOT-USD', 
+            'WBTC-USD', 'LTC-USD', 'BCH-USD', 'ATOM-USD', 
+            'ETC-USD'
+        ];
+        return supportedPairs.includes(pair.id);
       });
       setcurrencies(filtered);
 
-      first.current = true;
-    };
+      console.log("filtered", filtered);
 
+      // first.current = true;
+    };
     apiCall();
   }, []);
 
@@ -610,11 +468,10 @@ export default function TopCoin() {
   return (
     <>
     {loading ? (
-      <p style={{color: 'white'}}>Loading</p>
+      <p style={{color: 'white'}}>Loading...</p>
     ) : (
     <div className="top-coin">
-      {/* <h2 className="medium-header">Top Coin</h2>
-      <div>
+      {/* <div>
         <select name="currency" value={pair} onChange={handleSelect}>
           {currencies.map((cur: { id: string, display_name: string }, idx: number) => {
             return (
@@ -624,7 +481,7 @@ export default function TopCoin() {
             );
           })}
         </select>
-        <h2>PRICE{`$${price}`}</h2>
+        <h2 className="medium-header">PRICE{`$${price}`}</h2>
       </div> */}
       <div className="window">
         {bitcoinInfo && (
@@ -642,7 +499,7 @@ export default function TopCoin() {
           {percentageDiff > 0 ? (
             <>
               <ArrowDropUpIcon style={{ color: "#0cff41" }} />
-              <span style={{ color: "#0cff41" }}>{`${percentageDiff.toFixed(3)}%`}</span>
+              <span style={{ color: "#0cff41" }}>{`${percentageDiff.toFixed(4)}%`}</span>
             </>
           ) : (
             <>
