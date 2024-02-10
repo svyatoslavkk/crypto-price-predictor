@@ -1,43 +1,16 @@
 import TollIcon from '@mui/icons-material/Toll';
 import { useState, useEffect } from 'react';
-import {
-  getAuth,
-  onAuthStateChanged,
-} from 'firebase/auth';
 import { collection, onSnapshot, QuerySnapshot, DocumentData } from 'firebase/firestore';
-import { app, database } from '../../firebase/firebaseConfig';
+import { database } from '../../firebase/firebaseConfig';
 import { User } from '../../types/types';
-import SimpleLoader from '../loaders/simpleLoader/SimpleLoader';
 import { modernBalanceLoadingUI } from '../ui/loadingUI';
+import { useUserContext } from '../../context/UserContext';
 
 export default function ModernBalance() {
-  const [user, setUser] = useState<any>(null);
+  const { user } = useUserContext();
   const [userBalance, setUserBalance] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const collectionRef = collection(database, 'Users Data');
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = sessionStorage.getItem('Token');
-        if (token) {
-          const auth = getAuth(app);
-          const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (user) {
-              setUser(user);
-            } else {
-              setUser(null);
-            }
-          });
-          return () => unsubscribe();
-        }
-      } catch (error) {
-        console.error('Error during initial data fetch:', error);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collectionRef, (snapshot: QuerySnapshot<DocumentData>) => {
@@ -59,9 +32,7 @@ export default function ModernBalance() {
     return () => unsubscribe();
   }, [user]);
 
-  if (loading) {
-    return modernBalanceLoadingUI;
-  };
+  if (loading) return modernBalanceLoadingUI;
 
   if (!loading) {
     return (

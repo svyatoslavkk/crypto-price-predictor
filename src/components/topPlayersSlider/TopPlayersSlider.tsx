@@ -1,46 +1,11 @@
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import '@splidejs/react-splide/css';
-import { useState, useEffect } from "react";
-import { collection, getDocs, onSnapshot, QuerySnapshot, DocumentData } from 'firebase/firestore';
-import { database } from "../../firebase/firebaseConfig";
 import { User } from '../../types/types';
 import { TopPlayersSliderLoadingUI } from '../ui/loadingUI';
+import { useUserContext } from '../../context/UserContext';
 
 export default function TopPlayersSlider() {
-  const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
-  const collectionRef = collection(database, 'Users Data');
-
-  const getUsers = async () => {
-    try {
-      const snapshot = await getDocs(collectionRef);
-      const userList = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as User));
-      setUsers(userList);
-    } catch (error) {
-      console.error('Error getting users:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getUsers();
-  }, []);
-
-  useEffect(() => {
-    const unsubscribe = onSnapshot(collectionRef, (snapshot: QuerySnapshot<DocumentData>) => {
-      const userList = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as User));
-      const sortedUsers = userList.sort((a, b) => b.balance - a.balance);
-
-      sortedUsers.forEach((user, index) => {
-        user.rank = index + 1;
-      });
-
-      setUsers(sortedUsers);
-    });
-
-    return () => unsubscribe();
-  }, []);
+  const { rankUsers, loading } = useUserContext();
 
   if (loading) {
     return TopPlayersSliderLoadingUI;
@@ -63,7 +28,7 @@ export default function TopPlayersSlider() {
         } }
         aria-labelledby="basic-example-heading"
       >
-        {users.sort((a, b) => b.balance - a.balance).map((user: User) => (
+        {rankUsers.map((user: User) => (
           <SplideSlide key={user.uid}>
             <div className="chart-item">
               <div className="visual-info">

@@ -4,54 +4,18 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import '@splidejs/react-splide/css';
 import { coinsRowLoadingUI } from "../ui/loadingUI";
-
-interface Coin {
-  image: string;
-  name: string;
-  symbol: string;
-  current_price: string;
-  price_change_percentage_24h: number;
-}
+import { coinsRowErrorUI } from "../ui/errorUI";
+import { Coin } from "../../types/types";
 
 export default function CoinsRow() {
   const { data: coinsList, error: coinsListError, isLoading: coinsListLoading } = useGetCoinListQuery({});
-  const loadingImg = 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1200px-Bitcoin.svg.png';
-  const errorImg = 'https://cdn.gobankingrates.com/wp-content/uploads/2018/03/bitcoin-ethereum-cryptocurrency-taxes-blockchain-iStock-886921308.jpg';
 
   if (coinsListLoading) {
     return coinsRowLoadingUI;
   }
 
-  const errorUI = (
-    <div className="mini-window">
-      <div className="error-content">
-        <h3 className="medium-header">404</h3>
-        <p className="small-text">Sorry. The data is broken. Please try again later.</p>
-      </div>
-      <div className="error-bg-block">
-        <img className="error-bg-img" src={errorImg} alt="Error Image" />
-      </div>
-      <div className="flex-info" style={{ opacity: 0 }}>
-        <img src={loadingImg} className="small-circle-img" alt="Coin" />
-        <div className="text-items-column">
-          <h3 className="small-header">Bitcoin</h3>
-          <span className="small-text">BTC</span>
-        </div>
-      </div>
-      <div className="flex-info" style={{ opacity: 0 }}>
-        <span className="medium-text">$45090</span>
-        <div className={`percentage-progress`}>
-          <KeyboardArrowDownIcon fontSize='small' />
-          <span>1%</span>
-        </div>
-      </div>
-    </div>
-  );
-
   if (coinsListError) {
-    return (
-      {errorUI}
-    )
+    return coinsRowErrorUI;
   }
 
   return (

@@ -26,3 +26,11 @@ export interface BetDetails {
   closePrice: number;
   result: string;
 }
+
+export type Coin = {
+  image: string;
+  name: string;
+  symbol: string;
+  current_price: string;
+  price_change_percentage_24h: number;
+}

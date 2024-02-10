@@ -5,26 +5,17 @@ import NewspaperIcon from '@mui/icons-material/Newspaper';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { getAuth, signOut } from 'firebase/auth';
 import LoaderScreen from '../loaders/loaderScreen/LoaderScreen';
+import { handleLogout } from '../../services/authUtils';
 
 export default function SideBar() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const auth = getAuth();
 
-  const handleLogout = async () => {
-    try {
-      setLoading(true);
-      await signOut(auth);
-      navigate('/signup');
-    } catch (error: any) {
-      console.error('Logout error:', error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const handleLogoutClick = async () => {
+    await handleLogout(navigate, setLoading);
+  }
 
   return (
     <>
@@ -50,7 +41,7 @@ export default function SideBar() {
           <span className="icon-text">Profile</span>
         </Link>
       </div>
-      <div className="bottom-level" onClick={handleLogout}>
+      <div className="bottom-level" onClick={handleLogoutClick}>
         <div className="icon">
           <LogoutIcon />
           <span className="icon-text">Logout</span>
