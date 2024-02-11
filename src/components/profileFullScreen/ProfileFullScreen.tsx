@@ -22,6 +22,33 @@ export default function ProfileFullScreen({ user, rank, onClose }: ProfileFullSc
 
   const winRate = (user.winBets / user.totalBets) * 100;
 
+  const statsList = [
+    {
+      icon: <ShowChartIcon fontSize="small" sx={{ color: '#f5f5f5' }} />,
+      value: `#`,
+      key: "Rank",
+      line: true,
+    },
+    {
+      icon: <TollIcon fontSize="small" sx={{ color: '#f5f5f5' }} />,
+      value: `$${user.balance}`,
+      key: "Balance",
+      line: true,
+    },
+    {
+      icon: <EmojiEventsIcon fontSize="small" sx={{ color: '#f5f5f5' }} />,
+      value: `${user.totalBets !== 0 ? winRate.toFixed(0) : 0}%`,
+      key: "WR",
+      line: true,
+    },
+    {
+      icon: <CasinoIcon fontSize="small" sx={{ color: '#f5f5f5' }} />,
+      value: `${user.totalBets !== undefined ? user.totalBets : '-'}`,
+      key: "Bets",
+      line: false,
+    },
+  ];
+
   const handleGoBack = () => {
     onClose();
     navigate(-1);
@@ -36,29 +63,16 @@ export default function ProfileFullScreen({ user, rank, onClose }: ProfileFullSc
           </div>
           <h3 className="medium-header">{user.userName}</h3>
           <div className="stats2">
-            <div className="stat">
-              <ShowChartIcon fontSize="small" sx={{ color: '#f5f5f5' }} />
-              <h3 className="small-header">#{rank}</h3>
-              <span className="small-text">Rank</span>
-            </div>
-            <div className="line"></div>
-            <div className="stat">
-              <TollIcon fontSize="small" sx={{ color: '#f5f5f5' }} />
-              <h3 className="small-header">${user.balance}</h3>
-              <span className="small-text">Balance</span>
-            </div>
-            <div className="line"></div>
-            <div className="stat">
-              <EmojiEventsIcon fontSize="small" sx={{ color: '#f5f5f5' }} />
-              <h3 className="small-header">{user.totalBets !== 0 ? winRate.toFixed(0) : 0}%</h3>
-              <span className="small-text">WR</span>
-            </div>
-            <div className="line"></div>
-            <div className="stat">
-              <CasinoIcon fontSize="small" sx={{ color: '#f5f5f5' }} />
-              <h3 className="small-header">{user.totalBets !== undefined ? user.totalBets : '-'}</h3>
-              <span className="small-text">Bets</span>
-            </div>
+            {statsList.map((el) => (
+              <>
+                <div className="stat">
+                  {el.icon}
+                  <h3 className="small-header">{el.value}</h3>
+                  <span className="small-text">{el.key}</span>
+                </div>
+                {el.line && <div className="line"></div>}
+              </>
+            ))}
           </div>
           <button className="close-icon" onClick={handleGoBack}>
             <CloseIcon fontSize="small" sx={{ color: '#f5f5f5' }} />

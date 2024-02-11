@@ -2,13 +2,13 @@ import { Link } from "react-router-dom";
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import '@splidejs/react-splide/css';
 import { useGetCryptoNewsQuery } from "../../redux/features/api/newsApi";
-import { News } from "../../types/types";
 import { newsSlideLoadingUI } from "../ui/loadingUI";
+import { INews } from "../../types/types";
 
 export default function NewsSlide() {
   const adaptiveImg = 'https://ichef.bbci.co.uk/news/976/cpsprodpb/11EAB/production/_131278337_gettyimages-1436167319.jpg';
-  const { data: cryptoNews, error: cryptoNewsError, isLoading: cryptoNewsLoading } = useGetCryptoNewsQuery({});
-  const sortedNews = cryptoNews?.articles.slice().sort((a: News, b: News) => {
+  const { data: cryptoNews, isLoading: cryptoNewsLoading } = useGetCryptoNewsQuery({});
+  const sortedNews = cryptoNews?.articles.slice().sort((a: INews, b: INews) => {
     return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
   });
 
@@ -38,7 +38,7 @@ export default function NewsSlide() {
         } }
         aria-labelledby="basic-example-heading"
       >
-        {sortedNews && sortedNews.slice(0, 3).map((item: News) => (
+        {sortedNews && sortedNews.slice(0, 3).map((item: INews) => (
           <SplideSlide key={item.url}>
               <div className="news-slide-item">
                 <div className="news-slide-image-block">

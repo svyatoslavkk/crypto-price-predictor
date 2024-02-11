@@ -20,7 +20,6 @@
 .history-bet-column {
   @include list-column-styles;
   margin-bottom: 5rem;
-  overflow-y: auto;
 }
 
 .history-bet-item {

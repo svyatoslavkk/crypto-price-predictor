@@ -71,8 +71,7 @@
     background-color: $avg-black;
     border-right: 2px solid $light-black;
     border-top-left-radius: 0.0rem;
-    border-top-right-radius: $large-rem;
-    border-bottom-right-radius: $large-rem;
+    border-top-right-radius: 0.0rem;
   }
   .top-level {
     display: flex;

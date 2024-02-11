@@ -19,7 +19,8 @@ import { BetDetails } from "../../types/types";
 import { useUserContext } from "../../context/UserContext";
 
 export default function Test() {
-  const { user, fireData, myData, loading, fetchData } = useUserContext();
+  const { user, fireData, myData, loading, fetchMyData } = useUserContext();
+  const { data: bitcoinInfo } = useGetBitcoinInfoQuery('bitcoin');
   const [currencies, setcurrencies] = useState<any[]>([]);
   const [pair, setpair] = useState("BTC-USD");
   const [price, setprice] = useState("0.00");
@@ -39,19 +40,9 @@ export default function Test() {
   const [isBetResultShown, setIsBetResultShown] = useState(false);
   const [startPrice, setStartPrice] = useState(0);
 
-  const { data: bitcoinInfo } = useGetBitcoinInfoQuery('bitcoin');
+  const documentInfo = myData ? myData.docId : 'NO_DOC';
 
-  const documentInfo = fireData
-  ? fireData
-      .filter((data) => data.uid === user?.uid)
-      .map((data) => (data.docId ? data.docId : 'NO_DOC'))
-  : [];
-
-  const currentBalance = fireData
-  ? fireData
-    .filter((data) => data.uid === user?.uid)
-    .map((data) => data.balance ? data.balance : 0)[0]
-  : null;
+  const currentBalance = myData ? myData.balance : null;
   /////////////////////////
 
   const ws = useRef(new WebSocket("wss://ws-feed.pro.coinbase.com"));
@@ -101,13 +92,13 @@ export default function Test() {
   };
 
   const upBet = async () => {
-    const docId = documentInfo[0];
+    fetchMyData();
+    const docId = myData?.docId;
     if (!docId) {
       console.error('Не удалось получить идентификатор документа.');
       return;
     }
     const userDocRef = doc(database, 'Users Data', docId);
-    const userDocSnapshot = await getDoc(userDocRef);
 
     setBetDirection("UP");
     setCountdown(betTime);
@@ -130,21 +121,18 @@ export default function Test() {
     console.log("KEEPPRICE", initialPrice);
     const openTime = new Date().toISOString();
     const openPrice = initialPrice;
-  
-    if (userDocSnapshot.exists()) {
-      const newBalance = (userDocSnapshot.data().balance || 0) - 10;
-      setLastPointBet(10);
-      const newTotalBets = (userDocSnapshot.data().totalBets || 0) + 1;
-  
-      await updateDoc(userDocRef, { 
-        balance: newBalance, 
-        totalBets: newTotalBets,
-      });
-  
-    } else {
-      console.error('Документ пользователя не найден.');
-    }
-  
+    
+    const newBalance = myData?.balance - 10;
+    console.log("newBalance", newBalance);
+    setLastPointBet(10);
+    const newTotalBets = myData?.totalBets + 1;
+    console.log("newTotalBets", newTotalBets);
+
+    await updateDoc(userDocRef, { 
+      balance: newBalance, 
+      totalBets: newTotalBets,
+    });
+    fetchMyData();
     await new Promise(resolve => setTimeout(resolve, betTime * 1000));
   
     const finalResponse = await fetch(`${url}/products/BTC-USD/ticker`);
@@ -159,86 +147,60 @@ export default function Test() {
       console.log(`${predictionResult} ${predictionStatus} ${finalPriceStatus}`);
       setBetStatus("win");
       
-      if (userDocSnapshot.exists()) {
-        if (userDocSnapshot.data().uid === user?.uid) {
-          const closeTime = new Date().toISOString();
-          const closePrice = finalPrice;
-          const betDetails: BetDetails = {
-            direction: 'UP',
-            openTime: openTime,
-            openPrice: openPrice,
-            closeTime: closeTime,
-            closePrice: closePrice,
-            result: 'win',
-          };
-          const newBalance = (userDocSnapshot.data().balance || 0) + (10 * 2);
-          const newWinBets = (userDocSnapshot.data().winBets || 0) + 1;
-          const newHistoryBets = [...(userDocSnapshot.data()?.historyBets || []), betDetails];
-          console.log("newHistoryBets", newHistoryBets)
-          await updateDoc(userDocRef, { 
-            balance: newBalance, 
-            winBets: newWinBets,
-            historyBets: newHistoryBets,
-          });
-        }
-      } else {
-        console.error('Документ пользователя не найден.');
-      }
+      const closeTime = new Date().toISOString();
+      const closePrice = finalPrice;
+      const betDetails: BetDetails = {
+        direction: 'UP',
+        openTime: openTime,
+        openPrice: openPrice,
+        closeTime: closeTime,
+        closePrice: closePrice,
+        result: 'win',
+      };
+      const newBalance = myData?.balance + (10 * 2);
+      const newWinBets = myData?.winBets + 1;
+      const newHistoryBets = [...myData?.historyBets || [], betDetails];
+      console.log("newHistoryBets", newHistoryBets)
+      await updateDoc(userDocRef, { 
+        balance: newBalance, 
+        winBets: newWinBets,
+        historyBets: newHistoryBets,
+      });
     } else if (finalPrice < initialPrice) {
       let predictionResult = "Не угадали!";
       let predictionStatus = `Прогноз: UP - Цена при прогнозе: ${initialPrice}`;
       let finalPriceStatus = `Цена в конце прогноза: ${finalPrice}`;
       console.log(`${predictionResult} ${predictionStatus} ${finalPriceStatus}`);
       setBetStatus("lose");
-      if (userDocSnapshot.exists()) {
-        if (userDocSnapshot.data().uid === user?.uid) {
-          const closeTime = new Date().toISOString();
-          const closePrice = finalPrice;
-          const betDetails: BetDetails = {
-            direction: 'UP',
-            openTime: openTime,
-            openPrice: openPrice,
-            closeTime: closeTime,
-            closePrice: closePrice,
-            result: 'lose',
-          };
-          const newHistoryBets = [...(userDocSnapshot.data()?.historyBets || []), betDetails];
-          console.log("newHistoryBets", newHistoryBets)
-          await updateDoc(userDocRef, { 
-            historyBets: newHistoryBets,
-          });
-          await updateDoc(userDocRef, { 
-            historyBets: newHistoryBets,
-          });
-        }
-      } else {
-        console.error('Документ пользователя не найден.');
-      }
+      const closeTime = new Date().toISOString();
+      const closePrice = finalPrice;
+      const betDetails: BetDetails = {
+        direction: 'UP',
+        openTime: openTime,
+        openPrice: openPrice,
+        closeTime: closeTime,
+        closePrice: closePrice,
+        result: 'lose',
+      };
+      const newHistoryBets = [...myData?.historyBets || [], betDetails];
+      console.log("newHistoryBets", newHistoryBets)
+      await updateDoc(userDocRef, { 
+        historyBets: newHistoryBets,
+      });
     }
-    fetchData();
+    fetchMyData();
     setIsBetResultShown(true);
     setTimeout(() => setIsBetResultShown(false), 4000);
   };
 
   const downBet = async () => {
-    const docId = documentInfo[0];
+    fetchMyData();
+    const docId = myData?.docId;
     if (!docId) {
       console.error('Не удалось получить идентификатор документа.');
       return;
     }
     const userDocRef = doc(database, 'Users Data', docId);
-    const userDocSnapshot = await getDoc(userDocRef);
-  
-    if (userDocSnapshot.exists()) {
-      const newBalance = (userDocSnapshot.data().balance || 0) - 10;
-      setLastPointBet(10);
-      const newTotalBets = (userDocSnapshot.data().totalBets || 0) + 1;
-  
-      await updateDoc(userDocRef, { balance: newBalance, totalBets: newTotalBets });
-  
-    } else {
-      console.error('Документ пользователя не найден.');
-    }
 
     setBetDirection("DOWN");
     setCountdown(betTime);
@@ -261,7 +223,18 @@ export default function Test() {
     console.log("KEEPPRICE", initialPrice);
     const openTime = new Date().toISOString();
     const openPrice = initialPrice;
-  
+    
+    const newBalance = myData?.balance - 10;
+    console.log("newBalance", newBalance);
+    setLastPointBet(10);
+    const newTotalBets = myData?.totalBets + 1;
+    console.log("newTotalBets", newTotalBets);
+
+    await updateDoc(userDocRef, { 
+      balance: newBalance, 
+      totalBets: newTotalBets,
+    });
+    fetchMyData();
     await new Promise(resolve => setTimeout(resolve, betTime * 1000));
   
     const finalResponse = await fetch(`${url}/products/BTC-USD/ticker`);
@@ -276,62 +249,48 @@ export default function Test() {
       console.log(`${predictionResult} ${predictionStatus} ${finalPriceStatus}`);
       setBetStatus("win");
       
-      if (userDocSnapshot.exists()) {
-        if (userDocSnapshot.data().uid === user?.uid) {
-          const closeTime = new Date().toISOString();
-          const closePrice = finalPrice;
-          const betDetails: BetDetails = {
-            direction: 'DOWN',
-            openTime: openTime,
-            openPrice: openPrice,
-            closeTime: closeTime,
-            closePrice: closePrice,
-            result: 'win',
-          };
-          const newBalance = (userDocSnapshot.data().balance || 0) + (10 * 2);
-          const newWinBets = (userDocSnapshot.data().winBets || 0) + 1;
-          const newHistoryBets = [...(userDocSnapshot.data()?.historyBets || []), betDetails];
-          console.log("newHistoryBets", newHistoryBets)
-          await updateDoc(userDocRef, { 
-            balance: newBalance, 
-            winBets: newWinBets,
-            historyBets: newHistoryBets,
-          });
-        }
-      } else {
-        console.error('Документ пользователя не найден.');
-      }
+      const closeTime = new Date().toISOString();
+      const closePrice = finalPrice;
+      const betDetails: BetDetails = {
+        direction: 'DOWN',
+        openTime: openTime,
+        openPrice: openPrice,
+        closeTime: closeTime,
+        closePrice: closePrice,
+        result: 'win',
+      };
+      const newBalance = myData?.balance + (10 * 2);
+      const newWinBets = myData?.winBets + 1;
+      const newHistoryBets = [...myData?.historyBets || [], betDetails];
+      console.log("newHistoryBets", newHistoryBets)
+      await updateDoc(userDocRef, { 
+        balance: newBalance, 
+        winBets: newWinBets,
+        historyBets: newHistoryBets,
+      });
     } else if (finalPrice > initialPrice) {
       let predictionResult = "Не угадали!";
       let predictionStatus = `Прогноз: DOWN - Цена при прогнозе: ${initialPrice}`;
       let finalPriceStatus = `Цена в конце прогноза: ${finalPrice}`;
       console.log(`${predictionResult} ${predictionStatus} ${finalPriceStatus}`);
       setBetStatus("lose");
-      if (userDocSnapshot.exists()) {
-        if (userDocSnapshot.data().uid === user?.uid) {
-          const closeTime = new Date().toISOString();
-          const closePrice = finalPrice;
-          const betDetails: BetDetails = {
-            direction: 'DOWN',
-            openTime: openTime,
-            openPrice: openPrice,
-            closeTime: closeTime,
-            closePrice: closePrice,
-            result: 'lose',
-          };
-          const newHistoryBets = [...(userDocSnapshot.data()?.historyBets || []), betDetails];
-          await updateDoc(userDocRef, { 
-            historyBets: newHistoryBets,
-          });
-          await updateDoc(userDocRef, { 
-            historyBets: newHistoryBets,
-          });
-        }
-      } else {
-        console.error('Документ пользователя не найден.');
-      }
+      const closeTime = new Date().toISOString();
+      const closePrice = finalPrice;
+      const betDetails: BetDetails = {
+        direction: 'DOWN',
+        openTime: openTime,
+        openPrice: openPrice,
+        closeTime: closeTime,
+        closePrice: closePrice,
+        result: 'lose',
+      };
+      const newHistoryBets = [...myData?.historyBets || [], betDetails];
+      console.log("newHistoryBets", newHistoryBets)
+      await updateDoc(userDocRef, { 
+        historyBets: newHistoryBets,
+      });
     }
-    fetchData();
+    fetchMyData();
     setIsBetResultShown(true);
     setTimeout(() => setIsBetResultShown(false), 4000);
   };
@@ -354,8 +313,6 @@ export default function Test() {
         return supportedPairs.includes(pair.id);
       });
       setcurrencies(filtered);
-
-      console.log("filtered", filtered);
 
       // first.current = true;
     };
@@ -487,7 +444,7 @@ export default function Test() {
         {bitcoinInfo && (
           <div className="flex-info">
             <img src={bitcoinInfo.image.small} className="small-circle-img" alt="Coin" />
-            <h3 className="small-header">{bitcoinInfo.name}</h3>
+            <h3 className="small-header">{bitcoinInfo.localization.en}</h3>
           </div>
         )}
         {currentBitcoinPrice && (
@@ -568,37 +525,38 @@ export default function Test() {
         </div>
       </div>
       
-      {countdown > 0 && (
-      <div className="active-bet">
-        <div className="text-items-column">
-          <div className="flex-info" style={{color: 'white'}}>
-            <AccessTimeIcon fontSize="small" />
-            <h3 className="small-text">{Math.abs(countdown.toFixed(1))}</h3>
+      
+      <div className={`active-bet ${(countdown > 0) ? 'active-status-bet' : ''}`}>
+          <div className="text-items-column">
+            <div className="flex-info" style={{color: 'white'}}>
+              <AccessTimeIcon fontSize="small" />
+              <h3 className="small-text">{Math.abs(countdown.toFixed(1))}</h3>
+            </div>
+            <div className="flex-info">
+              <TrendingUpIcon fontSize="inherit" sx={{ color: betDirection === 'UP' ? '#0cff41' : '#ff5e5e' }} />
+              <span className="small-text" style={{ color: betDirection === 'UP' ? '#0cff41' : '#ff5e5e' }}>
+                {betDirection}
+              </span>
+            </div>
           </div>
-          <div className="flex-info">
-            <span className="small-text">Choice:</span>
-            <span className="small-text" style={{ color: betDirection === 'UP' ? '#0cff41' : '#ff5e5e' }}>
-              {betDirection}
-            </span>
+          <div className="text-items-column" style={{alignItems: 'flex-end'}}>
+            <div className="flex-info">
+              <span className="small-text">Bet: {pointAmount}$</span>
+            </div>
+            <div className="flex-info">
+              <span className="small-text">Initial price: {startPrice}$</span>
+            </div>
           </div>
         </div>
-        <div className="text-items-column" style={{alignItems: 'flex-end'}}>
-          <div className="flex-info">
-            <span className="small-text">Bet: {pointAmount}$</span>
-          </div>
-          <div className="flex-info">
-            <span className="small-text">Initial price: {startPrice}$</span>
-          </div>
-        </div>
-      </div>
-      )}
 
-      {countdown <= 0 && isBetResultShown && (
-        <div className="active-bet" style={{display: 'flex', justifyContent: 'center'}}>
+        <div className={`active-bet ${(countdown <= 0 && isBetResultShown) ? 'active-status-bet' : ''}`}>
           <h3 className="large-header" style={{color: betStatus === 'win' ? '#0cff41' : '#ff5e5e'}}>
             {betStatus === 'win' ? 'YOU WIN!' : 'TRY AGAIN'}
           </h3>
         </div>
+
+      {(countdown > 0 || isBetResultShown) && (
+        <div className="bet-overlay"></div>
       )}
     </div>
     )}

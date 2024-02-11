@@ -1,7 +1,5 @@
 .header-panel-right {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  @include flex-between-styles;
 }
 
 .modern-input-block {
@@ -13,15 +11,12 @@
 }
 
 .explore-results {
+  @include list-column-styles;
   position: absolute;
   top: 142%;
-  display: flex;
-  flex-direction: column;
-  gap: $big-rem;
   border-radius: $avg-rem;
   padding: $avg-rem;
   background-color: #202020;
-  width: 100%;
   z-index: 999;
   overflow: hidden;
 }
@@ -29,7 +24,6 @@
 .modern-input-section {
   position: relative;
   display: flex;
-
   .clear-icon {
     position: absolute;
     right: 6px;

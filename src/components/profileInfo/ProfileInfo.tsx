@@ -34,12 +34,12 @@ export default function ProfileInfo() {
       .reduce((acc: number, val: number) => acc + val, 0)
   : 0;
 
-  const threeWinsRow = (history: any[]) => {
+  const checkWinSeries = (history: BetDetails[], winsNeeded: number) => {
     let consecutiveWins = 0;
     for (const bet of history) {
       if (bet.result === 'win') {
         consecutiveWins++;
-        if (consecutiveWins === 3) {
+        if (consecutiveWins === winsNeeded) {
           return true;
         }
       } else {
@@ -48,56 +48,6 @@ export default function ProfileInfo() {
     }
     return false;
   }
-
-  const sixWinsRow = (history: any[]) => {
-    let consecutiveWins = 0;
-    for (const bet of history) {
-      if (bet.result === 'win') {
-        consecutiveWins++;
-        if (consecutiveWins === 6) {
-          return true;
-        }
-      } else {
-        consecutiveWins = 0
-      }
-    }
-    return false;
-  }
-
-  const nineWinsRow = (history: any[]) => {
-    let consecutiveWins = 0;
-    for (const bet of history) {
-      if (bet.result === 'win') {
-        consecutiveWins++;
-        if (consecutiveWins === 9) {
-          return true;
-        }
-      } else {
-        consecutiveWins = 0
-      }
-    }
-    return false;
-  }
-
-  const twelveWinsRow = (history: any[]) => {
-    let consecutiveWins = 0;
-    for (const bet of history) {
-      if (bet.result === 'win') {
-        consecutiveWins++;
-        if (consecutiveWins === 12) {
-          return true;
-        }
-      } else {
-        consecutiveWins = 0
-      }
-    }
-    return false;
-  }
-
-  const isAccurateForecastAchieved = threeWinsRow(reversedHistory);
-  const isMasterOfTrendsAchieved = sixWinsRow(reversedHistory);
-  const isRelentlessPredictorAchieved = nineWinsRow(reversedHistory);
-  const isBestOfTheBestAchieved = twelveWinsRow(reversedHistory);
   
   const achievements = [
     {
@@ -107,28 +57,28 @@ export default function ProfileInfo() {
       achieved: winTotal > 0 ? true : false,
     },
     {
-      image: isAccurateForecastAchieved ? buyBtcIcon : questionIcon,
+      image: checkWinSeries(reversedHistory, 3) ? buyBtcIcon : questionIcon,
       header: "Accurate Forecast",
       description: "Successfully predict 3 times in a row.",
-      achieved: isAccurateForecastAchieved,
+      achieved: checkWinSeries(reversedHistory, 3),
     },
     {
-      image: isMasterOfTrendsAchieved ? miningIcon : questionIcon,
+      image: checkWinSeries(reversedHistory, 6) ? miningIcon : questionIcon,
       header: "Master of Trends",
       description: "Successfully predict 6 times in a row.",
-      achieved: isMasterOfTrendsAchieved,
+      achieved: checkWinSeries(reversedHistory, 6),
     },
     {
-      image: isRelentlessPredictorAchieved ? btcIcon : questionIcon,
+      image: checkWinSeries(reversedHistory, 9) ? btcIcon : questionIcon,
       header: "Relentless Predictor",
       description: "Successfully predict 9 times in a row.",
-      achieved: isRelentlessPredictorAchieved,
+      achieved: checkWinSeries(reversedHistory, 9),
     },
     {
-      image: isBestOfTheBestAchieved ? safeIcon : questionIcon,
+      image: checkWinSeries(reversedHistory, 9) ? safeIcon : questionIcon,
       header: "Best of the Best",
       description: "Successfully predict 12 times in a row.",
-      achieved: isBestOfTheBestAchieved,
+      achieved: checkWinSeries(reversedHistory, 12),
     },
   ];
 

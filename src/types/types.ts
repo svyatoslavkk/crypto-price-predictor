@@ -1,4 +1,5 @@
 export type User = {
+  docId: string;
   uid: string;
   id: string;
   userName: string;

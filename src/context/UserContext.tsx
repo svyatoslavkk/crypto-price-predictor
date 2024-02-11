@@ -59,17 +59,17 @@ export const UserProvider: React.FC<any> = ({ children }) => {
 
   const fetchMyData = async () => {
     try {
-      if (user && user.uid && users.length > 0) {
-        const fetchData = users.find((data) => data?.uid === user.uid);
-        if (fetchData) {
-          setMyData(fetchData);
-        }
-        const sortedUsers = users.sort((a, b) => b.balance - a.balance);
-        sortedUsers.forEach((user, index) => {
-          user.rank = index + 1;
-        });
-        setRankUsers(sortedUsers);
+      const snapshot = await getDocs(collectionRef);
+      const userList = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as User));
+      const fetchData = userList.find((data) => data?.uid === user.uid);
+      if (fetchData) {
+        setMyData(fetchData);
       }
+      const sortedUsers = userList.sort((a, b) => b.balance - a.balance);
+      sortedUsers.forEach((user, index) => {
+        user.rank = index + 1;
+      });
+      setRankUsers(sortedUsers);
     } catch (error) {
       console.error("Error fetching my Data", error);
     }
@@ -83,7 +83,7 @@ export const UserProvider: React.FC<any> = ({ children }) => {
     if (users.length > 0) {
       fetchMyData();
     }
-  }, [users]);
+  }, [users, myData]);
 
   useEffect(() => {
     let token = sessionStorage.getItem('Token');
