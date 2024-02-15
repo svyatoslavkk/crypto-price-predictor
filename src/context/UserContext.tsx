@@ -10,19 +10,19 @@ import { User } from '../types/types';
 const UserContext = createContext<{
   user: User | null;
   users: User[];
-  fireData: User[];
   myData: User | null;
   rankUsers: User[];
   loading: boolean;
-  fetchData: () => Promise<void>;
+  myDataLoading: boolean;
+  fetchData: (uid: string) => Promise<void>;
   fetchMyData: () => Promise<void>;
 }>({
   user: null,
   users: [],
-  fireData: [],
   myData: null,
   rankUsers: [],
   loading: false,
+  myDataLoading: false,
   fetchData: async () => {},
   fetchMyData: async () => {},
 });
@@ -30,16 +30,20 @@ const UserContext = createContext<{
 export const UserProvider: React.FC<any> = ({ children }) => {
   const [user, setUser] = useState<any>(null);
   const [users, setUsers] = useState<User[]>([]);
-  const [fireData, setFireData] = useState<any[]>([]);
   const [myData, setMyData] = useState<any>({});
   const [rankUsers, setRankUsers] = useState<any>([]);
   const [loading, setLoading] = useState(true);
+  const [myDataLoading, setMyDataLoading] = useState(true);
   const collectionRef = collection(database, 'Users Data');
 
-  const fetchData = async () => {
+  const fetchData = async (uid: string) => {
     try {
-      const response = await getDocs(collectionRef);
-      setFireData(response.docs.map((data) => ({ ...data.data(), id: data.id })));
+      const snapshot = await getDocs(collectionRef);
+      const data = snapshot.docs.find(doc => doc.data().uid === uid)?.data();
+      if (data) {
+        setMyData(data);
+        console.log("TRY 1", data);
+      }
     } catch (error) {
       console.error('Error getting data:', error);
     }
@@ -48,12 +52,10 @@ export const UserProvider: React.FC<any> = ({ children }) => {
   const getUsers = async () => {
     try {
       const snapshot = await getDocs(collectionRef);
-      const userList = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as User));
+      const userList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as User));
       setUsers(userList);
     } catch (error) {
       console.error('Error getting users:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -61,10 +63,6 @@ export const UserProvider: React.FC<any> = ({ children }) => {
     try {
       const snapshot = await getDocs(collectionRef);
       const userList = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as User));
-      const fetchData = userList.find((data) => data?.uid === user.uid);
-      if (fetchData) {
-        setMyData(fetchData);
-      }
       const sortedUsers = userList.sort((a, b) => b.balance - a.balance);
       sortedUsers.forEach((user, index) => {
         user.rank = index + 1;
@@ -75,36 +73,37 @@ export const UserProvider: React.FC<any> = ({ children }) => {
     }
   };
 
-  useEffect(() => {
-    getUsers();
-  }, []);
-
-  useEffect(() => {
-    if (users.length > 0) {
-      fetchMyData();
-    }
-  }, [users, myData]);
+  // useEffect(() => {
+  //   getUsers();
+  //   fetchMyData();
+  // }, []);
 
   useEffect(() => {
     let token = sessionStorage.getItem('Token');
     if (token) {
-      fetchData();
-
       const auth = getAuth(app);
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
-        if (user) {
-          setUser(user);
+      const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+        if (currentUser) {
+          setUser(currentUser);
+          Promise.all([fetchData(currentUser.uid), getUsers(), fetchMyData()])
+            .then(() => {
+              setMyDataLoading(false);
+              setLoading(false);
+            })
+            .catch(error => console.error('Error fetching data:', error));
         } else {
           setUser(null);
+          setLoading(false);
+          setMyDataLoading(false);
         }
       });
-
+  
       return () => unsubscribe();
     }
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, users, fireData, myData, rankUsers, loading, fetchData, fetchMyData }}>
+    <UserContext.Provider value={{ user, users, myData, rankUsers, loading, myDataLoading, fetchData, fetchMyData }}>
       {children}
     </UserContext.Provider>
   );

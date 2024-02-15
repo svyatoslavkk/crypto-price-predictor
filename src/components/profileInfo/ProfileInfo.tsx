@@ -4,35 +4,22 @@ import miningIcon from '../../assets/Mining Bitcoin-1.png';
 import btcIcon from '../../assets/Bitcoin-1.png';
 import safeIcon from '../../assets/Safe-1.png';
 import tick from '../../assets/Tick-3.png';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import DevLoader from '../loaders/devLoader/DevLoader';
 import { useUserContext } from '../../context/UserContext';
-import { User } from '../../types/types';
 import { BetDetails } from '../../types/types';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 export default function ProfileInfo() {
+  const { myData } = useUserContext();
   const [activeButton, setActiveButton] = useState("Achievements");
   const [visibleBets, setVisibleBets] = useState(10);
-  const { user, fireData, fetchData } = useUserContext();
+  const currentHistoryBets = myData?.historyBets;
+  const currentHistoryBetsCopy = [...currentHistoryBets || []];
+  const reversedHistory = currentHistoryBetsCopy;
+  console.log("reversedHistory", reversedHistory)
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const reversedHistory = fireData
-  ? fireData
-      .filter((data: User) => data.uid === user?.uid)
-      .map((data: User) => data.historyBets)
-      .flat()
-      .reverse()
-  : [];
-
-  const winTotal: number = fireData
-  ? fireData
-      .filter((data: User) => data.uid === user?.uid)
-      .map((data: User) => data.winBets || 0)
-      .reduce((acc: number, val: number) => acc + val, 0)
-  : 0;
+  const winTotal = myData?.winBets || 0;
 
   const checkWinSeries = (history: BetDetails[], winsNeeded: number) => {
     let consecutiveWins = 0;
@@ -118,34 +105,36 @@ export default function ProfileInfo() {
             })}
           </>
         )}
-        {activeButton === "History" && (
-          <>
+      </div>
+      <div className="list-column">
+      {activeButton === "History" && (
+        <>
           {reversedHistory.length > 0 ? (
-          <div className="history-bet-column">
-            {reversedHistory.slice(0, visibleBets).map((bet: BetDetails) => (
-                <div key={bet.openTime} className="history-bet-item">
-                  <div className="text-items-column">
-                    <span className="small-text">
-                      Choice: <strong>{bet.direction}</strong>
-                    </span>
-                    <span className="small-text">{bet.openTime}</span>
-                  </div>
-                  <div className="text-items-column">
-                    <span className="small-text">Initial price: {bet.openPrice}</span>
-                    <span className="small-text">Final price: {bet.closePrice}</span>
-                  </div>
-                  <h3 className="small-header" style={{color: bet.result === 'win' ? '#0cff41' : '#ff5e5e'}}>{bet.result.toUpperCase()}</h3>
+            <div className="history-bet-column">
+            {reversedHistory.map((bet: BetDetails) => (
+              <div key={bet.openTime} className="history-bet-item">
+                <div className="text-items-column">
+                  <span className="small-text">
+                    Choice: <strong>{bet.direction}</strong>
+                  </span>
+                  <span className="small-text">{bet.openTime}</span>
                 </div>
+                <div className="text-items-column">
+                  <span className="small-text">Initial price: {bet.openPrice}</span>
+                  <span className="small-text">Final price: {bet.closePrice}</span>
+                </div>
+                <h3 className="small-header" style={{ color: bet.result === 'win' ? '#0cff41' : '#ff5e5e' }}>{bet.result.toUpperCase()}</h3>
+              </div>
             ))}
-            <button className="sq-btn" onClick={handleLoadMore}>
-              <h3 className="small-header">More</h3>
-            </button>
-          </div>
+              <button className="sq-btn" onClick={handleLoadMore}>
+                <h3 className="small-header">More</h3>
+              </button>
+            </div>
           ) : (
             <DevLoader />
           )}
-          </>
-        )}
+        </>
+      )}
       </div>
     </div>
   )

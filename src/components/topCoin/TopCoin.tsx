@@ -8,7 +8,6 @@ import { formatData } from "../../utils/formatData";
 import {
   doc,
   updateDoc,
-  getDoc
 } from 'firebase/firestore';
 import { database } from "../../firebase/firebaseConfig";
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -19,13 +18,12 @@ import { BetDetails } from "../../types/types";
 import { useUserContext } from "../../context/UserContext";
 
 export default function Test() {
-  const { user, fireData, myData, loading, fetchMyData } = useUserContext();
+  const { myData, loading, fetchMyData } = useUserContext();
   const { data: bitcoinInfo } = useGetBitcoinInfoQuery('bitcoin');
   const [currencies, setcurrencies] = useState<any[]>([]);
   const [pair, setpair] = useState("BTC-USD");
   const [price, setprice] = useState("0.00");
   const [pastData, setpastData] = useState({});
-  const [priceChangeColor, setPriceChangeColor] = useState("");
   const [percentageDiff, setPercentageDiff] = useState(0);
   const prevPriceRef = useRef<number | null>(null);
   const [betTime, setBetTime] = useState(6);
@@ -37,10 +35,11 @@ export default function Test() {
   const [lastPointBet, setLastPointBet] = useState(0);
   
   const [currentBitcoinPrice, setCurrentBitcoinPrice] = useState(0);
+  const [priceChangeColor, setPriceChangeColor] = useState("");
+  const [isPriceChanged, setIsPriceChanged] = useState(false);
+
   const [isBetResultShown, setIsBetResultShown] = useState(false);
   const [startPrice, setStartPrice] = useState(0);
-
-  const documentInfo = myData ? myData.docId : 'NO_DOC';
 
   const currentBalance = myData ? myData.balance : null;
   /////////////////////////
@@ -48,51 +47,31 @@ export default function Test() {
   const ws = useRef(new WebSocket("wss://ws-feed.pro.coinbase.com"));
   let first = useRef(false);
   const url = "https://api.pro.coinbase.com";
+  /////////////////////HANDLE SELECT//////////////////////////
+  /////////////////////HANDLE SELECT//////////////////////////
+  /////////////////////HANDLE SELECT//////////////////////////
+  /////////////////////HANDLE SELECT//////////////////////////
+  /////////////////////HANDLE SELECT//////////////////////////
+  /////////////////////HANDLE SELECT//////////////////////////
+  /////////////////////HANDLE SELECT//////////////////////////
+  /////////////////////HANDLE SELECT//////////////////////////
+  /////////////////////HANDLE SELECT//////////////////////////
+  /////////////////////HANDLE SELECT//////////////////////////
+  // const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  //   let unsubMsg = {
+  //     type: "unsubscribe",
+  //     product_ids: [pair],
+  //     channels: ["ticker"]
+  //   };
+  //   let unsub = JSON.stringify(unsubMsg);
 
-  useEffect(() => {
-    const fetchBitcoinPrice = async () => {
-      try {
-        const response = await fetch(
-          "https://api.pro.coinbase.com/products/BTC-USD/ticker"
-        );
-        const bitcoinData = await response.json();
-        setCurrentBitcoinPrice(bitcoinData.price);
-      } catch (error) {
-        console.error("Error fetching Bitcoin price:", error);
-      }
-    };
+  //   ws.current.send(unsub);
 
-    const bitcoinPriceInterval = setInterval(fetchBitcoinPrice, 300);
-
-    return () => {
-      clearInterval(bitcoinPriceInterval);
-    };
-  }, []);
-  /////////////////////HANDLE SELECT//////////////////////////
-  /////////////////////HANDLE SELECT//////////////////////////
-  /////////////////////HANDLE SELECT//////////////////////////
-  /////////////////////HANDLE SELECT//////////////////////////
-  /////////////////////HANDLE SELECT//////////////////////////
-  /////////////////////HANDLE SELECT//////////////////////////
-  /////////////////////HANDLE SELECT//////////////////////////
-  /////////////////////HANDLE SELECT//////////////////////////
-  /////////////////////HANDLE SELECT//////////////////////////
-  /////////////////////HANDLE SELECT//////////////////////////
-  const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    let unsubMsg = {
-      type: "unsubscribe",
-      product_ids: [pair],
-      channels: ["ticker"]
-    };
-    let unsub = JSON.stringify(unsubMsg);
-
-    ws.current.send(unsub);
-
-    setpair(e.target.value);
-  };
+  //   setpair(e.target.value);
+  // };
 
   const upBet = async () => {
-    fetchMyData();
+    // fetchMyData();
     const docId = myData?.docId;
     if (!docId) {
       console.error('Не удалось получить идентификатор документа.');
@@ -132,7 +111,7 @@ export default function Test() {
       balance: newBalance, 
       totalBets: newTotalBets,
     });
-    fetchMyData();
+    // fetchMyData();
     await new Promise(resolve => setTimeout(resolve, betTime * 1000));
   
     const finalResponse = await fetch(`${url}/products/BTC-USD/ticker`);
@@ -188,7 +167,7 @@ export default function Test() {
         historyBets: newHistoryBets,
       });
     }
-    fetchMyData();
+    // fetchMyData();
     setIsBetResultShown(true);
     setTimeout(() => setIsBetResultShown(false), 4000);
   };
@@ -295,6 +274,32 @@ export default function Test() {
     setTimeout(() => setIsBetResultShown(false), 4000);
   };
 
+  const handlePriceChange = (newPrice: number) => {
+    setIsPriceChanged(true);
+    setPriceChangeColor(newPrice < currentBitcoinPrice ? "#ff5e5e" : "#0cff41");
+    setTimeout(() => {
+      setIsPriceChanged(false);
+    }, 500);
+  };
+
+  useEffect(() => {
+    const fetchBitcoinPrice = async () => {
+      try {
+        const response = await fetch(
+          "https://api.pro.coinbase.com/products/BTC-USD/ticker"
+        );
+        const bitcoinData = await response.json();
+        setCurrentBitcoinPrice(bitcoinData.price);
+      } catch (error) {
+        console.error("Error fetching Bitcoin price:", error);
+      }
+    };
+    const bitcoinPriceInterval = setInterval(fetchBitcoinPrice, 300);
+    return () => {
+      clearInterval(bitcoinPriceInterval);
+    };
+  }, []);
+
   useEffect(() => {
     let pairs: any[] = [];
 
@@ -358,16 +363,7 @@ export default function Test() {
         if (data.product_id === pair) {
           const newPrice = parseFloat(data.price);
           setCurrentPrice(data.price);
-        
-          setPriceChangeColor((prevColor) => {
-            if (newPrice < parseFloat(price)) {
-              return "#ff5e5e";
-            } else if (newPrice > parseFloat(price)) {
-              return "#0cff41";
-            } else {
-              return prevColor;
-            }
-          });
+          setCurrentBitcoinPrice(data.price);
         
           if (prevPriceRef.current !== null) {
             const previousPrice = parseFloat(prevPriceRef.current.toString());
@@ -392,14 +388,6 @@ export default function Test() {
   }, [currentBitcoinPrice, pair, price]);
 
   useEffect(() => {
-    const fetchBitcoinPrice = async () => {
-      const response = await fetch(`${url}/products/BTC-USD/ticker`);
-      const bitcoinData = await response.json();
-      setCurrentBitcoinPrice(bitcoinData.price);
-    };
-
-    fetchBitcoinPrice();
-
     const bitcoinWs = new WebSocket("wss://ws-feed.pro.coinbase.com");
     bitcoinWs.onopen = () => {
       bitcoinWs.send(
@@ -414,6 +402,7 @@ export default function Test() {
       const data = JSON.parse(e.data);
       if (data.type === "ticker") {
         setCurrentBitcoinPrice(data.price);
+        handlePriceChange(data.price);
       }
     };
 
@@ -449,7 +438,7 @@ export default function Test() {
         )}
         {currentBitcoinPrice && (
           <div className="price-info">
-            <span style={{ color: priceChangeColor }}>{`$${pair === "BTC-USD" ? currentBitcoinPrice : price}`}</span>
+            <span style={{ color: isPriceChanged ? priceChangeColor : "" }}>{`$${pair === "BTC-USD" ? currentBitcoinPrice : price}`}</span>
           </div>
         )}
         <div className="change-diff">
@@ -513,18 +502,17 @@ export default function Test() {
             </button>
           </div>
         </div>
-        <div className="buttons">
-          <button className="up-btn" onClick={upBet} >
+        <div className="buttons" style={{opacity: countdown > 0 ? 0.5: 1}}>
+          <button className="up-btn" onClick={upBet} disabled={countdown > 0}>
             <TrendingUpIcon />
             <span>Up</span>
           </button>
-          <button className="down-btn" onClick={downBet} >
+          <button className="down-btn" onClick={downBet} disabled={countdown > 0}>
             <TrendingDownIcon />
             <span>Down</span>
           </button>
         </div>
       </div>
-      
       
       <div className={`active-bet ${(countdown > 0) ? 'active-status-bet' : ''}`}>
           <div className="text-items-column">

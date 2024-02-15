@@ -17,7 +17,7 @@ export default function UserPreview() {
               <div></div>
             </div>
             {myData && (
-              <h3 className="small-header">${myData.balance ? myData.balance.toFixed(2) : '$0.00'}</h3>
+              <h3 className="small-header">${myData.balance ? myData.balance.toFixed(2) : '0.00'}</h3>
             )}
             <div></div>
           </div>

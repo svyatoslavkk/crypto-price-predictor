@@ -2,9 +2,7 @@ import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
 import HeaderPanel from '../headerPanel/HeaderPanel';
 import ModernBalance from '../modernBalance/ModernBalance';
 import ModernWinrate from '../modernWinrate/ModernWinrate';
-import { useEffect } from 'react';
 import { useUserContext } from '../../context/UserContext';
-import { User } from '../../types/types';
 import { Link } from 'react-router-dom';
 import { profilePanelLoadingUI } from '../ui/loadingUI';
 
@@ -12,11 +10,13 @@ export default function ProfilePanel() {
   const exImg = 'https://www.aipromptsgalaxy.com/wp-content/uploads/2023/06/subrat_female_avatar_proud_face_Aurora_a_25-year-old_girl_with__fd0e4c59-bb7e-4636-9258-6690ec6a71e7.png';
   const { user, myData, rankUsers, loading } = useUserContext();
 
-  const myWinrate = (myData?.winBets / myData?.totalBets) * 100;
+  const myWinrate = myData ? (myData.winBets / myData.totalBets) * 100 : 0;
 
   const myCurrRank = rankUsers
   .filter((data) => data.uid === user?.uid)
   .map((data) => data.rank)[0];
+
+  console.log("myDataPROFILEPLANEL", myData)
 
   return (
     <section className="profile-panel">

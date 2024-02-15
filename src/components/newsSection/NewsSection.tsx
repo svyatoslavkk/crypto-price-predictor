@@ -1,13 +1,13 @@
 import { useGetCryptoNewsQuery } from "../../redux/features/api/newsApi";
 import { Link } from "react-router-dom";
-import { News } from "../../types/types";
+import { INews } from "../../types/types";
 import { newsSectionLoadingUI } from "../ui/loadingUI";
 import { newsSectionErrorUI } from "../ui/errorUI";
 
 export default function NewsSection() {
   const adaptiveImg = 'https://play-lh.googleusercontent.com/jGpj_gR6iUi1FqHZ8w__2G0zonoONbRYkYIgARnKpOtKL7we9d213Bvn6AOUMF5WVgOV=w240-h480-rw';
   const { data: cryptoNews, error: cryptoNewsError, isLoading: cryptoNewsLoading } = useGetCryptoNewsQuery({});
-  const sortedNews = cryptoNews?.articles.slice().sort((a: News, b: News) => {
+  const sortedNews = cryptoNews?.articles.slice().sort((a: INews, b: INews) => {
     return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
   });
 
@@ -24,7 +24,7 @@ export default function NewsSection() {
       <ul className="list-column" style={{marginBottom: 55}}>
         {cryptoNewsLoading && newsSectionLoadingUI}
         {cryptoNewsError && newsSectionErrorUI}
-        {sortedNews && sortedNews.slice(0, 3).map((item: News) => (
+        {sortedNews && sortedNews.slice(0, 3).map((item: INews) => (
           <a key={item.url} href={item.url} target="_blank" rel="noopener noreferrer">
             <li key={item.publishedAt} className="list-item">
               <img src={item.urlToImage || adaptiveImg} className="large-sq-img" alt="Article Image" />

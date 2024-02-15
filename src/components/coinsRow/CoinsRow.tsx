@@ -1,3 +1,4 @@
+import { useMediaQuery } from '@mui/material';
 import { useGetCoinListQuery } from "../../redux/features/api/api";
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -9,6 +10,35 @@ import { Coin } from "../../types/types";
 
 export default function CoinsRow() {
   const { data: coinsList, error: coinsListError, isLoading: coinsListLoading } = useGetCoinListQuery({});
+  const isSmallScreen = useMediaQuery('(max-width:1111px)');
+  const isExtraSmallScreen = useMediaQuery('(max-width:350px)');
+
+  const splideOptions = isExtraSmallScreen 
+    ? {
+        perPage: 1,
+        perMove: 1,
+        rewind : true,
+        height: '7.6rem',
+        pagination: false,
+        gap    : '0.5rem',
+      }
+    : isSmallScreen 
+      ? {
+          perPage: 2,
+          perMove: 1,
+          rewind : true,
+          height: '7.6rem',
+          pagination: false,
+          gap    : '0.5rem',
+        }
+      : {
+          perPage: 3,
+          perMove: 1,
+          rewind : true,
+          height: '7.6rem',
+          pagination: false,
+          gap    : '0.5rem',
+        };
 
   if (coinsListLoading) {
     return coinsRowLoadingUI;
@@ -26,14 +56,7 @@ export default function CoinsRow() {
           <div></div>
         </div>
         <Splide 
-          options={ {
-            perPage: 3,
-            perMove: 1,
-            rewind : true,
-            height: '7.6rem',
-            pagination: false,
-            gap    : '0.5rem',
-          } }
+          options={ splideOptions }
           aria-labelledby="basic-example-heading"
         >
           {coinsList && coinsList.slice(0, 10).map((item: Coin) => (
