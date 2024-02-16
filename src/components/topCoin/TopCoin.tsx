@@ -2,8 +2,6 @@ import { useState, useRef, useEffect } from "react";
 import { useGetBitcoinInfoQuery } from "../../redux/features/api/api";
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
-import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { formatData } from "../../utils/formatData";
 import {
   doc,
@@ -14,11 +12,14 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import TollIcon from '@mui/icons-material/Toll';
-import { BetDetails } from "../../types/types";
+import { IBetDetails } from "../../types/types";
 import { useUserContext } from "../../context/UserContext";
+import btcBg from "../../assets/BTC.png";
+import ActiveBet from "../layout-components/ActiveBet/ActiveBet";
+import ResultBet from "../layout-components/ResultBet/ResultBet";
 
 export default function Test() {
-  const { myData, loading, fetchMyData } = useUserContext();
+  const { myData, loading, fetchData } = useUserContext();
   const { data: bitcoinInfo } = useGetBitcoinInfoQuery('bitcoin');
   const [currencies, setcurrencies] = useState<any[]>([]);
   const [pair, setpair] = useState("BTC-USD");
@@ -71,15 +72,15 @@ export default function Test() {
   // };
 
   const upBet = async () => {
-    // fetchMyData();
     const docId = myData?.docId;
+    fetchData(docId);
     if (!docId) {
       console.error('Не удалось получить идентификатор документа.');
       return;
     }
     const userDocRef = doc(database, 'Users Data', docId);
-
     setBetDirection("UP");
+
     setCountdown(betTime);
     let startTime = performance.now();
     const animate = () => {
@@ -93,31 +94,30 @@ export default function Test() {
       }
     };
     requestAnimationFrame(animate);
+
     const initialResponse = await fetch(`${url}/products/BTC-USD/ticker`);
     const initialData = await initialResponse.json();
     const initialPrice = initialData.price;
     setStartPrice(initialPrice);
-    console.log("KEEPPRICE", initialPrice);
     const openTime = new Date().toISOString();
     const openPrice = initialPrice;
     
     const newBalance = myData?.balance - 10;
-    console.log("newBalance", newBalance);
+    console.log("BEFORE Balance", newBalance);
     setLastPointBet(10);
     const newTotalBets = myData?.totalBets + 1;
-    console.log("newTotalBets", newTotalBets);
 
     await updateDoc(userDocRef, { 
       balance: newBalance, 
       totalBets: newTotalBets,
     });
-    // fetchMyData();
+
     await new Promise(resolve => setTimeout(resolve, betTime * 1000));
+    fetchData(docId);
   
     const finalResponse = await fetch(`${url}/products/BTC-USD/ticker`);
     const finalData = await finalResponse.json();
     const finalPrice = finalData.price;
-    console.log("2 SEC AFTER", finalPrice);
 
     if (finalPrice > initialPrice) {
       let predictionResult = "Угадали!";
@@ -128,7 +128,7 @@ export default function Test() {
       
       const closeTime = new Date().toISOString();
       const closePrice = finalPrice;
-      const betDetails: BetDetails = {
+      const betDetails: IBetDetails = {
         direction: 'UP',
         openTime: openTime,
         openPrice: openPrice,
@@ -137,6 +137,7 @@ export default function Test() {
         result: 'win',
       };
       const newBalance = myData?.balance + (10 * 2);
+      console.log("AFTER Balance", newBalance)
       const newWinBets = myData?.winBets + 1;
       const newHistoryBets = [...myData?.historyBets || [], betDetails];
       console.log("newHistoryBets", newHistoryBets)
@@ -153,7 +154,7 @@ export default function Test() {
       setBetStatus("lose");
       const closeTime = new Date().toISOString();
       const closePrice = finalPrice;
-      const betDetails: BetDetails = {
+      const betDetails: IBetDetails = {
         direction: 'UP',
         openTime: openTime,
         openPrice: openPrice,
@@ -167,14 +168,14 @@ export default function Test() {
         historyBets: newHistoryBets,
       });
     }
-    // fetchMyData();
+    fetchData(docId);
     setIsBetResultShown(true);
     setTimeout(() => setIsBetResultShown(false), 4000);
   };
 
   const downBet = async () => {
-    fetchMyData();
     const docId = myData?.docId;
+    fetchData(docId);
     if (!docId) {
       console.error('Не удалось получить идентификатор документа.');
       return;
@@ -213,7 +214,7 @@ export default function Test() {
       balance: newBalance, 
       totalBets: newTotalBets,
     });
-    fetchMyData();
+    fetchData(docId);
     await new Promise(resolve => setTimeout(resolve, betTime * 1000));
   
     const finalResponse = await fetch(`${url}/products/BTC-USD/ticker`);
@@ -269,7 +270,7 @@ export default function Test() {
         historyBets: newHistoryBets,
       });
     }
-    fetchMyData();
+    fetchData(docId);
     setIsBetResultShown(true);
     setTimeout(() => setIsBetResultShown(false), 4000);
   };
@@ -441,7 +442,7 @@ export default function Test() {
             <span style={{ color: isPriceChanged ? priceChangeColor : "" }}>{`$${pair === "BTC-USD" ? currentBitcoinPrice : price}`}</span>
           </div>
         )}
-        <div className="change-diff">
+        {/* <div className="change-diff">
           {percentageDiff > 0 ? (
             <>
               <ArrowDropUpIcon style={{ color: "#0cff41" }} />
@@ -453,7 +454,7 @@ export default function Test() {
               <span style={{ color: "#ff5e5e" }}>{`${percentageDiff.toFixed(3)}%`}</span>
             </>
           )}
-        </div>
+        </div> */}
         <div className="buttons">
           <div className="select-section">
             <button className="sq-btn" onClick={() => setBetTime((prev) => Math.max(prev - 1, 6))}>
@@ -482,7 +483,7 @@ export default function Test() {
               <AddIcon fontSize="small" />
             </button>
           </div>
-          <div className="select-section">
+          {/* <div className="select-section">
             <button className="sq-btn" onClick={() => setPointAmount((prev) => Math.max(prev - 10, 10))}>
               <RemoveIcon fontSize="small" />
             </button>
@@ -500,7 +501,7 @@ export default function Test() {
             <button className="sq-btn" onClick={() => setPointAmount((prev) => prev + 10)}>
               <AddIcon fontSize="small" />
             </button>
-          </div>
+          </div> */}
         </div>
         <div className="buttons" style={{opacity: countdown > 0 ? 0.5: 1}}>
           <button className="up-btn" onClick={upBet} disabled={countdown > 0}>
@@ -514,38 +515,18 @@ export default function Test() {
         </div>
       </div>
       
-      <div className={`active-bet ${(countdown > 0) ? 'active-status-bet' : ''}`}>
-          <div className="text-items-column">
-            <div className="flex-info" style={{color: 'white'}}>
-              <AccessTimeIcon fontSize="small" />
-              <h3 className="small-text">{Math.abs(countdown.toFixed(1))}</h3>
-            </div>
-            <div className="flex-info">
-              <TrendingUpIcon fontSize="inherit" sx={{ color: betDirection === 'UP' ? '#0cff41' : '#ff5e5e' }} />
-              <span className="small-text" style={{ color: betDirection === 'UP' ? '#0cff41' : '#ff5e5e' }}>
-                {betDirection}
-              </span>
-            </div>
-          </div>
-          <div className="text-items-column" style={{alignItems: 'flex-end'}}>
-            <div className="flex-info">
-              <span className="small-text">Bet: {pointAmount}$</span>
-            </div>
-            <div className="flex-info">
-              <span className="small-text">Initial price: {startPrice}$</span>
-            </div>
-          </div>
-        </div>
+      <ActiveBet 
+        countdown={countdown}
+        betDirection={betDirection}
+        pointAmount={pointAmount}
+        startPrice={startPrice}
+      />
 
-        <div className={`active-bet ${(countdown <= 0 && isBetResultShown) ? 'active-status-bet' : ''}`}>
-          <h3 className="large-header" style={{color: betStatus === 'win' ? '#0cff41' : '#ff5e5e'}}>
-            {betStatus === 'win' ? 'YOU WIN!' : 'TRY AGAIN'}
-          </h3>
-        </div>
-
-      {(countdown > 0 || isBetResultShown) && (
-        <div className="bet-overlay"></div>
-      )}
+      <ResultBet 
+        countdown={countdown}
+        isBetResultShown={isBetResultShown}
+        betStatus={betStatus}
+      />
     </div>
     )}
     </>

@@ -14,6 +14,7 @@
   background-color: $avg-black;
   padding: $big-rem;
   border-radius: $avg-rem;
+  overflow: hidden;
 }
 
 .price-info {
@@ -125,6 +126,7 @@
   align-items: center;
   justify-content: space-between;
   background-color: $medium-black;
+  box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.5);
   padding: $avg-rem;
   border-radius: $avg-rem;
   transition: 0.2s ease;

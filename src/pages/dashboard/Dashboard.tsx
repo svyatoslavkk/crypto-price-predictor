@@ -40,7 +40,7 @@ export default function Dashboard() {
           </button>
         </div>
         <UserPreview />
-        {/* <TopCoin /> */}
+        <TopCoin />
         <TopPlayersSlider />
         <CoinsRow />
         <NewsSlide />

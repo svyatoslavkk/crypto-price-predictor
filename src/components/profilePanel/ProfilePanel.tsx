@@ -16,8 +16,6 @@ export default function ProfilePanel() {
   .filter((data) => data.uid === user?.uid)
   .map((data) => data.rank)[0];
 
-  console.log("myDataPROFILEPLANEL", myData)
-
   return (
     <section className="profile-panel">
       <HeaderPanel />

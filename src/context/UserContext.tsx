@@ -42,7 +42,6 @@ export const UserProvider: React.FC<any> = ({ children }) => {
       const data = snapshot.docs.find(doc => doc.data().uid === uid)?.data();
       if (data) {
         setMyData(data);
-        console.log("TRY 1", data);
       }
     } catch (error) {
       console.error('Error getting data:', error);

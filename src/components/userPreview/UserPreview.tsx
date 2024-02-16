@@ -17,7 +17,7 @@ export default function UserPreview() {
               <div></div>
             </div>
             {myData && (
-              <h3 className="small-header">${myData.balance ? myData.balance.toFixed(2) : '0.00'}</h3>
+              <h3 className="medium-header">${myData.balance ? myData.balance.toFixed(2) : '0.00'}</h3>
             )}
             <div></div>
           </div>
@@ -27,7 +27,7 @@ export default function UserPreview() {
               <div></div>
             </div>
             {myData && (
-              <img src={myData.avatar ? myData.avatar: exImg} className="medium-circle-img" alt="Avatar" />
+              <img src={myData.avatar ? myData.avatar: exImg} className="large-circle-img" alt="Avatar" />
             )}
             {myData && (
               <span className="small-header">{myData.userName ? myData.userName : 'NO_AUTH'}</span>

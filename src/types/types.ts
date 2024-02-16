@@ -19,7 +19,7 @@ export interface INews {
   title: string;
 }
 
-export interface BetDetails {
+export type IBetDetails = {
   direction: string;
   openTime: string;
   openPrice: number;
@@ -28,10 +28,30 @@ export interface BetDetails {
   result: string;
 }
 
+export type IAchievement = {
+  header: string;
+  image: string;
+  description: string;
+  achieved: boolean;
+}
+
 export type Coin = {
   image: string;
   name: string;
   symbol: string;
   current_price: string;
   price_change_percentage_24h: number;
+}
+
+export type IActiveBet = {
+  countdown: number;
+  betDirection: string;
+  pointAmount: number;
+  startPrice: number;
+}
+
+export type IResultBet = {
+  countdown: number;
+  isBetResultShown: boolean;
+  betStatus: string;
 }

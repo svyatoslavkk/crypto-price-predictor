@@ -7,8 +7,10 @@ import tick from '../../assets/Tick-3.png';
 import { useState } from 'react';
 import DevLoader from '../loaders/devLoader/DevLoader';
 import { useUserContext } from '../../context/UserContext';
-import { BetDetails } from '../../types/types';
+import { IBetDetails } from '../../types/types';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import HistoryBetItem from '../util/HistoryBetItem/HistoryBetItem';
+import AchievementItem from '../util/AchievementItem/AchievementItem';
 
 export default function ProfileInfo() {
   const { myData } = useUserContext();
@@ -94,13 +96,12 @@ export default function ProfileInfo() {
           <>
             {achievements.map((item) => {
               return (
-                <div className="list-item" key={item.header} style={{ opacity: item.achieved ? 1 : 0.2 }}>
-                  <img className="avg-sq-img" src={item.image} alt="Check Icon" />
-                  <div>
-                    <h3 className="small-header">{item.header}</h3>
-                    <span className="small-text">{item.description}</span>
-                  </div>
-                </div>
+                <AchievementItem 
+                  header={item.header}
+                  image={item.image}
+                  description={item.description}
+                  achieved={item.achieved}
+                />
               );
             })}
           </>
@@ -111,20 +112,14 @@ export default function ProfileInfo() {
         <>
           {reversedHistory.length > 0 ? (
             <div className="history-bet-column">
-            {reversedHistory.map((bet: BetDetails) => (
-              <div key={bet.openTime} className="history-bet-item">
-                <div className="text-items-column">
-                  <span className="small-text">
-                    Choice: <strong>{bet.direction}</strong>
-                  </span>
-                  <span className="small-text">{bet.openTime}</span>
-                </div>
-                <div className="text-items-column">
-                  <span className="small-text">Initial price: {bet.openPrice}</span>
-                  <span className="small-text">Final price: {bet.closePrice}</span>
-                </div>
-                <h3 className="small-header" style={{ color: bet.result === 'win' ? '#0cff41' : '#ff5e5e' }}>{bet.result.toUpperCase()}</h3>
-              </div>
+            {reversedHistory.map((bet: IBetDetails) => (
+              <HistoryBetItem 
+                openTime={bet.openTime}
+                direction={bet.direction}
+                openPrice={bet.openPrice}
+                closePrice={bet.closePrice}
+                result={bet.result}
+              />
             ))}
               <button className="sq-btn" onClick={handleLoadMore}>
                 <h3 className="small-header">More</h3>
