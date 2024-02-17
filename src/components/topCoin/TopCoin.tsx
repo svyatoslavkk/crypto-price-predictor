@@ -18,9 +18,11 @@ import { IBetDetails } from "../../types/types";
 import { useUserContext } from "../../context/UserContext";
 import ActiveBet from "../layout-components/ActiveBet/ActiveBet";
 import ResultBet from "../layout-components/ResultBet/ResultBet";
+import { useBetContext } from "../../context/BetContext";
 
 export default function TopCoin() {
-  const { myData, setMyData, loading, fetchData } = useUserContext();
+  const { myData, setMyData, loading } = useUserContext();
+  const { countdown, setCountdown, betDirection, setBetDirection, pointAmount, setPointAmount, startPrice, setStartPrice, betTime, setBetTime, isBetResultShown, setIsBetResultShown, betStatus, setBetStatus } = useBetContext();
   const { data: bitcoinInfo } = useGetBitcoinInfoQuery('bitcoin');
   const [currencies, setcurrencies] = useState<any[]>([]);
   const [pair, setpair] = useState("BTC-USD");
@@ -28,20 +30,13 @@ export default function TopCoin() {
   const [pastData, setpastData] = useState({});
   const [percentageDiff, setPercentageDiff] = useState(0);
   const prevPriceRef = useRef<number | null>(null);
-  const [betTime, setBetTime] = useState(6);
-  const [betDirection, setBetDirection] = useState("");
-  const [betStatus, setBetStatus] = useState("");
-  const [countdown, setCountdown] = useState(0);
   const [currentPrice, setCurrentPrice] = useState("0.00");
-  const [pointAmount, setPointAmount] = useState(10);
   const [lastPointBet, setLastPointBet] = useState(0);
   
   const [currentBitcoinPrice, setCurrentBitcoinPrice] = useState(0);
   const [priceChangeColor, setPriceChangeColor] = useState("");
   const [isPriceChanged, setIsPriceChanged] = useState(false);
 
-  const [isBetResultShown, setIsBetResultShown] = useState(false);
-  const [startPrice, setStartPrice] = useState(0);
   /////////////////////////
 
   const ws = useRef(new WebSocket("wss://ws-feed.pro.coinbase.com"));
@@ -76,10 +71,8 @@ export default function TopCoin() {
     const snapshot = await getDoc(collectionRef);
     if (snapshot.exists()) {
       const data = snapshot.data();
-      console.log('Данные документа:', data);
       setMyData(data);
     }
-    console.log('1ST BALANCE:', myData?.balance);
     setBetDirection("UP");
 
     setCountdown(betTime);
@@ -115,10 +108,8 @@ export default function TopCoin() {
     const snapshotSecond = await getDoc(collectionRef);
     if (snapshotSecond.exists()) {
       const data = snapshotSecond.data();
-      console.log('Данные документа:', data);
       setMyData(data);
     }
-    console.log('2ND BALANCE:', myData?.balance);
 
     await new Promise(resolve => setTimeout(resolve, betTime * 1000));
   
@@ -146,7 +137,6 @@ export default function TopCoin() {
       const newBalance = myData?.balance + (10 * 2);
       const newWinBets = myData?.winBets + 1;
       const newHistoryBets = [...myData?.historyBets || [], betDetails];
-      console.log("newHistoryBets", newHistoryBets)
       await updateDoc(collectionRef, { 
         balance: newBalance, 
         winBets: newWinBets,
@@ -155,10 +145,8 @@ export default function TopCoin() {
       const snapshotThird = await getDoc(collectionRef);
       if (snapshotThird.exists()) {
         const data = snapshotThird.data();
-        console.log('Данные документа:', data);
         setMyData(data);
       }
-    console.log('2ND BALANCE:', myData?.balance);
     } else if (finalPrice < initialPrice) {
       let predictionResult = "Не угадали!";
       let predictionStatus = `Прогноз: UP - Цена при прогнозе: ${initialPrice}`;
@@ -176,7 +164,6 @@ export default function TopCoin() {
         result: 'lose',
       };
       const newHistoryBets = [...myData?.historyBets || [], betDetails];
-      console.log("newHistoryBets", newHistoryBets)
       await updateDoc(collectionRef, { 
         historyBets: newHistoryBets,
       });
@@ -191,7 +178,6 @@ export default function TopCoin() {
     const snapshot = await getDoc(collectionRef);
     if (snapshot.exists()) {
       const data = snapshot.data();
-      console.log('Данные документа:', data);
       setMyData(data);
     }
 
@@ -213,15 +199,12 @@ export default function TopCoin() {
     const initialData = await initialResponse.json();
     const initialPrice = initialData.price;
     setStartPrice(initialPrice);
-    console.log("KEEPPRICE", initialPrice);
     const openTime = new Date().toISOString();
     const openPrice = initialPrice;
     
     const newBalance = myData?.balance - 10;
-    console.log("newBalance", newBalance);
     setLastPointBet(10);
     const newTotalBets = myData?.totalBets + 1;
-    console.log("newTotalBets", newTotalBets);
 
     await updateDoc(collectionRef, { 
       balance: newBalance, 
@@ -231,7 +214,6 @@ export default function TopCoin() {
     const snapshotSecond = await getDoc(collectionRef);
     if (snapshotSecond.exists()) {
       const data = snapshotSecond.data();
-      console.log('Данные документа:', data);
       setMyData(data);
     }
     await new Promise(resolve => setTimeout(resolve, betTime * 1000));
@@ -239,7 +221,6 @@ export default function TopCoin() {
     const finalResponse = await fetch(`${url}/products/BTC-USD/ticker`);
     const finalData = await finalResponse.json();
     const finalPrice = finalData.price;
-    console.log("2 SEC AFTER", finalPrice);
 
     if (finalPrice < initialPrice) {
       let predictionResult = "Угадали!";
@@ -261,7 +242,6 @@ export default function TopCoin() {
       const newBalance = myData?.balance + (10 * 2);
       const newWinBets = myData?.winBets + 1;
       const newHistoryBets = [...myData?.historyBets || [], betDetails];
-      console.log("newHistoryBets", newHistoryBets)
       await updateDoc(collectionRef, { 
         balance: newBalance, 
         winBets: newWinBets,
@@ -270,7 +250,6 @@ export default function TopCoin() {
       const snapshotThird = await getDoc(collectionRef);
       if (snapshotThird.exists()) {
         const data = snapshotThird.data();
-        console.log('Данные документа:', data);
         setMyData(data);
       }
     } else if (finalPrice > initialPrice) {
@@ -290,7 +269,6 @@ export default function TopCoin() {
         result: 'lose',
       };
       const newHistoryBets = [...myData?.historyBets || [], betDetails];
-      console.log("newHistoryBets", newHistoryBets)
       await updateDoc(collectionRef, { 
         historyBets: newHistoryBets,
       });
@@ -481,7 +459,7 @@ export default function TopCoin() {
         </div> */}
         <div className="buttons">
           <div className="select-section">
-            <button className="sq-btn" onClick={() => setBetTime((prev) => Math.max(prev - 1, 6))}>
+            <button className="sq-btn" onClick={() => setBetTime((prev) => Math.max(prev - 1, 2))}>
               <RemoveIcon fontSize="small" />
             </button>
             <div className="bet-setup-input">
@@ -490,20 +468,20 @@ export default function TopCoin() {
                 value={betTime}
                 type="text"
                 pattern="[6-9]|1[0-9]|20"
+                min="2"
+                max="60"
                 onChange={(e) => {
                   const value = e.target.value;
-                  if (/^[6-9]|1[0-9]|20$/.test(value) || value === '') {
+                  if (/^(2[0-9]|[7-9]|60)?$/.test(value)) {
                     setBetTime(value === '' ? '' : Number(value));
                   }
                 }}
-                min="6"
-                max="20"
               />
               <span className="time-icon">
                 <AccessTimeIcon fontSize="small" sx={{ color: '#555' }} />
               </span>
             </div>
-            <button className="sq-btn" onClick={() => setBetTime((prev) => Math.min(prev + 1, 20))}>
+            <button className="sq-btn" onClick={() => setBetTime((prev) => Math.min(prev + 1, 60))}>
               <AddIcon fontSize="small" />
             </button>
           </div>
@@ -527,7 +505,7 @@ export default function TopCoin() {
             </button>
           </div> */}
         </div>
-        <div className="buttons" style={{opacity: countdown > 0 ? 0.5: 1}}>
+        <div className="buttons" style={{opacity: countdown > 0 ? 0.4: 1}}>
           <button className="up-btn" onClick={upBet} disabled={countdown > 0}>
             <TrendingUpIcon />
             <span>Up</span>
@@ -544,6 +522,7 @@ export default function TopCoin() {
         betDirection={betDirection}
         pointAmount={pointAmount}
         startPrice={startPrice}
+        betTime={betTime}
       />
 
       <ResultBet 

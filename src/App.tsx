@@ -12,6 +12,7 @@ import { store } from './redux/store';
 import { UserProvider } from './context/UserContext';
 import RootLayout from './_root/RootLayout';
 import ProfileFullScreen from './components/profileFullScreen/ProfileFullScreen';
+import { BetProvider } from './context/BetContext';
 
 function App() {
 
@@ -19,20 +20,22 @@ function App() {
     <Provider store={store}>
       <BrowserRouter>
         <UserProvider>
-          <Routes>
-            <Route path="/welcome" element={<WelcomePage />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/login" element={<Login />} />
+          <BetProvider>
+            <Routes>
+              <Route path="/welcome" element={<WelcomePage />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/login" element={<Login />} />
 
-            <Route element={<RootLayout />}>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/rankings" element={<Rankings />} />
-              <Route path="/news" element={<News />} />
-              <Route path="profile/:uid" element={<ProfileFullScreen />} />
-            </Route>
-            
-            <Route path="/profile" element={<Profile />} />
-          </Routes>
+              <Route element={<RootLayout />}>
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/rankings" element={<Rankings />} />
+                <Route path="/news" element={<News />} />
+                <Route path="profile/:uid" element={<ProfileFullScreen />} />
+              </Route>
+              
+              <Route path="/profile" element={<Profile />} />
+            </Routes>
+          </BetProvider>
         </UserProvider>
       </BrowserRouter>
     </Provider>

@@ -1,8 +1,4 @@
 import TollIcon from '@mui/icons-material/Toll';
-import { useState, useEffect } from 'react';
-import { collection, onSnapshot, QuerySnapshot, DocumentData } from 'firebase/firestore';
-import { database } from '../../firebase/firebaseConfig';
-import { User } from '../../types/types';
 import { modernBalanceLoadingUI } from '../ui/loadingUI';
 import { useUserContext } from '../../context/UserContext';
 

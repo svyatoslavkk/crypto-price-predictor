@@ -48,6 +48,7 @@ export type IActiveBet = {
   betDirection: string;
   pointAmount: number;
   startPrice: number;
+  betTime: number;
 }
 
 export type IResultBet = {

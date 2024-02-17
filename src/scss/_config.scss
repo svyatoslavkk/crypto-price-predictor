@@ -61,6 +61,13 @@ $mid-tran: 0.3s ease;
   transition: 0.3s ease;
 }
 
+@mixin column-center-styles {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 @mixin flex-between-styles {
   display: flex;
   align-items: center;

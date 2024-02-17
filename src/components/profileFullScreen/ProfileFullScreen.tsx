@@ -17,7 +17,6 @@ interface ProfileFullScreenProps {
 export default function ProfileFullScreen() {
   const { showProfile, setShowProfile, fetchUserData, chosenUser } = useUserContext();
   const { uid } = useParams();
-  console.log("chosenUser", chosenUser);
   const fakeImg = 'https://as2.ftcdn.net/v2/jpg/05/31/12/57/1000_F_531125771_Ilbj85vnztpPxc9VZZh2twbdtV4DIvJc.jpg';
   const navigate = useNavigate();
 

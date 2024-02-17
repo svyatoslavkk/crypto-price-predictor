@@ -19,11 +19,10 @@ export default function ProfileInfo() {
   const currentHistoryBets = myData?.historyBets;
   const currentHistoryBetsCopy = [...currentHistoryBets || []];
   const reversedHistory = currentHistoryBetsCopy;
-  console.log("reversedHistory", reversedHistory)
 
   const winTotal = myData?.winBets || 0;
 
-  const checkWinSeries = (history: BetDetails[], winsNeeded: number) => {
+  const checkWinSeries = (history: IBetDetails[], winsNeeded: number) => {
     let consecutiveWins = 0;
     for (const bet of history) {
       if (bet.result === 'win') {
