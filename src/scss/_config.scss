@@ -78,6 +78,14 @@ $mid-tran: 0.3s ease;
   transition: 0.1s ease;
 }
 
+@mixin circle-btn {
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.1s ease;
+}
+
 @mixin items-column {
   display: flex;
   flex-direction: column;

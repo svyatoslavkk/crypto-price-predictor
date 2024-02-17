@@ -5,7 +5,7 @@ import { IActiveBet } from '../../../types/types';
 
 export default function ActiveBet({ countdown, betDirection, pointAmount, startPrice }: IActiveBet) {
   return (
-    <div className={`active-bet ${(countdown > 0) ? 'active-status-bet' : ''}`}>
+    <div className={`active-bet ${(countdown > 0) ? 'active-status-bet' : 'active-status-bet'}`}>
       <div className="text-items-column">
         <div className="flex-info" style={{color: 'white'}}>
           <AccessTimeIcon fontSize="small" />

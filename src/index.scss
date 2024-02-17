@@ -24,7 +24,6 @@
 @import './scss/inputs.scss';
 @import './components/modernWinrate/modernWinrate.scss';
 @import './components/profileFullScreen/profileFullScreen.scss';
-@import './pages/userProfilePage/userProfilePage.scss';
 
 * {
   margin: 0;
@@ -143,7 +142,7 @@ input:focus {
   left: 0;
   width: 100%;
   height: 100vh;
-  background-color: rgba(10, 10, 10, 0.8);
+  background-color: rgb(25, 25, 25, 0.8);
   cursor: pointer;
   z-index: 10001;
 }

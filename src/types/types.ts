@@ -55,3 +55,11 @@ export type IResultBet = {
   isBetResultShown: boolean;
   betStatus: string;
 }
+
+export type IRankItem = {
+  uid: string;
+  avatar: string;
+  userName: string;
+  rank: number;
+  balance: number;
+}

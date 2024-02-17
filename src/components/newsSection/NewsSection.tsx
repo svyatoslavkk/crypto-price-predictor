@@ -5,7 +5,7 @@ import { newsSectionLoadingUI } from "../ui/loadingUI";
 import { newsSectionErrorUI } from "../ui/errorUI";
 
 export default function NewsSection() {
-  const adaptiveImg = 'https://play-lh.googleusercontent.com/jGpj_gR6iUi1FqHZ8w__2G0zonoONbRYkYIgARnKpOtKL7we9d213Bvn6AOUMF5WVgOV=w240-h480-rw';
+  const adaptiveImg = 'https://dailyhodl.com/wp-content/uploads/2023/12/continues-bitcoin-buying-gobbles.jpg';
   const { data: cryptoNews, error: cryptoNewsError, isLoading: cryptoNewsLoading } = useGetCryptoNewsQuery({});
   const sortedNews = cryptoNews?.articles.slice().sort((a: INews, b: INews) => {
     return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
@@ -27,7 +27,7 @@ export default function NewsSection() {
         {sortedNews && sortedNews.slice(0, 3).map((item: INews) => (
           <a key={item.url} href={item.url} target="_blank" rel="noopener noreferrer">
             <li key={item.publishedAt} className="list-item">
-              <img src={item.urlToImage || adaptiveImg} className="large-sq-img" alt="Article Image" />
+              <img src={item.urlToImage ? item.urlToImage : adaptiveImg} className="large-sq-img" alt="Article Image" />
               <div className="text-items-column">
                 <h3 className="small-text">{item.title}</h3>
               </div>

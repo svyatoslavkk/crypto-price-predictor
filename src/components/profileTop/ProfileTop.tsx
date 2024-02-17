@@ -35,10 +35,6 @@ export default function ProfileTop() {
               <span className="large-header">{myData.userName ? myData.userName : 'NO_AUTH'}</span>
             )}
           </div>
-          <button className="sq-btn">
-            <ContentCopyIcon fontSize='small' />
-            <span>Copy Username</span>
-          </button>
           <div className="balance-section">
             <span className="medium-text">Your Balance</span>
             <div className="balance-amount">

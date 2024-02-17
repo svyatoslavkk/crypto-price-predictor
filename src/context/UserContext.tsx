@@ -14,8 +14,12 @@ const UserContext = createContext<{
   rankUsers: User[];
   loading: boolean;
   myDataLoading: boolean;
+  showProfile: boolean;
+  setShowProfile: any;
+  chosenUser: User | null;
   fetchData: (uid: string) => Promise<void>;
   fetchMyData: () => Promise<void>;
+  fetchUserData: (uid: string) => Promise<void>;
 }>({
   user: null,
   users: [],
@@ -23,8 +27,12 @@ const UserContext = createContext<{
   rankUsers: [],
   loading: false,
   myDataLoading: false,
+  showProfile: false,
+  setShowProfile: false,
+  chosenUser: null,
   fetchData: async () => {},
   fetchMyData: async () => {},
+  fetchUserData: async () => {},
 });
 
 export const UserProvider: React.FC<any> = ({ children }) => {
@@ -34,6 +42,8 @@ export const UserProvider: React.FC<any> = ({ children }) => {
   const [rankUsers, setRankUsers] = useState<any>([]);
   const [loading, setLoading] = useState(true);
   const [myDataLoading, setMyDataLoading] = useState(true);
+  const [showProfile, setShowProfile] = useState(false);
+  const [chosenUser, setChosenUser] = useState(null);
   const collectionRef = collection(database, 'Users Data');
 
   const fetchData = async (uid: string) => {
@@ -72,10 +82,15 @@ export const UserProvider: React.FC<any> = ({ children }) => {
     }
   };
 
-  // useEffect(() => {
-  //   getUsers();
-  //   fetchMyData();
-  // }, []);
+  const fetchUserData = async (uid: string) => {
+    try {
+      const snapshot = await getDocs(collectionRef);
+      const data = snapshot.docs.find(doc => doc.data().uid === uid)?.data();
+      setChosenUser(data);
+    } catch (error) {
+      console.error('Error getting chosen user\'s data:', error);
+    }
+  }
 
   useEffect(() => {
     let token = sessionStorage.getItem('Token');
@@ -102,7 +117,7 @@ export const UserProvider: React.FC<any> = ({ children }) => {
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, users, myData, rankUsers, loading, myDataLoading, fetchData, fetchMyData }}>
+    <UserContext.Provider value={{ user, users, myData, rankUsers, loading, myDataLoading, showProfile, setShowProfile, chosenUser, fetchData, fetchMyData, fetchUserData }}>
       {children}
     </UserContext.Provider>
   );

@@ -1,16 +1,16 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useDebounce } from 'use-debounce';
 import { User } from '../../types/types';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
-import ProfileFullScreen from '../profileFullScreen/ProfileFullScreen';
 import { useUserContext } from '../../context/UserContext';
 
 export default function HeaderPanel() {
-  const { users } = useUserContext();
+  const { users, setShowProfile } = useUserContext();
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearchQuery] = useDebounce(searchQuery, 500);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   const handleInputChange = (e: any) => {
     setSearchQuery(e.target.value);
@@ -50,7 +50,10 @@ export default function HeaderPanel() {
                     <img src={user.avatar} className="small-sq-img" alt="Profile Img" />
                     <span className="small-text">{user.userName}</span>
                   </div>
-                  <button className="sq-btn-mod" onClick={() => setSelectedUser(user)}>
+                  <button className="sq-btn-mod" onClick={() => {
+                    navigate(`/profile/${user.uid}`);
+                    setShowProfile(true);
+                  }}>
                     <span className="tiny-color-text">View Profile</span>
                   </button>
                 </li>
@@ -59,12 +62,6 @@ export default function HeaderPanel() {
           )}
         </div>
       </header>
-      {selectedUser && (
-        <>
-          <ProfileFullScreen user={selectedUser} onClose={() => setSelectedUser(null)} />
-          <div className="overlap" onClick={() => setSelectedUser(null)}></div>
-        </>
-      )}
     </>
   )
 }

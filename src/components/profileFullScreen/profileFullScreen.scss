@@ -1,46 +1,72 @@
 .profile-full-screen {
-  @include column-center-item;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   position: absolute;
-  background-color: #222;
-  padding: $small-rem;
-  border-radius: $avg-rem;
+  background-color: $avg-black;
+  border-radius: 1rem;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  transition: 0.2s ease;
   z-index: 10002;
 
   .content {
     @include column-center-item;
+    gap: 0.5rem;
+    padding: 2rem 2rem;
     position: relative;
-    .close-icon {
-      @include column-center-item;
+    .close-button {
+      @include circle-btn;
+      padding: 0.5rem;
       position: absolute;
-      top: -32px;
-      right: -32px;
-      padding: $small-rem;
-      background-color: #222;
-      border-radius: 50%;
-      opacity: 0.5;
-      transition: 0.1s ease;
+      top: -10%;
+      left: 50%;
+      transform: translate(-50%, 0%);
+      background-color: $avg-black;
       &:hover {
         opacity: 0.99;
       }
     }
+    .img {
+      border-radius: 1rem;
+      width: 275px;
+      height: 275px;
+    }
   }
+}
+
+.profile-full-screen.active {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
 }
 
 .stats2 {
   display: flex;
-  // display: grid;
-  // grid-template-columns: repeat(4, 1fr);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   align-items: center;
   justify-content: space-evenly;
   margin-top: 0.5rem;
   gap: $small-rem;
   border-radius: $avg-rem;
-  border: 1px solid #444;
   width: 100%;
   overflow: hidden;
+  .stat2 {
+    display: flex;
+    flex-direction: column;
+    gap: $small-rem;
+    width: 100%;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    padding: $avg-rem;
+    border-radius: $avg-rem;
+    background-color: $avg-black;
+    color: #fff;
+    overflow: hidden;
+  }
   .line {
     width: 1px;
     height: 68px;

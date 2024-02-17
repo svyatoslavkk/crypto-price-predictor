@@ -30,24 +30,20 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="screen-container">
-      <SideBar />
-      <div className="dashboard">
-        <div className="top-section">
-          <h1 className="large-header">Dashboard</h1>
-          <button className="small-circle-button" onClick={handleLogout}>
-            <LogoutIcon fontSize="small" />
-          </button>
-        </div>
-        <UserPreview />
-        <TopCoin />
-        <TopPlayersSlider />
-        <CoinsRow />
-        <NewsSlide />
-        <NewsSection />
-        {loading && <LoaderScreen />}
+    <div className="dashboard">
+      <div className="top-section">
+        <h1 className="large-header">Dashboard</h1>
+        <button className="small-circle-button" onClick={handleLogout}>
+          <LogoutIcon fontSize="small" />
+        </button>
       </div>
-      <ProfilePanel />
+      <UserPreview />
+      <TopCoin />
+      <TopPlayersSlider />
+      <CoinsRow />
+      <NewsSlide />
+      <NewsSection />
+      {loading && <LoaderScreen />}
     </div>
   )
 }

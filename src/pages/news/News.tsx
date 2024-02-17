@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react';
 import TopButtons from "../../components/topButtons/TopButtons";
 import { useGetCryptoNewsQuery } from "../../redux/features/api/newsApi";
 import { useNavigate, useLocation } from 'react-router-dom';
-import SideBar from '../../components/sideBar/SideBar';
-import ProfilePanel from '../../components/profilePanel/ProfilePanel';
 import { INews } from '../../types/types';
 
 interface BlogItem {
@@ -44,37 +42,33 @@ export default function News() {
   }, []);
 
   return (
-    <div className="screen-container">
-      <SideBar />
-      <div className="news">
-        <TopButtons pageTitle={pageTitle} />
-        <ul className="news-column">
-          {sortedNews && sortedNews.slice((currentPage - 1) * 10, currentPage * 10).map((item: BlogItem) => (
-            <a className="blog-item" href={item.url} target="_blank" rel="noopener noreferrer">
-              <li key={item.publishedAt}>
-                <div className="block-image">
-                  <img src={item.urlToImage ? item.urlToImage : adaptiveImg} className="medium-album-image" alt="Article Image" />
-                </div>
-                <h3 className="small-header">{item.title}</h3>
-                <p className="small-text">{item.publishedAt}</p>
-              </li>
-            </a>
-          ))}
-        </ul>
-        <div className="pagination">
-          {Array.from({ length: Math.ceil(sortedNews?.length / 10) }, (_, index) => index + 1).map((page) => (
-            <button
-              key={page}
-              className={`pagination-btn`}
-              onClick={() => handlePageChange(page)}
-              style={{ backgroundColor: page === currentPage ? 'orange' : '' }}
-            >
-              <span className={`small-header ${page === currentPage ? 'active-text' : ''}`}>{page}</span>
-            </button>
-          ))}
-        </div>
+    <div className="news">
+      <TopButtons pageTitle={pageTitle} />
+      <ul className="news-column">
+        {sortedNews && sortedNews.slice((currentPage - 1) * 10, currentPage * 10).map((item: BlogItem) => (
+          <a className="blog-item" href={item.url} target="_blank" rel="noopener noreferrer">
+            <li key={item.publishedAt}>
+              <div className="block-image">
+                <img src={item.urlToImage ? item.urlToImage : adaptiveImg} className="medium-album-image" alt="Article Image" />
+              </div>
+              <h3 className="small-header">{item.title}</h3>
+              <p className="small-text">{item.publishedAt}</p>
+            </li>
+          </a>
+        ))}
+      </ul>
+      <div className="pagination">
+        {Array.from({ length: Math.ceil(sortedNews?.length / 10) }, (_, index) => index + 1).map((page) => (
+          <button
+            key={page}
+            className={`pagination-btn`}
+            onClick={() => handlePageChange(page)}
+            style={{ backgroundColor: page === currentPage ? 'orange' : '' }}
+          >
+            <span className={`small-header ${page === currentPage ? 'active-text' : ''}`}>{page}</span>
+          </button>
+        ))}
       </div>
-      <ProfilePanel />
     </div>
   )
 }

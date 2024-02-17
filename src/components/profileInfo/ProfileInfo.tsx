@@ -121,9 +121,6 @@ export default function ProfileInfo() {
                 result={bet.result}
               />
             ))}
-              <button className="sq-btn" onClick={handleLoadMore}>
-                <h3 className="small-header">More</h3>
-              </button>
             </div>
           ) : (
             <DevLoader />
