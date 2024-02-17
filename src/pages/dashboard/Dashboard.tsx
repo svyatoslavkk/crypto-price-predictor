@@ -1,4 +1,3 @@
-import TopCoin from "../../components/topCoin/TopCoin"
 import SideBar from "../../components/sideBar/SideBar"
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useState } from 'react';
@@ -11,6 +10,7 @@ import CoinsRow from "../../components/coinsRow/CoinsRow";
 import NewsSlide from "../../components/newsSlide/NewsSlide";
 import NewsSection from "../../components/newsSection/NewsSection";
 import UserPreview from "../../components/userPreview/UserPreview";
+import TopCoin from "../../components/topCoin/TopCoin";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(false);

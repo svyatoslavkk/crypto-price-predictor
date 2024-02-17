@@ -5,21 +5,22 @@ import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import { formatData } from "../../utils/formatData";
 import {
   doc,
+  collection,
   updateDoc,
+  getDocs,
+  getDoc,
 } from 'firebase/firestore';
 import { database } from "../../firebase/firebaseConfig";
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import TollIcon from '@mui/icons-material/Toll';
 import { IBetDetails } from "../../types/types";
 import { useUserContext } from "../../context/UserContext";
-import btcBg from "../../assets/BTC.png";
 import ActiveBet from "../layout-components/ActiveBet/ActiveBet";
 import ResultBet from "../layout-components/ResultBet/ResultBet";
 
-export default function Test() {
-  const { myData, loading, fetchData } = useUserContext();
+export default function TopCoin() {
+  const { myData, setMyData, loading, fetchData } = useUserContext();
   const { data: bitcoinInfo } = useGetBitcoinInfoQuery('bitcoin');
   const [currencies, setcurrencies] = useState<any[]>([]);
   const [pair, setpair] = useState("BTC-USD");
@@ -41,8 +42,6 @@ export default function Test() {
 
   const [isBetResultShown, setIsBetResultShown] = useState(false);
   const [startPrice, setStartPrice] = useState(0);
-
-  const currentBalance = myData ? myData.balance : null;
   /////////////////////////
 
   const ws = useRef(new WebSocket("wss://ws-feed.pro.coinbase.com"));
@@ -73,12 +72,14 @@ export default function Test() {
 
   const upBet = async () => {
     const docId = myData?.docId;
-    fetchData(docId);
-    if (!docId) {
-      console.error('Не удалось получить идентификатор документа.');
-      return;
+    const collectionRef = doc(database, 'Users Data', docId);
+    const snapshot = await getDoc(collectionRef);
+    if (snapshot.exists()) {
+      const data = snapshot.data();
+      console.log('Данные документа:', data);
+      setMyData(data);
     }
-    const userDocRef = doc(database, 'Users Data', docId);
+    console.log('1ST BALANCE:', myData?.balance);
     setBetDirection("UP");
 
     setCountdown(betTime);
@@ -103,17 +104,23 @@ export default function Test() {
     const openPrice = initialPrice;
     
     const newBalance = myData?.balance - 10;
-    console.log("BEFORE Balance", newBalance);
     setLastPointBet(10);
     const newTotalBets = myData?.totalBets + 1;
 
-    await updateDoc(userDocRef, { 
+    await updateDoc(collectionRef, { 
       balance: newBalance, 
       totalBets: newTotalBets,
     });
 
+    const snapshotSecond = await getDoc(collectionRef);
+    if (snapshotSecond.exists()) {
+      const data = snapshotSecond.data();
+      console.log('Данные документа:', data);
+      setMyData(data);
+    }
+    console.log('2ND BALANCE:', myData?.balance);
+
     await new Promise(resolve => setTimeout(resolve, betTime * 1000));
-    fetchData(docId);
   
     const finalResponse = await fetch(`${url}/products/BTC-USD/ticker`);
     const finalData = await finalResponse.json();
@@ -137,15 +144,21 @@ export default function Test() {
         result: 'win',
       };
       const newBalance = myData?.balance + (10 * 2);
-      console.log("AFTER Balance", newBalance)
       const newWinBets = myData?.winBets + 1;
       const newHistoryBets = [...myData?.historyBets || [], betDetails];
       console.log("newHistoryBets", newHistoryBets)
-      await updateDoc(userDocRef, { 
+      await updateDoc(collectionRef, { 
         balance: newBalance, 
         winBets: newWinBets,
         historyBets: newHistoryBets,
       });
+      const snapshotThird = await getDoc(collectionRef);
+      if (snapshotThird.exists()) {
+        const data = snapshotThird.data();
+        console.log('Данные документа:', data);
+        setMyData(data);
+      }
+    console.log('2ND BALANCE:', myData?.balance);
     } else if (finalPrice < initialPrice) {
       let predictionResult = "Не угадали!";
       let predictionStatus = `Прогноз: UP - Цена при прогнозе: ${initialPrice}`;
@@ -164,23 +177,23 @@ export default function Test() {
       };
       const newHistoryBets = [...myData?.historyBets || [], betDetails];
       console.log("newHistoryBets", newHistoryBets)
-      await updateDoc(userDocRef, { 
+      await updateDoc(collectionRef, { 
         historyBets: newHistoryBets,
       });
     }
-    fetchData(docId);
     setIsBetResultShown(true);
     setTimeout(() => setIsBetResultShown(false), 4000);
   };
 
   const downBet = async () => {
     const docId = myData?.docId;
-    fetchData(docId);
-    if (!docId) {
-      console.error('Не удалось получить идентификатор документа.');
-      return;
+    const collectionRef = doc(database, 'Users Data', docId);
+    const snapshot = await getDoc(collectionRef);
+    if (snapshot.exists()) {
+      const data = snapshot.data();
+      console.log('Данные документа:', data);
+      setMyData(data);
     }
-    const userDocRef = doc(database, 'Users Data', docId);
 
     setBetDirection("DOWN");
     setCountdown(betTime);
@@ -210,11 +223,17 @@ export default function Test() {
     const newTotalBets = myData?.totalBets + 1;
     console.log("newTotalBets", newTotalBets);
 
-    await updateDoc(userDocRef, { 
+    await updateDoc(collectionRef, { 
       balance: newBalance, 
       totalBets: newTotalBets,
     });
-    fetchData(docId);
+
+    const snapshotSecond = await getDoc(collectionRef);
+    if (snapshotSecond.exists()) {
+      const data = snapshotSecond.data();
+      console.log('Данные документа:', data);
+      setMyData(data);
+    }
     await new Promise(resolve => setTimeout(resolve, betTime * 1000));
   
     const finalResponse = await fetch(`${url}/products/BTC-USD/ticker`);
@@ -231,7 +250,7 @@ export default function Test() {
       
       const closeTime = new Date().toISOString();
       const closePrice = finalPrice;
-      const betDetails: BetDetails = {
+      const betDetails: IBetDetails = {
         direction: 'DOWN',
         openTime: openTime,
         openPrice: openPrice,
@@ -243,11 +262,17 @@ export default function Test() {
       const newWinBets = myData?.winBets + 1;
       const newHistoryBets = [...myData?.historyBets || [], betDetails];
       console.log("newHistoryBets", newHistoryBets)
-      await updateDoc(userDocRef, { 
+      await updateDoc(collectionRef, { 
         balance: newBalance, 
         winBets: newWinBets,
         historyBets: newHistoryBets,
       });
+      const snapshotThird = await getDoc(collectionRef);
+      if (snapshotThird.exists()) {
+        const data = snapshotThird.data();
+        console.log('Данные документа:', data);
+        setMyData(data);
+      }
     } else if (finalPrice > initialPrice) {
       let predictionResult = "Не угадали!";
       let predictionStatus = `Прогноз: DOWN - Цена при прогнозе: ${initialPrice}`;
@@ -256,7 +281,7 @@ export default function Test() {
       setBetStatus("lose");
       const closeTime = new Date().toISOString();
       const closePrice = finalPrice;
-      const betDetails: BetDetails = {
+      const betDetails: IBetDetails = {
         direction: 'DOWN',
         openTime: openTime,
         openPrice: openPrice,
@@ -266,11 +291,10 @@ export default function Test() {
       };
       const newHistoryBets = [...myData?.historyBets || [], betDetails];
       console.log("newHistoryBets", newHistoryBets)
-      await updateDoc(userDocRef, { 
+      await updateDoc(collectionRef, { 
         historyBets: newHistoryBets,
       });
     }
-    fetchData(docId);
     setIsBetResultShown(true);
     setTimeout(() => setIsBetResultShown(false), 4000);
   };

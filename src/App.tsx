@@ -27,11 +27,11 @@ function App() {
             <Route element={<RootLayout />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/rankings" element={<Rankings />} />
-              <Route path="/profile" element={<Profile />} />
               <Route path="/news" element={<News />} />
               <Route path="profile/:uid" element={<ProfileFullScreen />} />
             </Route>
             
+            <Route path="/profile" element={<Profile />} />
           </Routes>
         </UserProvider>
       </BrowserRouter>

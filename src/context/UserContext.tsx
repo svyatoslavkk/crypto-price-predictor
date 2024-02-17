@@ -11,6 +11,7 @@ const UserContext = createContext<{
   user: User | null;
   users: User[];
   myData: User | null;
+  setMyData: any;
   rankUsers: User[];
   loading: boolean;
   myDataLoading: boolean;
@@ -24,6 +25,7 @@ const UserContext = createContext<{
   user: null,
   users: [],
   myData: null,
+  setMyData: null,
   rankUsers: [],
   loading: false,
   myDataLoading: false,
@@ -53,6 +55,7 @@ export const UserProvider: React.FC<any> = ({ children }) => {
       if (data) {
         setMyData(data);
       }
+      console.log("FUNCTION CALLED")
     } catch (error) {
       console.error('Error getting data:', error);
     }
@@ -117,7 +120,7 @@ export const UserProvider: React.FC<any> = ({ children }) => {
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, users, myData, rankUsers, loading, myDataLoading, showProfile, setShowProfile, chosenUser, fetchData, fetchMyData, fetchUserData }}>
+    <UserContext.Provider value={{ user, users, myData, setMyData, rankUsers, loading, myDataLoading, showProfile, setShowProfile, chosenUser, fetchData, fetchMyData, fetchUserData }}>
       {children}
     </UserContext.Provider>
   );
