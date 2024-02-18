@@ -1,13 +1,13 @@
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import TollIcon from '@mui/icons-material/Toll';
-import { IActiveBet } from '../../../types/types';
-import { useGetBitcoinInfoQuery } from '../../../redux/features/api/api';
+import { IActiveBet } from '../../types/types';
+import { useGetBitcoinInfoQuery } from '../../redux/features/api/api';
 
 export default function ActiveBet({ countdown, betDirection, pointAmount, startPrice, betTime }: IActiveBet) {
   const { data: bitcoinInfo } = useGetBitcoinInfoQuery('bitcoin');
   return (
-    <div className={`active-bet ${(countdown > 0) ? 'active-status-bet' : 'active-status-bet'}`}>
+    <div className={`active-bet ${(countdown > 0) ? 'active-status-bet' : ''}`}>
       <div className="flex-info">
         <div className="progress-time-block">
           <svg className="circle-progress">

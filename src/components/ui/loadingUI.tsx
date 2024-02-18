@@ -165,3 +165,13 @@ export const userPreviewLoadingUI = (
     </div>
   </div>
 );
+
+export const RankItemLoadingUI = () => (
+  <>
+    {[...Array(11)].map((_, index) => (
+      <li key={index} className="rank-item-loading">
+        <div className="card__image"></div>
+      </li>
+    ))}
+  </>
+);

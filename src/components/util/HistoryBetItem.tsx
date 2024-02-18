@@ -1,4 +1,4 @@
-import { BetDetails } from "../../../types/types";
+import { BetDetails } from "../../types/types";
 
 export default function HistoryBetItem({ openTime, direction, openPrice, closePrice, result }: BetDetails) {
   return (

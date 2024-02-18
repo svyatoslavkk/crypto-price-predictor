@@ -1,6 +1,6 @@
-import { IResultBet } from "../../../types/types";
-import winEmoji from "../../../assets/winEmoji.png";
-import loseEmoji from "../../../assets/loseEmoji.png";
+import { IResultBet } from "../../types/types";
+import winEmoji from "../../assets/winEmoji.png";
+import loseEmoji from "../../assets/loseEmoji.png";
 
 export default function ResultBet({ countdown, isBetResultShown, betStatus }: IResultBet) {
   return (

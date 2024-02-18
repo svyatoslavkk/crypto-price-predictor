@@ -1,4 +1,4 @@
-import { IAchievement } from "../../../types/types";
+import { IAchievement } from "../../types/types";
 
 export default function AchievementItem({ header, image, description, achieved }: IAchievement) {
   return (

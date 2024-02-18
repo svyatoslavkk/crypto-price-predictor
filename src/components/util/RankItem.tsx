@@ -1,5 +1,5 @@
-import { useUserContext } from "../../../context/UserContext"
-import { IRankItem } from "../../../types/types";
+import { useUserContext } from "../../context/UserContext"
+import { IRankItem } from "../../types/types";
 import { useNavigate } from 'react-router-dom';
 
 export default function RankItem({ uid, avatar, userName, rank, balance }: IRankItem) {

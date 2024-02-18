@@ -1,51 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import GoogleIcon from '@mui/icons-material/Google';
-import { useNavigate } from 'react-router-dom';
-import { app } from '../../firebase/firebaseConfig';
-import {
-  getAuth,
-  signInWithEmailAndPassword,
-} from 'firebase/auth';
 import { Link } from 'react-router-dom';
 import LoaderScreen from '../../components/loaders/loaderScreen/LoaderScreen';
+import { useAuthContext } from '../../context/AuthContext';
 
 export default function Login() {
-  const auth = getAuth(app);
-  const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  const signIn = () => {
-    setLoading(true);
-    signInWithEmailAndPassword(auth, email, password)
-      .then((response) => {
-        const user = response.user;
-        console.log(user);
-        user.getIdToken()
-          .then((accessToken) => {
-            sessionStorage.setItem('Token', accessToken);
-            navigate('/profile');
-          })
-          .catch((error) => {
-            console.error('getIdToken error', error);
-          });
-      })
-      .catch((error) => {
-        console.error('signIn error', error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
-  
-  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value);
-  };
-
-  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(event.target.value);
-  };
+  const { loading, handleEmailChange, handlePasswordChange, signIn } = useAuthContext();
 
   return (
     <div className="signup">
@@ -76,9 +36,9 @@ export default function Login() {
           </div>
           <p className="medium-text">Not a Member? <Link to="/signup" className="link-text">Register</Link></p>
           <div className="links">
-            <div className="social-icon">
+            <button className="social-icon">
               <GoogleIcon fontSize='large' />
-            </div>
+            </button>
           </div>
         </div>
       </div>

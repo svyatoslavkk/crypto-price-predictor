@@ -1,7 +1,8 @@
 import TopButtons from "../../components/topButtons/TopButtons";
 import { User } from "../../types/types";
 import { useUserContext } from "../../context/UserContext";
-import RankItem from "../../components/util/RankItem/RankItem";
+import RankItem from "../../components/util/RankItem";
+import { RankItemLoadingUI } from "../../components/ui/loadingUI";
 
 export default function Rankings() {
   const { loading, rankUsers } = useUserContext();
@@ -13,13 +14,7 @@ export default function Rankings() {
       <TopButtons pageTitle={pageTitle} />
       <ul className="list-column">
         {loading ? (
-          <>
-            {[...Array(11)].map((_, index) => (
-              <li key={index} className="rank-item-loading">
-                <div className="card__image"></div>
-              </li>
-            ))}
-          </>
+          <RankItemLoadingUI />
         ) : (
           <>
             {rankUsers.map((user: User) => (

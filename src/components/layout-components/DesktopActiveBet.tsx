@@ -1,8 +1,8 @@
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import TollIcon from '@mui/icons-material/Toll';
-import { useBetContext } from '../../../context/BetContext';
-import { useGetBitcoinInfoQuery } from '../../../redux/features/api/api';
+import { useBetContext } from '../../context/BetContext';
+import { useGetBitcoinInfoQuery } from '../../redux/features/api/api';
 
 export default function DesktopActiveBet() {
   const { countdown, betDirection, pointAmount, startPrice, betTime } = useBetContext();

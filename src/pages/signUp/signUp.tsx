@@ -1,117 +1,11 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
 import GoogleIcon from '@mui/icons-material/Google';
-import { app, database } from '../../firebase/firebaseConfig';
-import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-  createUserWithEmailAndPassword,
-  updateProfile
-} from 'firebase/auth';
-import { collection, addDoc, doc, updateDoc } from 'firebase/firestore';
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { Link } from 'react-router-dom';
 import LoaderScreen from '../../components/loaders/loaderScreen/LoaderScreen';
+import { useAuthContext } from '../../context/AuthContext';
 
 export default function SignUp() {
-  const auth = getAuth(app);
-  const googleProvider = new GoogleAuthProvider();
-  const navigate = useNavigate();
-  const [userName, setUserName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [avatar, setAvatar] = useState<File | null>(null);
-  const [loading, setLoading] = useState(false);
-  const collectionRef = collection(database, 'Users Data');
-
-  const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUserName(event.target.value);
-  };
-  
-  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value);
-  };
-
-  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(event.target.value);
-  };
-  
-  const handleSubmit = async () => {
-    try {
-      setLoading(true);
-      const response = await createUserWithEmailAndPassword(auth, email, password);
-      const currentUser = auth.currentUser;
-  
-      if (currentUser) {
-        let pictureUrl = null;
-        
-        if (avatar) {
-          const storage = getStorage(app);
-          const storageRef = ref(storage, 'avatars/' + currentUser?.uid + '.jpg');
-          await uploadBytes(storageRef, avatar);
-          pictureUrl = await getDownloadURL(storageRef);
-        }
-
-        await updateProfile(currentUser, {
-          displayName: userName,
-          photoURL: pictureUrl,
-        });
-
-        console.log(response.user);
-        sessionStorage.setItem('Token', response.user?.accessToken);
-        sessionStorage.setItem('FullName', userName);
-
-        const docRef = await addDoc(collectionRef, {
-          uid: currentUser.uid,
-          userName: userName,
-          email: currentUser.email,
-          balance: 100,
-          totalBets: 0,
-          winBets: 0,
-          historyBets: [],
-          lastClaimedBonus: "2000-01-01T18:10:59.977Z",
-          ...(avatar && { avatar: pictureUrl }),
-        });
-  
-        const docId = docRef.id;
-  
-        await updateDoc(doc(collectionRef, docId), {
-          docId: docId,
-        });
-        navigate('/profile');
-      }
-    } catch (err: any) {
-      console.error('Registration error:', err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleGoogleSignIn = async () => {
-    try {
-      const result = await signInWithPopup(auth, googleProvider);
-      const user = result.user;
-      console.log(user);
-      const usernameFromGoogle = user.displayName || 'FallbackUsername';
-      await updateProfile(user, { displayName: usernameFromGoogle });
-      await addDoc(collectionRef, {
-        email: user.email,
-        userName: usernameFromGoogle,
-      });
-      navigate('/dashboard');
-    } catch (err: any) {
-      console.error('Google Sign In error:', err.message);
-    }
-  };
-
-  const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-  
-    if (file) {
-      setAvatar(file);
-    }
-  };
+  const { loading, handleUsernameChange, handleEmailChange, handlePasswordChange, handleAvatarChange, handleSubmit, handleGoogleSignUp } = useAuthContext();
 
   return (
     <div className="signup">
@@ -165,9 +59,9 @@ export default function SignUp() {
           </div>
           <p className="medium-text">Already have an account? <Link to="/login" className="link-text">Log In</Link></p>
           <div className="links">
-            <div className="social-icon" onClick={handleGoogleSignIn}>
+            <button className="social-icon" onClick={handleGoogleSignUp}>
               <GoogleIcon fontSize='large' />
-            </div>
+            </button>
           </div>
         </div>
       </div>

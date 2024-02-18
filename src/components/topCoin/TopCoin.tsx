@@ -16,8 +16,8 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { IBetDetails } from "../../types/types";
 import { useUserContext } from "../../context/UserContext";
-import ActiveBet from "../layout-components/ActiveBet/ActiveBet";
-import ResultBet from "../layout-components/ResultBet/ResultBet";
+import ActiveBet from "../layout-components/ActiveBet";
+import ResultBet from "../layout-components/ResultBet";
 import { useBetContext } from "../../context/BetContext";
 
 export default function TopCoin() {
@@ -516,7 +516,6 @@ export default function TopCoin() {
           </button>
         </div>
       </div>
-      
       <ActiveBet 
         countdown={countdown}
         betDirection={betDirection}
@@ -524,7 +523,6 @@ export default function TopCoin() {
         startPrice={startPrice}
         betTime={betTime}
       />
-
       <ResultBet 
         countdown={countdown}
         isBetResultShown={isBetResultShown}

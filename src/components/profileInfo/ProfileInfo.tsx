@@ -9,8 +9,8 @@ import DevLoader from '../loaders/devLoader/DevLoader';
 import { useUserContext } from '../../context/UserContext';
 import { IBetDetails } from '../../types/types';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import HistoryBetItem from '../util/HistoryBetItem/HistoryBetItem';
-import AchievementItem from '../util/AchievementItem/AchievementItem';
+import HistoryBetItem from '../util/HistoryBetItem';
+import AchievementItem from '../util/AchievementItem';
 
 export default function ProfileInfo() {
   const { myData } = useUserContext();

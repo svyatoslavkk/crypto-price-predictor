@@ -13,30 +13,33 @@ import { UserProvider } from './context/UserContext';
 import RootLayout from './_root/RootLayout';
 import ProfileFullScreen from './components/profileFullScreen/ProfileFullScreen';
 import { BetProvider } from './context/BetContext';
+import { AuthProvider } from './context/AuthContext';
 
 function App() {
 
   return (
     <Provider store={store}>
       <BrowserRouter>
-        <UserProvider>
-          <BetProvider>
-            <Routes>
-              <Route path="/welcome" element={<WelcomePage />} />
-              <Route path="/signup" element={<SignUp />} />
-              <Route path="/login" element={<Login />} />
+        <AuthProvider>
+          <UserProvider>
+            <BetProvider>
+              <Routes>
+                <Route path="/welcome" element={<WelcomePage />} />
+                <Route path="/signup" element={<SignUp />} />
+                <Route path="/login" element={<Login />} />
 
-              <Route element={<RootLayout />}>
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/rankings" element={<Rankings />} />
-                <Route path="/news" element={<News />} />
-                <Route path="profile/:uid" element={<ProfileFullScreen />} />
-              </Route>
-              
-              <Route path="/profile" element={<Profile />} />
-            </Routes>
-          </BetProvider>
-        </UserProvider>
+                <Route element={<RootLayout />}>
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/rankings" element={<Rankings />} />
+                  <Route path="/news" element={<News />} />
+                  <Route path="profile/:uid" element={<ProfileFullScreen />} />
+                </Route>
+                
+                <Route path="/profile" element={<Profile />} />
+              </Routes>
+            </BetProvider>
+          </UserProvider>
+        </AuthProvider>
       </BrowserRouter>
     </Provider>
   )

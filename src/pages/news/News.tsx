@@ -3,16 +3,10 @@ import TopButtons from "../../components/topButtons/TopButtons";
 import { useGetCryptoNewsQuery } from "../../redux/features/api/newsApi";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { INews } from '../../types/types';
-
-interface BlogItem {
-  urlToImage: string;
-  url: string;
-  title: string;
-  publishedAt: string;
-}
+import Pagination from '../../components/util/Pagination';
+import BlogItem from '../../components/shared-components/BlogItem';
 
 export default function News() {
-  const adaptiveImg = 'https://blockbuild.africa/wp-content/uploads/2021/11/Crypto-project-1.jpg';
   const { data: cryptoNews } = useGetCryptoNewsQuery({});
   const sortedNews = cryptoNews?.articles.slice().sort((a: INews, b: INews) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
 
@@ -45,30 +39,20 @@ export default function News() {
     <div className="news">
       <TopButtons pageTitle={pageTitle} />
       <ul className="news-column">
-        {sortedNews && sortedNews.slice((currentPage - 1) * 10, currentPage * 10).map((item: BlogItem) => (
-          <a className="blog-item" href={item.url} target="_blank" rel="noopener noreferrer">
-            <li key={item.publishedAt}>
-              <div className="block-image">
-                <img src={item.urlToImage ? item.urlToImage : adaptiveImg} className="medium-album-image" alt="Article Image" />
-              </div>
-              <h3 className="small-header">{item.title}</h3>
-              <p className="small-text">{item.publishedAt}</p>
-            </li>
-          </a>
+        {sortedNews && sortedNews.slice((currentPage - 1) * 10, currentPage * 10).map((item: INews) => (
+          <BlogItem 
+            url={item.url}
+            urlToImage={item.urlToImage}
+            title={item.title}
+            publishedAt = {item.publishedAt}
+          />
         ))}
       </ul>
-      <div className="pagination">
-        {Array.from({ length: Math.ceil(sortedNews?.length / 10) }, (_, index) => index + 1).map((page) => (
-          <button
-            key={page}
-            className={`pagination-btn`}
-            onClick={() => handlePageChange(page)}
-            style={{ backgroundColor: page === currentPage ? 'orange' : '' }}
-          >
-            <span className={`small-header ${page === currentPage ? 'active-text' : ''}`}>{page}</span>
-          </button>
-        ))}
-      </div>
+      <Pagination 
+        sortedNews={sortedNews}
+        handlePageChange={handlePageChange}
+        currentPage={currentPage}
+      />
     </div>
   )
 }

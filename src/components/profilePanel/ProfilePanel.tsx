@@ -8,17 +8,13 @@ import { profilePanelLoadingUI } from '../ui/loadingUI';
 import { useBetContext } from '../../context/BetContext';
 import winEmoji from "../../assets/winEmoji.png";
 import loseEmoji from "../../assets/loseEmoji.png";
-import DesktopActiveBet from '../layout-components/DesktopActiveBet/DesktopActiveBet';
+import DesktopActiveBet from '../layout-components/DesktopActiveBet';
+import DesktopResultBet from '../layout-components/DesktopResultBet';
 
 export default function ProfilePanel() {
   const exImg = 'https://www.aipromptsgalaxy.com/wp-content/uploads/2023/06/subrat_female_avatar_proud_face_Aurora_a_25-year-old_girl_with__fd0e4c59-bb7e-4636-9258-6690ec6a71e7.png';
   const { user, myData, rankUsers, loading } = useUserContext();
-  const { countdown, isBetResultShown, setIsBetResultShown, betStatus } = useBetContext();
   const myWinrate = myData ? (myData.winBets / myData.totalBets) * 100 : 0;
-
-  const isBetResultShownMakeItFalse = () => {
-    setIsBetResultShown(false);
-  }
 
   const myCurrRank = rankUsers
   .filter((data) => data.uid === user?.uid)
@@ -57,24 +53,7 @@ export default function ProfilePanel() {
       <ModernBalance />
       <ModernWinrate myWinrate={myWinrate} />
       <DesktopActiveBet />
-      <div className={`fixed-overlay ${(countdown <= 0 && isBetResultShown) ? 'active-status-bet' : ''}`} onClick={isBetResultShownMakeItFalse}>
-        <div className={`result-bet-modal ${(countdown <= 0 && isBetResultShown) ? 'active-status-bet' : 'active-status-bet'}`}>
-          <div className="column-center">
-            {betStatus === 'win' ? (
-              <img src={winEmoji} className="emoji-img" alt="Emoji Status" />
-            ) : (
-              <img src={loseEmoji} className="emoji-img" alt="Emoji Status" />
-            )}
-            <h3 className="large-header" style={{color: betStatus === 'win' ? '#0cff41' : '#ff5e5e'}}>
-              {betStatus === 'win' ? 'YOU WIN!' : 'TRY AGAIN'}
-            </h3>
-          </div>
-          <button className="neutral-btn" onClick={isBetResultShownMakeItFalse}>
-            <span className="small-header">Close</span>
-          </button>
-          {(countdown <= 0 && isBetResultShown) && <div className="timer-line"></div>}
-        </div>
-      </div>
+      <DesktopResultBet />
     </section>
   )
 }
