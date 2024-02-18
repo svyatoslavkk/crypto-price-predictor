@@ -5,6 +5,9 @@ import { User } from '../../types/types';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useUserContext } from '../../context/UserContext';
+import MiniBtn from '../ui/MiniBtn';
+import ListItem from '../shared-components/ListItem';
+import { VIEW_PROFILE_TITLE, fakeImg } from '../../constants/constants';
 
 export default function HeaderPanel() {
   const { users, setShowProfile } = useUserContext();
@@ -22,6 +25,11 @@ export default function HeaderPanel() {
 
   const clearSearchQuery = () => {
     setSearchQuery('');
+  };
+
+  const handleViewProfile = (userUid: string) => {
+    navigate(`/profile/${userUid}`);
+    setShowProfile(true);
   };
 
   return (
@@ -45,18 +53,14 @@ export default function HeaderPanel() {
           {debouncedSearchQuery.length >= 3 && (
             <ul className="explore-results">
               {filteredUsers.map((user: User) => (
-                <li key={user.id} className="flex-between">
-                  <div className="flex-info">
-                    <img src={user.avatar} className="small-sq-img" alt="Profile Img" />
-                    <span className="small-text">{user.userName}</span>
-                  </div>
-                  <button className="sq-btn-mod" onClick={() => {
-                    navigate(`/profile/${user.uid}`);
-                    setShowProfile(true);
-                  }}>
-                    <span className="tiny-color-text">View Profile</span>
-                  </button>
-                </li>
+                <ListItem
+                  id={user.id}
+                  image={user.avatar}
+                  title={user.userName}
+                  onClick={() => handleViewProfile(user.uid)}
+                  buttonText={VIEW_PROFILE_TITLE}
+                  fakeImg={fakeImg}
+                />
               ))}
             </ul>
           )}

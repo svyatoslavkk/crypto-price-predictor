@@ -7,6 +7,8 @@ import '@splidejs/react-splide/css';
 import { coinsRowLoadingUI } from "../ui/loadingUI";
 import { coinsRowErrorUI } from "../ui/errorUI";
 import { Coin } from "../../types/types";
+import HeaderSection from '../shared-components/HeaderSection';
+import { COINS_TITLE } from '../../constants/constants';
 
 export default function CoinsRow() {
   const { data: coinsList, error: coinsListError, isLoading: coinsListLoading } = useGetCoinListQuery({});
@@ -51,10 +53,9 @@ export default function CoinsRow() {
   return (
     <>
       <div className="list-column">
-        <div className="header-section">
-          <h3 className="small-header">Coins</h3>
-          <div></div>
-        </div>
+        <HeaderSection
+          title={COINS_TITLE}
+        />
         <Splide 
           options={ splideOptions }
           aria-labelledby="basic-example-heading"

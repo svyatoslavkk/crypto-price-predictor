@@ -16,8 +16,8 @@ export default function RankItem({ uid, avatar, userName, rank, balance }: IRank
       <div className="flex-info">
         <img src={avatar} className="medium-sq-img" alt="Avatar" />
         <div className="text-items-column">
-          <h3 className="medium-text">{userName}</h3>
-          <h3 className="medium-header">#{rank}</h3>
+          <h3 className="small-header">{userName}</h3>
+          <h3 className="small-text">#{rank}</h3>
         </div>
       </div>
       <div className="text-items-column">

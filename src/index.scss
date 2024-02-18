@@ -96,6 +96,7 @@ input:focus {
 
 .list-item {
   @include list-item-styles;
+  justify-content: space-between;
   padding: $avg-rem;
   background-color: $avg-black;
 }

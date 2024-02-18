@@ -6,7 +6,7 @@ import NewsSlide from "../../components/newsSlide/NewsSlide";
 import NewsSection from "../../components/newsSection/NewsSection";
 import UserPreview from "../../components/userPreview/UserPreview";
 import TopCoin from "../../components/topCoin/TopCoin";
-import useLogout from "../../components/hooks/useLogout";
+import useLogout from "../../hooks/useLogout";
 
 export default function Dashboard() {
   const { loading, handleLogout } = useLogout();

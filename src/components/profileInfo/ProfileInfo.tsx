@@ -11,6 +11,8 @@ import { IBetDetails } from '../../types/types';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import HistoryBetItem from '../util/HistoryBetItem';
 import AchievementItem from '../util/AchievementItem';
+import NeutralBtn from '../ui/NeutralBtn';
+import { ACHIEVEMENTS_TITLE, HISTORY_TITLE } from '../../constants/constants';
 
 export default function ProfileInfo() {
   const { myData } = useUserContext();
@@ -77,18 +79,16 @@ export default function ProfileInfo() {
   return (
     <div className="profile-info">
       <div className="buttons">
-        <button
-          className={`full-btn ${activeButton === "Achievements" ? "active" : ""}`}
+        <NeutralBtn 
+          buttonText={ACHIEVEMENTS_TITLE}
           onClick={() => setActiveButton("Achievements")}
-        >
-          <span>Achievements</span>
-        </button>
-        <button
-          className={`full-btn ${activeButton === "History" ? "active" : ""}`}
+          state={activeButton}
+        />
+        <NeutralBtn 
+          buttonText={HISTORY_TITLE}
           onClick={() => setActiveButton("History")}
-        >
-          <span>History</span>
-        </button>
+          state={activeButton}
+        />
       </div>
       <div className="list-column">
         {activeButton === "Achievements" && (

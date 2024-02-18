@@ -6,6 +6,7 @@ import ShowChartIcon from '@mui/icons-material/ShowChart';
 import { useUserContext } from '../../context/UserContext';
 import { User } from '../../types/types';
 import LoaderScreen from '../loaders/loaderScreen/LoaderScreen';
+import Stat from '../shared-components/Stat';
 
 export default function ProfileTop() {
   const { user, rankUsers, myData, myDataLoading } = useUserContext();
@@ -19,6 +20,10 @@ export default function ProfileTop() {
   const myRank = myRankIndex !== -1 ? myRankIndex + 1 : null;
   const winRate = myData ? (myData.winBets / myData.totalBets) * 100 : 0;
   const pageTitle = '';
+
+  const rankValue = `#${myRank}`;
+  const winRateValue = `${myData?.totalBets !== 0 ? winRate.toFixed(0) : 0}%`;
+  const totalBetsValue = `${myData?.totalBets !== undefined ? myData?.totalBets : '-'}`;
 
   return (
     <>
@@ -43,25 +48,21 @@ export default function ProfileTop() {
               )}
             </div>
             <div className="stats-info">
-              <div className="stat">
-                <ShowChartIcon fontSize="small" sx={{ color: '#f0de69' }} />
-                <h3 className="small-header">#{myRank}</h3>
-                <span className="small-text">Rank</span>
-              </div>
-              <div className="stat">
-                <EmojiEventsIcon fontSize="small" sx={{ color: '#f0de69' }} />
-                {myData && (
-                  <h3 className="small-header">{myData.totalBets !== 0 ? winRate.toFixed(0) : 0}%</h3>
-                )}
-                <span className="small-text">Win Rate</span>
-              </div>
-              <div className="stat">
-                <CasinoIcon fontSize="small" sx={{ color: '#f0de69' }} />
-                {myData && (
-                  <h3 className="small-header">{myData.totalBets !== undefined ? myData.totalBets : '-'}</h3>
-                )}
-                <span className="small-text">Total bets</span>
-              </div>
+              <Stat
+                icon={<ShowChartIcon fontSize="small" sx={{ color: '#f0de69' }} />}
+                value={rankValue}
+                label={"Rank"}
+              />
+              <Stat
+                icon={<EmojiEventsIcon fontSize="small" sx={{ color: '#f0de69' }} />}
+                value={winRateValue}
+                label={"Win Rate"}
+              />
+              <Stat
+                icon={<CasinoIcon fontSize="small" sx={{ color: '#f0de69' }} />}
+                value={totalBetsValue}
+                label={"Total bets"}
+              />
             </div>
           </div>
       </div>

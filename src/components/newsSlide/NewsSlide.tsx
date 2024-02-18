@@ -4,9 +4,11 @@ import '@splidejs/react-splide/css';
 import { useGetCryptoNewsQuery } from "../../redux/features/api/newsApi";
 import { newsSlideLoadingUI } from "../ui/loadingUI";
 import { INews } from "../../types/types";
+import { MORE_TITLE, NEWS_TITLE, fakeNewsImg } from "../../constants/constants";
+import DefaultSlide from "../shared-components/DefaultSlide";
+import TransparentBtn from "../ui/TransparentBtn";
 
 export default function NewsSlide() {
-  const adaptiveImg = 'https://ichef.bbci.co.uk/news/976/cpsprodpb/11EAB/production/_131278337_gettyimages-1436167319.jpg';
   const { data: cryptoNews, isLoading: cryptoNewsLoading } = useGetCryptoNewsQuery({});
   const sortedNews = cryptoNews?.articles.slice().sort((a: INews, b: INews) => {
     return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
@@ -19,11 +21,9 @@ export default function NewsSlide() {
   return (
     <section className="news-slide">
       <div className="header-section">
-        <h3 className="small-header">News</h3>
+        <h3 className="small-header">{NEWS_TITLE}</h3>
         <Link to="/news">
-          <button className="transparent-btn">
-            More
-          </button>
+          <TransparentBtn title={MORE_TITLE} />
         </Link>
       </div>
       <Splide 
@@ -40,15 +40,11 @@ export default function NewsSlide() {
       >
         {sortedNews && sortedNews.slice(0, 3).map((item: INews) => (
           <SplideSlide key={item.url}>
-              <div className="news-slide-item">
-                <div className="news-slide-image-block">
-                  <img src={item.urlToImage ? item.urlToImage : adaptiveImg} className="medium-album-image" alt="News Image" />
-                  <div className="news-slide-gradient"></div>
-                  <span className="news-slide-text">
-                    <span className="small-header">{item.title}</span>
-                  </span>
-                </div>
-              </div>
+            <DefaultSlide 
+              urlToImage={item.urlToImage}
+              title={item.title}
+              fakeImg={fakeNewsImg}
+            />
           </SplideSlide>
         ))}
       </Splide>

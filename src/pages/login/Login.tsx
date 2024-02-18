@@ -3,6 +3,8 @@ import GoogleIcon from '@mui/icons-material/Google';
 import { Link } from 'react-router-dom';
 import LoaderScreen from '../../components/loaders/loaderScreen/LoaderScreen';
 import { useAuthContext } from '../../context/AuthContext';
+import ClassicInput from '../../components/ui/ClassicInput';
+import { EMAIL_PLACEHOLDER, LOGIN_VALUE, PASSWORD_PLACEHOLDER, PASSWORD_TYPE, SUBMIT_TYPE, TEXT_TYPE } from '../../constants/constants';
 
 export default function Login() {
   const { loading, handleEmailChange, handlePasswordChange, signIn } = useAuthContext();
@@ -15,25 +17,21 @@ export default function Login() {
         <i style={{ '--clr' : '#fffd44' } as React.CSSProperties}></i>
         <div className="login">
           <h2>Login</h2>
-          <div className="inputBx">
-            <input 
-              type="text" 
-              className="classic-input" 
-              placeholder="Email"
-              onChange={handleEmailChange}
-            />
-          </div>
-          <div className="inputBx">
-            <input 
-              type="password"
-              className="classic-input"
-              placeholder="Password"
-              onChange={handlePasswordChange}
-            />
-          </div>
-          <div className="inputBx" onClick={signIn}>
-            <input type="submit" className="classic-input" value="Login" />
-          </div>
+          <ClassicInput
+            type={TEXT_TYPE}
+            placeholder={EMAIL_PLACEHOLDER}
+            onChange={handleEmailChange}
+          />
+          <ClassicInput
+            type={PASSWORD_TYPE}
+            placeholder={PASSWORD_PLACEHOLDER}
+            onChange={handlePasswordChange}
+          />
+          <ClassicInput
+            type={SUBMIT_TYPE}
+            onClick={signIn}
+            value={LOGIN_VALUE}
+          />
           <p className="medium-text">Not a Member? <Link to="/signup" className="link-text">Register</Link></p>
           <div className="links">
             <button className="social-icon">

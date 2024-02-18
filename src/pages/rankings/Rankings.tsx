@@ -3,15 +3,14 @@ import { User } from "../../types/types";
 import { useUserContext } from "../../context/UserContext";
 import RankItem from "../../components/util/RankItem";
 import { RankItemLoadingUI } from "../../components/ui/loadingUI";
+import { RANKINGS_TITLE } from "../../constants/constants";
 
 export default function Rankings() {
   const { loading, rankUsers } = useUserContext();
 
-  const pageTitle = "Rankings";
-
   return (
     <div className="rankings">
-      <TopButtons pageTitle={pageTitle} />
+      <TopButtons pageTitle={RANKINGS_TITLE} />
       <ul className="list-column">
         {loading ? (
           <RankItemLoadingUI />

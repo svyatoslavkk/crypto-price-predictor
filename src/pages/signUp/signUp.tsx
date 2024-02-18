@@ -3,6 +3,8 @@ import GoogleIcon from '@mui/icons-material/Google';
 import { Link } from 'react-router-dom';
 import LoaderScreen from '../../components/loaders/loaderScreen/LoaderScreen';
 import { useAuthContext } from '../../context/AuthContext';
+import ClassicInput from '../../components/ui/ClassicInput';
+import { EMAIL_PLACEHOLDER, PASSWORD_PLACEHOLDER, PASSWORD_TYPE, SIGNUP_VALUE, SUBMIT_TYPE, TEXT_TYPE, USERNAME_PLACEHOLDER } from '../../constants/constants';
 
 export default function SignUp() {
   const { loading, handleUsernameChange, handleEmailChange, handlePasswordChange, handleAvatarChange, handleSubmit, handleGoogleSignUp } = useAuthContext();
@@ -26,37 +28,26 @@ export default function SignUp() {
               onChange={handleAvatarChange}
             />
           </div>
-          <div className="inputBx">
-            <input 
-              type="text" 
-              className="classic-input" 
-              placeholder="Username"
-              onChange={handleUsernameChange}
-            />
-          </div>
-          <div className="inputBx">
-            <input 
-              type="text" 
-              className="classic-input" 
-              placeholder="Email"
-              onChange={handleEmailChange}
-            />
-          </div>
-          <div className="inputBx">
-            <input 
-              type="password" 
-              className="classic-input" 
-              placeholder="Password"
-              onChange={handlePasswordChange}
-            />
-          </div>
-          <div className="inputBx" onClick={handleSubmit}>
-            <input 
-              type="submit" 
-              className="classic-input" 
-              value="Sign Up"
-            />
-          </div>
+          <ClassicInput 
+            type={TEXT_TYPE}
+            placeholder={USERNAME_PLACEHOLDER}
+            onChange={handleUsernameChange}
+          />
+          <ClassicInput 
+            type={TEXT_TYPE}
+            placeholder={EMAIL_PLACEHOLDER}
+            onChange={handleEmailChange}
+          />
+          <ClassicInput 
+            type={PASSWORD_TYPE}
+            placeholder={PASSWORD_PLACEHOLDER}
+            onChange={handlePasswordChange}
+          />
+          <ClassicInput
+            type={SUBMIT_TYPE}
+            onClick={handleSubmit}
+            value={SIGNUP_VALUE}
+          />
           <p className="medium-text">Already have an account? <Link to="/login" className="link-text">Log In</Link></p>
           <div className="links">
             <button className="social-icon" onClick={handleGoogleSignUp}>
