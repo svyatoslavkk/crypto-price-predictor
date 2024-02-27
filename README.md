@@ -4,7 +4,7 @@
 Cryptocurrency Price Predictor is an application game where the objective is to predict the
 correct price direction within a selected timeframe. Users can track detailed statistics of their
 profile, monitor user ratings, and access cryptocurrency news.
-
+<br />
 <ul>
   <li>Congured authentication through Firebase.</li>
   <li>Retrieved user data from the Firebase database.</li>
@@ -15,7 +15,7 @@ profile, monitor user ratings, and access cryptocurrency news.
 
 <h3>RU:</h3>
 Cryptocurrency Price Predictor — это игра, цель которой — предсказать правильное направление цены в пределах выбранного таймфрейма. Пользователи могут отслеживать подробную статистику своего профиля, отслеживать рейтинги пользователей и получать доступ к новостям о криптовалюте.
-
+<br />
 <ul>
   <li>Аутентификация через Firebase.</li>
   <li>Получение данных пользователя из базы данных Firebase.</li>
