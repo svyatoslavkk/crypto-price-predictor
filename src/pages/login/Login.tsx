@@ -16,7 +16,7 @@ export default function Login() {
         <i style={{ '--clr' : '#ff0057' } as React.CSSProperties}></i>
         <i style={{ '--clr' : '#fffd44' } as React.CSSProperties}></i>
         <div className="login">
-          <h2>Login</h2>
+          <h2>{LOGIN_VALUE}</h2>
           <ClassicInput
             type={TEXT_TYPE}
             placeholder={EMAIL_PLACEHOLDER}

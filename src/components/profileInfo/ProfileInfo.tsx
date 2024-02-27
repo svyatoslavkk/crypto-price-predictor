@@ -17,10 +17,9 @@ import { ACHIEVEMENTS_TITLE, HISTORY_TITLE } from '../../constants/constants';
 export default function ProfileInfo() {
   const { myData } = useUserContext();
   const [activeButton, setActiveButton] = useState("Achievements");
-  const [visibleBets, setVisibleBets] = useState(10);
   const currentHistoryBets = myData?.historyBets;
   const currentHistoryBetsCopy = [...currentHistoryBets || []];
-  const reversedHistory = currentHistoryBetsCopy;
+  const reversedHistory = currentHistoryBetsCopy.reverse();
 
   const winTotal = myData?.winBets || 0;
 
@@ -71,10 +70,6 @@ export default function ProfileInfo() {
       achieved: checkWinSeries(reversedHistory, 12),
     },
   ];
-
-  const handleLoadMore = () => {
-    setVisibleBets((prev) => prev + 10);
-  };
 
   return (
     <div className="profile-info">

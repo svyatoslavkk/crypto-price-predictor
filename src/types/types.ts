@@ -23,7 +23,7 @@ export type IBetDetails = {
   direction: string;
   openTime: string;
   openPrice: number;
-  closeTime: string;
+  closeTime?: string;
   closePrice: number;
   result: string;
 }

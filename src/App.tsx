@@ -11,7 +11,6 @@ import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import { UserProvider } from './context/UserContext';
 import RootLayout from './_root/RootLayout';
-import ProfileFullScreen from './components/profileFullScreen/ProfileFullScreen';
 import { BetProvider } from './context/BetContext';
 import { AuthProvider } from './context/AuthContext';
 
@@ -32,7 +31,6 @@ function App() {
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/rankings" element={<Rankings />} />
                   <Route path="/news" element={<News />} />
-                  <Route path="profile/:uid" element={<ProfileFullScreen />} />
                 </Route>
                 
                 <Route path="/profile" element={<Profile />} />

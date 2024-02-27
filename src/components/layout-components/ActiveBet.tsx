@@ -6,6 +6,8 @@ import { useGetBitcoinInfoQuery } from '../../redux/features/api/api';
 
 export default function ActiveBet({ countdown, betDirection, pointAmount, startPrice, betTime }: IActiveBet) {
   const { data: bitcoinInfo } = useGetBitcoinInfoQuery('bitcoin');
+  const timer = countdown.toFixed(0);
+
   return (
     <div className={`active-bet ${(countdown > 0) ? 'active-status-bet' : ''}`}>
       <div className="flex-info">
@@ -13,7 +15,7 @@ export default function ActiveBet({ countdown, betDirection, pointAmount, startP
           <svg className="circle-progress">
             <circle className="meter-1" cx="25" cy="25" r="20" style={{strokeDashoffset: (360 - (122 * (countdown / betTime)))}} />
           </svg>
-          <span className="circle-time">{Math.abs(countdown.toFixed(0))}</span>
+          <span className="circle-time">{timer}</span>
         </div>
         <div className="text-items-column">
           <div className="flex-info">

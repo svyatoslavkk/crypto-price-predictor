@@ -9,6 +9,7 @@ export const PASSWORD_TYPE = "password";
 export const LOGIN_VALUE = "Login";
 export const SIGNUP_VALUE = "Sign Up";
 
+export const DASHBOARD_TITLE = "Dashboard";
 export const RANKINGS_TITLE = "Rankings";
 export const NEWS_TITLE = "News";
 export const COINS_TITLE = "Coins";

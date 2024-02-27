@@ -18,6 +18,7 @@ const UserContext = createContext<{
   showProfile: boolean;
   setShowProfile: any;
   chosenUser: User | null;
+  setChosenUser: any;
   fetchData: (uid: string) => Promise<void>;
   fetchMyData: () => Promise<void>;
   fetchUserData: (uid: string) => Promise<void>;
@@ -32,6 +33,7 @@ const UserContext = createContext<{
   showProfile: false,
   setShowProfile: false,
   chosenUser: null,
+  setChosenUser: () => {},
   fetchData: async () => {},
   fetchMyData: async () => {},
   fetchUserData: async () => {},
@@ -55,7 +57,6 @@ export const UserProvider: React.FC<any> = ({ children }) => {
       if (data) {
         setMyData(data);
       }
-      console.log("FUNCTION CALLED")
     } catch (error) {
       console.error('Error getting data:', error);
     }
@@ -89,6 +90,7 @@ export const UserProvider: React.FC<any> = ({ children }) => {
     try {
       const snapshot = await getDocs(collectionRef);
       const data = snapshot.docs.find(doc => doc.data().uid === uid)?.data();
+      console.log("fetchUserData", data)
       setChosenUser(data);
     } catch (error) {
       console.error('Error getting chosen user\'s data:', error);
@@ -120,7 +122,7 @@ export const UserProvider: React.FC<any> = ({ children }) => {
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, users, myData, setMyData, rankUsers, loading, myDataLoading, showProfile, setShowProfile, chosenUser, fetchData, fetchMyData, fetchUserData }}>
+    <UserContext.Provider value={{ user, users, myData, setMyData, rankUsers, loading, myDataLoading, showProfile, setShowProfile, chosenUser, setChosenUser, fetchData, fetchMyData, fetchUserData }}>
       {children}
     </UserContext.Provider>
   );

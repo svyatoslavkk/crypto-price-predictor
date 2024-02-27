@@ -7,6 +7,7 @@ import { RANKINGS_TITLE } from "../../constants/constants";
 
 export default function Rankings() {
   const { loading, rankUsers } = useUserContext();
+  console.log("rankUsers", rankUsers);
 
   return (
     <div className="rankings">

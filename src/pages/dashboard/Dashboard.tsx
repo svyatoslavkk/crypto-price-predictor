@@ -7,6 +7,7 @@ import NewsSection from "../../components/newsSection/NewsSection";
 import UserPreview from "../../components/userPreview/UserPreview";
 import TopCoin from "../../components/topCoin/TopCoin";
 import useLogout from "../../hooks/useLogout";
+import { DASHBOARD_TITLE } from '../../constants/constants';
 
 export default function Dashboard() {
   const { loading, handleLogout } = useLogout();
@@ -14,7 +15,7 @@ export default function Dashboard() {
   return (
     <div className="dashboard">
       <div className="top-section">
-        <h1 className="large-header">Dashboard</h1>
+        <h1 className="large-header">{DASHBOARD_TITLE}</h1>
         <button className="small-circle-button" onClick={handleLogout}>
           <LogoutIcon fontSize="small" />
         </button>

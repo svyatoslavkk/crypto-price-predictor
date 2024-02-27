@@ -113,12 +113,17 @@ export const AuthProvider = ({ children }: any) => {
         await updateDoc(doc(collectionRef, docId), {
           docId: docId,
         });
-        navigate('/profile');
+
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 1000);
       }
     } catch (err: any) {
       console.error('Registration error:', err.message);
     } finally {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
     }
   };
 
@@ -131,7 +136,9 @@ export const AuthProvider = ({ children }: any) => {
         user.getIdToken()
           .then((accessToken) => {
             sessionStorage.setItem('Token', accessToken);
-            navigate('/profile');
+            setTimeout(() => {
+              navigate('/dashboard');
+            }, 1000);
           })
           .catch((error) => {
             console.error('getIdToken error', error);
@@ -141,7 +148,9 @@ export const AuthProvider = ({ children }: any) => {
         console.error('signIn error', error);
       })
       .finally(() => {
-        setLoading(false);
+        setTimeout(() => {
+          setLoading(false);
+        }, 1000);
       });
   };
 
@@ -167,11 +176,16 @@ export const AuthProvider = ({ children }: any) => {
       });
       const docId = docRef.id;
       await updateDoc(doc(collectionRef, docId), { docId: docId });
-      navigate('/dashboard');
+
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 1000);
     } catch (err: any) {
       console.error('Google Sign In error:', err.message);
     } finally {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
     }
   };
 

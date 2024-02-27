@@ -5,6 +5,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { INews } from '../../types/types';
 import Pagination from '../../components/util/Pagination';
 import BlogItem from '../../components/shared-components/BlogItem';
+import { NEWS_TITLE } from '../../constants/constants';
 
 export default function News() {
   const { data: cryptoNews } = useGetCryptoNewsQuery({});
@@ -18,8 +19,6 @@ export default function News() {
     setCurrentPage(page);
     navigate(`/news?page=${page}`);
   };
-
-  const pageTitle = "News";
 
   useEffect(() => {
     const pageParam = new URLSearchParams(location.search).get('page');
@@ -37,7 +36,7 @@ export default function News() {
 
   return (
     <div className="news">
-      <TopButtons pageTitle={pageTitle} />
+      <TopButtons pageTitle={NEWS_TITLE} />
       <ul className="news-column">
         {sortedNews && sortedNews.slice((currentPage - 1) * 10, currentPage * 10).map((item: INews) => (
           <BlogItem 

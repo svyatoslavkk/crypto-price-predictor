@@ -16,7 +16,7 @@ export default function SignUp() {
         <i style={{ '--clr' : '#ff0057' } as React.CSSProperties}></i>
         <i style={{ '--clr' : '#fffd44' } as React.CSSProperties}></i>
         <div className="login">
-          <h2>Register</h2>
+          <h2>{SIGNUP_VALUE}</h2>
           <div className="inputBx">
             <label htmlFor="avatarInput" className="avatar-label">
               Choose Avatar

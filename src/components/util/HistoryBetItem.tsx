@@ -1,6 +1,6 @@
-import { BetDetails } from "../../types/types";
+import { IBetDetails } from "../../types/types";
 
-export default function HistoryBetItem({ openTime, direction, openPrice, closePrice, result }: BetDetails) {
+export default function HistoryBetItem({ openTime, direction, openPrice, closePrice, result }: IBetDetails) {
   return (
     <div key={openTime} className="history-bet-item">
       <div className="text-items-column">
